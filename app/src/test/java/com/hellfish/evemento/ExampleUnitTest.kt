@@ -1,4 +1,4 @@
-package com.hellfish.eventear
+package com.hellfish.evemento
 
 import org.junit.Test
 

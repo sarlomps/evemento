@@ -1,4 +1,4 @@
-package com.hellfish.eventear
+package com.hellfish.evemento
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
