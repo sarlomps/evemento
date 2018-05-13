@@ -20,6 +20,14 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
+        <ImageView
+            android:id="@+id/eventImageDetail"
+            app:srcCompat="@drawable/ic_add_a_photo_grey_24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"/>
+
         <TextView
             android:id="@+id/eventTitle"
             android:layout_width="wrap_content"
