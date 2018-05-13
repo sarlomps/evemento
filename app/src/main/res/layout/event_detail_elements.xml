@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView style="@style/EventDetailElementComponent"
+        android:layout_marginTop="25dp"
+        android:drawableStart="@drawable/ic_description_grey_24dp"
+        android:text="@string/default_description_text"/>
+    <TextView style="@style/EventDetailElementComponent"
+        android:drawableStart="@drawable/ic_time_grey_24dp"
+        android:text="@string/default_time_text"/>
+    <TextView style="@style/EventDetailElementComponent"
+        android:drawableStart="@drawable/ic_location_on_grey_24dp"
+        android:text="@string/default_location_text"/>
+    <TextView style="@style/EventDetailElementComponent"
+        android:drawableStart="@drawable/ic_guests_grey_24dp"
+        android:text="@string/default_guests_text"/>
+    <TextView style="@style/EventDetailElementComponent"
+        android:drawableStart="@drawable/ic_ride_grey_24dp"
+        android:text="@string/default_ride_text"/>
+    <TextView style="@style/EventDetailElementComponent"
+        android:drawableStart="@drawable/ic_tasks_grey_24dp"
+        android:text="@string/default_tasks_text"/>
+    <TextView style="@style/EventDetailElementComponent"
+        android:drawableStart="@drawable/ic_poll_grey_24dp"
+        android:text="@string/default_polls_text"/>
+    <TextView style="@style/EventDetailElementComponent"
+        android:drawableStart="@drawable/ic_comment_grey_24dp"
+        android:text="@string/default_comments_text"/>
+</LinearLayout>
