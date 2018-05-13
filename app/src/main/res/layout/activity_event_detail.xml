@@ -9,6 +9,17 @@
 
     <include layout="@layout/event_detail_tool_bar"/>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/event_detail_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_check_white_24dp"
+        android:layout_margin="15dp"
+        app:layout_anchor="@id/eventDetailAppbar"
+        app:layout_anchorGravity="bottom|end" />
+
+
+
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/detail_container"
         android:layout_width="match_parent"
