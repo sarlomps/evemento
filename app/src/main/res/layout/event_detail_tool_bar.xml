@@ -10,12 +10,12 @@
     <android.support.design.widget.CollapsingToolbarLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-
+        android:fitsSystemWindows="true"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/eventDetailToolbar"
-            android:layout_height="100dp"
+            android:layout_height="60dp"
             android:layout_width="match_parent"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
@@ -25,7 +25,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_margin="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
             style="@style/TitleText"/>
 
     </android.support.design.widget.CollapsingToolbarLayout>
