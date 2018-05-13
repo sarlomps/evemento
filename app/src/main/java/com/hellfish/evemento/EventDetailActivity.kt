@@ -13,7 +13,7 @@ class EventDetailActivity : AppCompatActivity() {
         setSupportActionBar(eventDetailToolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        eventTitle.text = "Titulo"
+        eventTitle.text = getString(R.string.default_event_title)
     }
 
 }

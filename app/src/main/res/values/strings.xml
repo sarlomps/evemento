@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">evemento</string>
     <string name="title_activity_maps">Map</string>
+    <string name="default_event_title">Title</string>
     <string name="default_description_text">\ \ What?</string>
     <string name="default_time_text">\ \ When?</string>
     <string name="default_location_text">\ \ Where?</string>
