@@ -11,4 +11,5 @@
     <string name="default_ride_text">\ \ How?</string>
     <string name="default_comments_text">\ \ Comments?</string>
     <string name="title_activity_cars">Cars</string>
+    <string name="title_activity_polls">PollsActivity</string>
 </resources>
