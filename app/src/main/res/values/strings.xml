@@ -10,4 +10,5 @@
     <string name="default_guests_text">\ \ Who?</string>
     <string name="default_ride_text">\ \ How?</string>
     <string name="default_comments_text">\ \ Comments?</string>
+    <string name="title_activity_cars">Cars</string>
 </resources>
