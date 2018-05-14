@@ -47,6 +47,8 @@
               <action android:name="android.intent.action.MAIN" />
               <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            android:name=".CarsActivity"
+            android:label="@string/title_activity_cars"
         </activity>
     </application>
 
