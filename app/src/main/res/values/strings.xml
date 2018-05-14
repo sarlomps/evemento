@@ -12,4 +12,5 @@
     <string name="default_comments_text">\ \ Comments?</string>
     <string name="title_activity_cars">Cars</string>
     <string name="title_activity_polls">PollsActivity</string>
+    <string name="title_activity_car_detail">CarDetailActivity</string>
 </resources>
