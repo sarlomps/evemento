@@ -34,7 +34,6 @@
             android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -46,13 +45,19 @@
             android:label="PendingList">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            android:name=".CarsActivity"
-            android:label="@string/title_activity_cars"
         </activity>
-        <activity android:name=".CarDetailActivity">
+        <activity
+            android:name=".CarsActivity"
+            android:label="@string/title_activity_cars">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".CarDetailActivity"
             android:label="@string/title_activity_car_detail">
             <intent-filter>
