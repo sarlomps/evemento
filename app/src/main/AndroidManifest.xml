@@ -30,7 +30,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".PollsActivity"
             android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,16 +40,6 @@
         <activity
             android:name=".EventDetailActivity"
             android:theme="@style/AppThemeNoBar"></activity>
-        <activity
-            android:name=".PendingListActivity"
-            android:label="PendingList">
-            <intent-filter>
-              <action android:name="android.intent.action.MAIN" />
-              <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            android:name=".CarsActivity"
-            android:label="@string/title_activity_cars"
-        </activity>
     </application>
 
 </manifest>
