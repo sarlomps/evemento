@@ -49,8 +49,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CarsActivity"
-            android:label="@string/title_activity_cars">
+            android:name=".TransportListActivity"
+            android:label="@string/title_activity_transport_list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -58,8 +58,8 @@
         </activity>
 
         <activity
-            android:name=".CarDetailActivity"
-            android:label="@string/title_activity_car_detail">
+            android:name=".TransportDetailActivity"
+            android:label="@string/title_activity_transport_detail">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

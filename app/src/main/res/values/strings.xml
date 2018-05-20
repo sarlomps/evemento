@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">evemento</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps">Transporte</string>
     <string name="default_event_title">Title</string>
     <string name="default_description_text">\ \ What?</string>
     <string name="default_time_text">\ \ When?</string>
@@ -10,7 +10,7 @@
     <string name="default_guests_text">\ \ Who?</string>
     <string name="default_ride_text">\ \ How?</string>
     <string name="default_comments_text">\ \ Comments?</string>
-    <string name="title_activity_cars">Cars</string>
+    <string name="title_activity_transport_list">TransportList</string>
     <string name="title_activity_polls">PollsActivity</string>
-    <string name="title_activity_car_detail">CarDetailActivity</string>
+    <string name="title_activity_transport_detail">TransportDetail</string>
 </resources>
