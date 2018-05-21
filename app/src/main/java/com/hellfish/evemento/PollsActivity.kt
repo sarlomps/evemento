@@ -21,21 +21,23 @@ class PollsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_polls)
 
         val viewManager = LinearLayoutManager(this)
-        val viewAdapter = PollAdapter(listOf("¿Comes carne?", "¿Llevas mascota?"))
+        val polls = listOf(Poll("¿Comes carne?", listOf("Sí", "No")))
+        val viewAdapter = PollAdapter(polls)
         recyclerView.apply {
             layoutManager = viewManager
             adapter = viewAdapter
         }
-//        recyclerView.setOnClickListener {
-//            Toast.makeText(this, "Bleh!", Toast.LENGTH_SHORT).show()
-//        }
     }
 
-    class PollAdapter(val items: List<String>) : RecyclerView.Adapter<PollAdapter.ViewHolder>() {
+    data class Poll(val question: String, val answers: List<String>)
+
+    class PollAdapter(val polls: List<Poll>) : RecyclerView.Adapter<PollAdapter.ViewHolder>() {
         class ViewHolder(val cardView: CardView) : RecyclerView.ViewHolder(cardView)
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.cardView.question.text = items[position]
+            val poll = polls[position]
+            holder.cardView.question.text = poll.question
+            holder.cardView.answers.adapter = AnswersAdapter(poll.answers)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -44,14 +46,13 @@ class PollsActivity : AppCompatActivity() {
 
             cardView.answers.apply {
                 layoutManager = LinearLayoutManager(parent.context)
-                adapter = AnswersAdapter(listOf("Si", "No"))
             }
 
             return ViewHolder(cardView)
         }
 
         override fun getItemCount(): Int {
-            return items.size
+            return polls.size
         }
     }
 
