@@ -1,4 +1,4 @@
-package com.hellfish.evemento
+package com.hellfish.evemento.event.poll
 
 import android.content.Context
 import android.os.Bundle
@@ -7,6 +7,8 @@ import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.TextView
 import android.widget.Toast
+import com.hellfish.evemento.R
+import com.hellfish.evemento.RecyclerAdapter
 
 import kotlinx.android.synthetic.main.activity_poll.*
 import kotlinx.android.synthetic.main.poll_content.view.*
@@ -18,8 +20,8 @@ class PollActivity : AppCompatActivity() {
         setContentView(R.layout.activity_poll)
 
         val polls = mutableListOf(Poll.Open("¿Comes carne?", listOf(Answer.Open("Sí", 2), Answer.Open("No", 1))),
-                                    Poll.Closed("¿Llevas mascota?",
-                                                listOf(Answer.Closed("Sí", 3), Answer.Closed("No", 5))))
+                Poll.Closed("¿Llevas mascota?",
+                        listOf(Answer.Closed("Sí", 3), Answer.Closed("No", 5))))
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
@@ -33,9 +35,9 @@ class PollActivity : AppCompatActivity() {
 
         class Open(override val question: String,
                         override val answers: List<Answer.Open>) : Poll(question, answers) {
-            fun choose(answer: Answer.Open) : Poll.Closed {
+            fun choose(answer: Answer.Open) : Closed {
                 val updatedAnswers = answers.map { anAnswer -> if (answer == anAnswer) { anAnswer.vote() } else { anAnswer.close() } }
-                return Poll.Closed(question, updatedAnswers)
+                return Closed(question, updatedAnswers)
             }
         }
 
@@ -45,9 +47,9 @@ class PollActivity : AppCompatActivity() {
 
     sealed class Answer(val text: String, val votes: Int) {
         class Open(text: String, votes: Int) : Answer(text, votes) {
-            fun vote() : Answer.Closed = Answer.Closed(text, votes + 1)
+            fun vote() : Closed = Closed(text, votes + 1)
 
-            fun close() : Answer.Closed = Answer.Closed(text, votes)
+            fun close() : Closed = Closed(text, votes)
         }
         class Closed(text: String, votes: Int) : Answer(text, votes)
     }

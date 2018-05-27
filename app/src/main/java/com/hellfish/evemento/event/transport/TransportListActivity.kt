@@ -1,10 +1,11 @@
-package com.hellfish.evemento
+package com.hellfish.evemento.event.transport
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
+import com.hellfish.evemento.R
 
 class TransportListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,7 +1,8 @@
-package com.hellfish.evemento
+package com.hellfish.evemento.event.transport
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.hellfish.evemento.R
 
 class TransportDetailActivity : AppCompatActivity() {
 

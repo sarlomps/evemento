@@ -1,20 +1,21 @@
-package com.hellfish.evemento;
+package com.hellfish.evemento.event.transport;
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.hellfish.evemento.R
 
 class TransportAdapter(val transportList:ArrayList<TransportItem>): RecyclerView.Adapter<TransportAdapter.ViewHolder>(){
-    override fun onBindViewHolder(holder:ViewHolder,position:Int){
+    override fun onBindViewHolder(holder: ViewHolder, position:Int){
         holder.txtDriverName.text=transportList[position].driver
         holder.txtAvailableSlots.text=transportList[position].availableSlots
 
     }
 
-    override fun onCreateViewHolder(parent:ViewGroup,viewType:Int):ViewHolder{
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.transport_item,parent,false))
+    override fun onCreateViewHolder(parent:ViewGroup,viewType:Int): ViewHolder {
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.transport_item, parent, false))
     }
 
     override fun getItemCount():Int{

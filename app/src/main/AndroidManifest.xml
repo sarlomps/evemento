@@ -30,7 +30,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".PollActivity"
+            android:name=".event.poll.PollActivity"
             android:label="Poll">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,7 +38,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MapsActivity"
+            android:name=".event.transport.MapsActivity"
             android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,10 +46,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EventDetailActivity"
+            android:name=".event.EventDetailActivity"
             android:theme="@style/AppThemeNoBar" />
         <activity
-            android:name=".TaskListActivity"
+            android:name=".event.task.TaskListActivity"
             android:label="TaskList">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -57,7 +57,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TransportListActivity"
+            android:name=".event.transport.TransportListActivity"
             android:label="@string/title_activity_transport_list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -66,7 +66,7 @@
         </activity>
 
         <activity
-            android:name=".TransportDetailActivity"
+            android:name=".event.transport.TransportDetailActivity"
             android:label="@string/title_activity_transport_detail">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
