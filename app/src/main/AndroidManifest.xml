@@ -49,8 +49,8 @@
             android:name=".EventDetailActivity"
             android:theme="@style/AppThemeNoBar" />
         <activity
-            android:name=".PendingListActivity"
-            android:label="PendingList">
+            android:name=".TaskListActivity"
+            android:label="TaskList">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -3,10 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/pending_list"
+    android:id="@+id/task_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PendingListActivity">
+    tools:context=".TaskListActivity">
 
     <ListView
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
         android:layout_height="match_parent"
     >
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/pending_list_add"
+            android:id="@+id/task_list_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
