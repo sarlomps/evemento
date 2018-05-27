@@ -30,8 +30,8 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".PollsActivity"
-            android:label="Polls">
+            android:name=".PollActivity"
+            android:label="Poll">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
