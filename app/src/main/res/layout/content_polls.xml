@@ -38,7 +38,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/answers"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
             <!--ese 100px deberia ser un wrap_content pero por algun motivo eso me muestra solo 1 elemento si lo dejo con wrap_content-->
         </android.support.v7.widget.RecyclerView>
     </LinearLayout>

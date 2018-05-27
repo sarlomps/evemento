@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 
 abstract class RecyclerAdapter<V: View,
-                                    Item>(open val items: List<Item>) : RecyclerView.Adapter<RecyclerAdapter.ViewHolder<V>>() {
+                               Item>(val items: List<Item>) : RecyclerView.Adapter<RecyclerAdapter.ViewHolder<V>>() {
 
     private var context : Context? = null
 
@@ -15,7 +15,7 @@ abstract class RecyclerAdapter<V: View,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<V> {
         val view = LayoutInflater.from(parent.context)
-                .inflate(layout(), parent, false) as V
+                .inflate(layout(viewType), parent, false) as V
 
         this.context = parent.context
 
@@ -32,7 +32,11 @@ abstract class RecyclerAdapter<V: View,
         }
     }
 
-    abstract fun layout() : Int
+    override fun getItemViewType(position: Int): Int = getItemView(items[position])
+
+    open fun getItemView(item: Item) : Int = 0
+
+    abstract fun layout(item : Int) : Int
 
     abstract fun doOnItemOnBindViewHolder(view: V, item: Item, context: Context) : Unit
 }
