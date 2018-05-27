@@ -6,19 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 
-class CarsAdapter(val carList:ArrayList<CarItem>): RecyclerView.Adapter<CarsAdapter.ViewHolder>(){
+class TransportAdapter(val transportList:ArrayList<TransportItem>): RecyclerView.Adapter<TransportAdapter.ViewHolder>(){
     override fun onBindViewHolder(holder:ViewHolder,position:Int){
-        holder.txtDriverName.text=carList[position].driver
-        holder.txtAvailableSlots.text=carList[position].availableSlots
+        holder.txtDriverName.text=transportList[position].driver
+        holder.txtAvailableSlots.text=transportList[position].availableSlots
 
     }
 
     override fun onCreateViewHolder(parent:ViewGroup,viewType:Int):ViewHolder{
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.car_item,parent,false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.transport_item,parent,false))
     }
 
     override fun getItemCount():Int{
-        return carList.size
+        return transportList.size
     }
 
     class ViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
