@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.view.View
 import com.hellfish.evemento.event.EventDetailFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -20,8 +21,8 @@ class MainActivity : AppCompatActivity(), Navigator {
     }
 
     override fun setCustomToolbar(customToolbar: Toolbar?, displayTitle: Boolean) {
-        val toolbar = customToolbar ?: defaultToolbar
-        setSupportActionBar(toolbar)
+        defaultToolbar.visibility= if (customToolbar == null) View.VISIBLE else View.GONE
+        setSupportActionBar(customToolbar ?: defaultToolbar)
         supportActionBar?.setDisplayShowTitleEnabled(displayTitle)
     }
 
