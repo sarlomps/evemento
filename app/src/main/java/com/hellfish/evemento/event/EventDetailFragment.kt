@@ -24,6 +24,7 @@ class EventDetailFragment : NavigatorFragment() {
 
     override fun setupToolbar() {
         listener.setCustomToolbar(eventDetailToolbar, false)
+        eventDetailAppbar.setExpanded(true)
         eventTitle.text = getString(R.string.default_event_title)
     }
 
