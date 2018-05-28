@@ -48,10 +48,6 @@
             android:label="@string/title_activity_maps">
         </activity>
         <activity
-            android:name=".event.task.TaskListActivity"
-            android:label="TaskList">
-        </activity>
-        <activity
             android:name=".event.transport.TransportListActivity"
             android:label="@string/title_activity_transport_list">
         </activity>

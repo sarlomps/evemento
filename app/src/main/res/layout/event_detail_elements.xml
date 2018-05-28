@@ -22,7 +22,8 @@
         android:text="@string/default_ride_text"/>
     <TextView style="@style/EventDetailElementComponent"
         android:drawableStart="@drawable/ic_task_grey_24dp"
-        android:text="@string/default_task_list_text"/>
+        android:text="@string/default_task_list_text"
+        android:id="@+id/taskElement"/>
     <TextView style="@style/EventDetailElementComponent"
         android:drawableStart="@drawable/ic_poll_grey_24dp"
         android:text="@string/default_poll_list_text"/>
