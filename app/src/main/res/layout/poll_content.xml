@@ -15,7 +15,7 @@
     app:contentPadding="2dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".event.poll.PollFragment"
-    tools:showIn="@layout/activity_poll">
+    tools:showIn="@layout/fragment_poll_list">
 
     <LinearLayout
         android:layout_width="match_parent"

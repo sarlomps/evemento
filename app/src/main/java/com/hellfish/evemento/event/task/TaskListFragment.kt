@@ -10,6 +10,6 @@ import com.hellfish.evemento.NavigatorFragment
 class TaskListFragment : NavigatorFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.activity_task_list, container, false)
+        inflater.inflate(R.layout.fragment_task_list, container, false)
 
 }
