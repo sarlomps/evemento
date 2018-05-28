@@ -3,15 +3,21 @@ package com.hellfish.evemento.event.poll
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.R
 
 import kotlinx.android.synthetic.main.activity_poll.*
 
-class PollActivity : AppCompatActivity() {
+class PollFragment : NavigatorFragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_poll)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.activity_poll, container, false)
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         val polls = mutableListOf(Poll.Open("¿Comes carne?", listOf(Answer.Open("Sí", 2), Answer.Open("No", 1))),
                 Poll.Closed("¿Llevas mascota?",

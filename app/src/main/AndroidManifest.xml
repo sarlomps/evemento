@@ -40,10 +40,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".event.poll.PollActivity"
-            android:label="Poll">
-        </activity>
-        <activity
             android:name=".event.transport.MapsActivity"
             android:label="@string/title_activity_maps">
         </activity>

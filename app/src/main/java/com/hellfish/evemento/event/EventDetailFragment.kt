@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.R
+import com.hellfish.evemento.event.poll.PollFragment
 import com.hellfish.evemento.event.task.TaskListFragment
 import kotlinx.android.synthetic.main.event_detail_elements.*
 import kotlinx.android.synthetic.main.event_detail_tool_bar.*
@@ -18,6 +19,7 @@ class EventDetailFragment : NavigatorFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         taskElement.setOnClickListener { listener.replaceFragment(TaskListFragment()) }
+        pollElement.setOnClickListener { listener.replaceFragment(PollFragment()) }
     }
 
     override fun setupToolbar() {
