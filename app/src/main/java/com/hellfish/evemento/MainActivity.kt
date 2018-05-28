@@ -19,8 +19,9 @@ class MainActivity : AppCompatActivity(), Navigator {
         }
     }
 
-    override fun setCustomToolbar(customToolbar: Toolbar, displayTitle: Boolean) {
-        setSupportActionBar(customToolbar)
+    override fun setCustomToolbar(customToolbar: Toolbar?, displayTitle: Boolean) {
+        val toolbar = customToolbar ?: defaultToolbar
+        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(displayTitle)
     }
 
