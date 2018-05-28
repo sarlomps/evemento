@@ -37,7 +37,3 @@ class EventDetailFragment : Fragment() {
 
 }
 
-interface Navigator {
-    fun replaceFragment(fragment: Fragment): Unit
-    fun setCustomToolbar(customToolbar: Toolbar, displayTitle: Boolean): Unit
-}

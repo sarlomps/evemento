@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import com.hellfish.evemento.event.Navigator
 import com.hellfish.evemento.event.EventDetailFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), Navigator  {
+class MainActivity : AppCompatActivity(), Navigator {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
