@@ -33,6 +33,8 @@ class EventFragment : NavigatorFragment() {
 
     private fun viewingEvent(event: Event, view: EventLayout) {
         view.loadEvent(event)
+        view.changeTextColor(R.color.text)
+
         taskElement.setOnClickListener { listener.replaceFragment(TaskListFragment()) }
         pollElement.setOnClickListener { listener.replaceFragment(PollFragment()) }
 
@@ -41,6 +43,7 @@ class EventFragment : NavigatorFragment() {
 
     private fun editingEvent(event: Event, view: EventLayout) {
         view.loadEvent(event)
+        view.changeTextColor(R.color.grey)
 
         eventFab.withDrawable(R.drawable.ic_check_white_24dp).setOnClickListener { viewingEvent(event, view) }
     }
