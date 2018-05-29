@@ -3,29 +3,29 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/layoutEventDetail"
+    android:id="@+id/eventLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hellfish.evemento.event.detail.EventDetailFragment">
+    tools:context="com.hellfish.evemento.event.EventFragment">
 
-    <include layout="@layout/event_detail_tool_bar"/>
+    <include layout="@layout/event_tool_bar"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/eventDetailFab"
+        android:id="@+id/eventFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_check_white_24dp"
         android:layout_margin="15dp"
-        app:layout_anchor="@id/eventDetailAppbar"
+        app:layout_anchor="@id/eventAppbar"
         app:layout_anchorGravity="bottom|end" />
 
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/detail_container"
+        android:id="@+id/eventContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include layout="@layout/event_detail_elements"/>
+        <include layout="@layout/event_elements"/>
 
     </android.support.v4.widget.NestedScrollView>
 

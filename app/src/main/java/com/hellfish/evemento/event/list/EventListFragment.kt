@@ -10,7 +10,7 @@ import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.R
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.EventListAdapter
-import com.hellfish.evemento.event.detail.EventDetailFragment
+import com.hellfish.evemento.event.EventFragment
 
 
 
@@ -40,7 +40,7 @@ class EventListFragment : NavigatorFragment() {
     }
 
     fun onSelectedEvent(event:Event) {
-        val eventDetailFragment = EventDetailFragment()
+        val eventDetailFragment = EventFragment()
         val args = Bundle()
         // TODO: Validar si hace falta algo mas para inicializar bien el EventDetailFragment
         args.putParcelable("event", event)
