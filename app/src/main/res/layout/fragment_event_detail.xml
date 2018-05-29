@@ -6,12 +6,12 @@
     android:id="@+id/layoutEventDetail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hellfish.evemento.event.EventDetailFragment">
+    tools:context="com.hellfish.evemento.event.detail.EventDetailFragment">
 
     <include layout="@layout/event_detail_tool_bar"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/event_detail_fab"
+        android:id="@+id/eventDetailFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_check_white_24dp"
