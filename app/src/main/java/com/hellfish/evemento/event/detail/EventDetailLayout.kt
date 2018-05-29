@@ -9,9 +9,7 @@ import kotlinx.android.synthetic.main.event_detail_tool_bar.view.*
 
 class EventDetailLayout(context: Context?) : CoordinatorLayout(context) {
 
-    init {
-        inflate(context, R.layout.fragment_event_detail, this);
-    }
+    init { inflate(context, R.layout.fragment_event_detail, this) }
 
     fun loadEvent(event: Event?) {
         eventTitle.text = event?.title
@@ -24,7 +22,5 @@ class EventDetailLayout(context: Context?) : CoordinatorLayout(context) {
         pollElement.text = event?.polls?.joinToString()
         commentElement.text = event?.comments?.joinToString()
     }
-
-
 
 }
