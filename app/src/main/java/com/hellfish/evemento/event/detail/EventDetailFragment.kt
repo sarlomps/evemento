@@ -15,11 +15,16 @@ import kotlinx.android.synthetic.main.event_detail_tool_bar.*
 
 class EventDetailFragment : NavigatorFragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.fragment_event_detail, container, false)
+    private lateinit var selectedEvent: Event
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        selectedEvent = arguments?.getParcelable("event")!!
+        return EventDetailLayout(context)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (view as EventDetailLayout).loadEvent(selectedEvent)
         taskElement.setOnClickListener { listener.replaceFragment(TaskListFragment()) }
         pollElement.setOnClickListener { listener.replaceFragment(PollFragment()) }
     }
