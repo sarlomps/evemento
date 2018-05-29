@@ -11,6 +11,8 @@ import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.R
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.EventListAdapter
+import com.hellfish.evemento.event.detail.EventDetailFragment
+import kotlinx.android.synthetic.main.fragment_event_list.*
 
 
 
@@ -28,7 +30,7 @@ class EventListFragment : NavigatorFragment() {
         eventsRecyclerView.setLayoutManager(manager)
 
         // TODO: Usar los eventos pasados como argumento del fragment, por ahora usa eventos hardcoded
-        eventsRecyclerView.adapter = EventListAdapter(arrayListOf(
+        eventsRecyclerView.adapter = EventListAdapter(this, arrayListOf(
                 Event("Mock Title 1",
                         "Mock Description 1",
                         "Mock Time 1",
@@ -86,5 +88,13 @@ class EventListFragment : NavigatorFragment() {
 
         return view
 
+    }
+    fun onSelectedEvent(event:Event) {
+        val eventDetailFragment = EventDetailFragment()
+        val args = Bundle()
+        // TODO: Validar si hace falta algo mas para inicializar bien el EventDetailFragment
+        args.putParcelable("event", event)
+        eventDetailFragment.arguments = args
+        listener.replaceFragment(eventDetailFragment)
     }
 }
