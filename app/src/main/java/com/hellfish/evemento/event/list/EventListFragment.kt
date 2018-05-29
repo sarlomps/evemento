@@ -11,13 +11,13 @@ import com.hellfish.evemento.R
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.EventListAdapter
 import com.hellfish.evemento.event.EventFragment
-
+import android.support.design.widget.FloatingActionButton
 
 
 class EventListFragment : NavigatorFragment() {
 
     lateinit var eventsRecyclerView: RecyclerView
-    var events: ArrayList<Event> = ArrayList<Event>()
+    var events: ArrayList<Event> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -35,6 +35,12 @@ class EventListFragment : NavigatorFragment() {
 
         eventsRecyclerView.adapter = EventListAdapter(this, events)
 
+
+        val fab = view.findViewById<FloatingActionButton>(R.id.event_list_fab)
+        fab.setOnClickListener {
+            // TODO: Validar como inicializar bien el EventFragment en modo edicion de un evento nuevo.
+            listener.replaceFragment(EventFragment())
+        }
         return view
 
     }
@@ -42,7 +48,7 @@ class EventListFragment : NavigatorFragment() {
     fun onSelectedEvent(event:Event) {
         val eventDetailFragment = EventFragment()
         val args = Bundle()
-        // TODO: Validar si hace falta algo mas para inicializar bien el EventDetailFragment
+        // TODO: Validar si hace falta algo mas para inicializar bien el EventFragment
         args.putParcelable("event", event)
         eventDetailFragment.arguments = args
         listener.replaceFragment(eventDetailFragment)
