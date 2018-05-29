@@ -1,11 +1,13 @@
-package com.hellfish.evemento.event
+package com.hellfish.evemento.event.detail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.R
+import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.poll.PollFragment
 import com.hellfish.evemento.event.task.TaskListFragment
 import kotlinx.android.synthetic.main.event_detail_elements.*
