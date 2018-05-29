@@ -1,15 +1,14 @@
-package com.hellfish.evemento.event.detail
+package com.hellfish.evemento.event
 
 import android.content.Context
 import android.support.design.widget.CoordinatorLayout
 import com.hellfish.evemento.R
-import com.hellfish.evemento.event.Event
-import kotlinx.android.synthetic.main.event_detail_elements.view.*
-import kotlinx.android.synthetic.main.event_detail_tool_bar.view.*
+import kotlinx.android.synthetic.main.event_elements.view.*
+import kotlinx.android.synthetic.main.event_tool_bar.view.*
 
-class EventDetailLayout(context: Context?) : CoordinatorLayout(context) {
+class EventLayout(context: Context?) : CoordinatorLayout(context) {
 
-    init { inflate(context, R.layout.fragment_event_detail, this) }
+    init { inflate(context, R.layout.fragment_event, this) }
 
     fun loadEvent(event: Event?) {
         eventTitle.text = event?.title

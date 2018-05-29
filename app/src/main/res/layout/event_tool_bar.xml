@@ -2,7 +2,7 @@
 <android.support.design.widget.AppBarLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/eventDetailAppbar"
+    android:id="@+id/eventAppbar"
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -15,14 +15,14 @@
         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/eventDetailToolbar"
+            android:id="@+id/eventToolbar"
             android:layout_height="60dp"
             android:layout_width="match_parent"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
         <ImageView
-            android:id="@+id/eventImageDetail"
+            android:id="@+id/eventImage"
             app:srcCompat="@drawable/ic_add_a_photo_grey_24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

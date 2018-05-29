@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
 import com.hellfish.evemento.event.Event
-import com.hellfish.evemento.event.detail.EventDetailFragment
+import com.hellfish.evemento.event.EventFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), Navigator {
@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity(), Navigator {
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
-            val fragment = EventDetailFragment()
+            val fragment = EventFragment()
             val args = Bundle()
             args.putParcelable("event", Event("Mock Title",
                     "Mock Description",
