@@ -6,7 +6,8 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
 import com.hellfish.evemento.event.Event
-import com.hellfish.evemento.event.detail.EventDetailFragment
+import com.hellfish.evemento.event.list.EventListFragment
+
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), Navigator {
@@ -16,9 +17,11 @@ class MainActivity : AppCompatActivity(), Navigator {
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
-            val fragment = EventDetailFragment()
+            val fragment = EventListFragment()
             val args = Bundle()
-            args.putParcelable("event", Event("Mock Title",
+            // TODO: Fix: Por mas que se pasen estos eventos como argument, no se estan usando. Por ahora se usan los de `EventListFragment:onCreateView()`
+            args.putParcelableArray("events", arrayOf(
+                    Event("Mock Title",
                     "Mock Description",
                     "Mock Time",
                     "Mock Location",
@@ -26,8 +29,18 @@ class MainActivity : AppCompatActivity(), Navigator {
                     listOf("rides"),
                     listOf("tasks"),
                     listOf("polls"),
+                    listOf("comments")),
+                    Event("Mock Title 2",
+                    "Mock Description 2",
+                    "Mock Time 2",
+                    "Mock Location 2",
+                    listOf("Juan", "Juan", "Juan"),
+                    listOf("rides"),
+                    listOf("tasks"),
+                    listOf("polls"),
                     listOf("comments")))
-            fragment.arguments= args
+            )
+            fragment.arguments = args
             supportFragmentManager.beginTransaction().add(R.id.main_container, fragment).commit()
         }
     }
