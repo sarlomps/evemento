@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity(), Navigator {
             menuItem.isChecked = true
             drawerLayout.closeDrawers()
 
-            Log.d("Selected MenuItem", ""+menuItem)
+            Log.d("Selected MenuItem", menuItem.toString())
             true
         }
 
