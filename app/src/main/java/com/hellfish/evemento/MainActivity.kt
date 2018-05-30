@@ -102,15 +102,13 @@ class MainActivity : AppCompatActivity(), Navigator {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
             android.R.id.home -> {
                 drawerLayout.openDrawer(GravityCompat.START)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
 
     override fun setCustomToolbar(customToolbar: Toolbar?, displayTitle: Boolean) {
 //        defaultToolbar.visibility= if (customToolbar == null) View.VISIBLE else View.GONE
