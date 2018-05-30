@@ -1,7 +1,6 @@
 package com.hellfish.evemento
 
 import android.os.Bundle
-import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
@@ -109,7 +108,7 @@ class MainActivity : AppCompatActivity(), Navigator {
         setSupportActionBar(customToolbar ?: defaultToolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
+            setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp)
         }
         supportActionBar?.setDisplayShowTitleEnabled(displayTitle)
     }
