@@ -1,20 +1,46 @@
 package com.hellfish.evemento
 
 import android.os.Bundle
+import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.view.GravityCompat
+import android.support.v4.widget.DrawerLayout
+import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.list.EventListFragment
+import android.util.Log
+import android.view.MenuItem
 
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), Navigator {
 
+    private lateinit var mDrawerLayout: DrawerLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.drawer)
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        val actionbar: ActionBar? = supportActionBar
+        actionbar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
+        }
+
+        mDrawerLayout = findViewById(R.id.drawer_layout)
+        val navigationView: NavigationView = findViewById(R.id.nav_view)
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            menuItem.isChecked = true
+            mDrawerLayout.closeDrawers()
+
+            Log.d("Selected MenuItem", ""+menuItem)
+            true
+        }
 
         if (savedInstanceState == null) {
             val fragment = EventListFragment()
@@ -83,10 +109,20 @@ class MainActivity : AppCompatActivity(), Navigator {
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                mDrawerLayout.openDrawer(GravityCompat.START)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun setCustomToolbar(customToolbar: Toolbar?, displayTitle: Boolean) {
-        defaultToolbar.visibility= if (customToolbar == null) View.VISIBLE else View.GONE
-        setSupportActionBar(customToolbar ?: defaultToolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(displayTitle)
+//        defaultToolbar.visibility= if (customToolbar == null) View.VISIBLE else View.GONE
+//        setSupportActionBar(customToolbar ?: defaultToolbar)
+//        supportActionBar?.setDisplayShowTitleEnabled(displayTitle)
     }
 
     override fun replaceFragment(fragment: Fragment) {

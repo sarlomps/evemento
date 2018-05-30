@@ -15,11 +15,11 @@ open class NavigatorFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        setupToolbar()
+//        setupToolbar()
     }
 
-    protected open fun setupToolbar() {
-        listener.setCustomToolbar(null, true)
-    }
+//    protected open fun setupToolbar() {
+//        listener.setCustomToolbar(null, true)
+//    }
 
 }

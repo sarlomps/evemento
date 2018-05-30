@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">evemento</string>
+    <string name="app_name">Evemento</string>
     <string name="title_activity_maps">Transporte</string>
     <string name="default_event_title">Title</string>
     <string name="default_description_text">\ \ What?</string>
@@ -12,4 +12,5 @@
     <string name="default_comments_text">\ \ Comments?</string>
     <string name="title_activity_transport_list">TransportList</string>
     <string name="title_activity_transport_detail">TransportDetail</string>
+    <string name="drawer_menu_title_events">Eventos</string>
 </resources>
