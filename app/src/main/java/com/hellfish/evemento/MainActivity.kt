@@ -10,6 +10,7 @@ import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.list.EventListFragment
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer.*
@@ -19,13 +20,6 @@ class MainActivity : AppCompatActivity(), Navigator {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer)
-
-        setSupportActionBar(toolbar)
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
-        }
-
 
         navView.setNavigationItemSelectedListener { menuItem ->
             menuItem.isChecked = true
@@ -111,9 +105,13 @@ class MainActivity : AppCompatActivity(), Navigator {
         }
 
     override fun setCustomToolbar(customToolbar: Toolbar?, displayTitle: Boolean) {
-//        defaultToolbar.visibility= if (customToolbar == null) View.VISIBLE else View.GONE
-//        setSupportActionBar(customToolbar ?: defaultToolbar)
-//        supportActionBar?.setDisplayShowTitleEnabled(displayTitle)
+        defaultToolbar.visibility= if (customToolbar == null) View.VISIBLE else View.GONE
+        setSupportActionBar(customToolbar ?: defaultToolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
+        }
+        supportActionBar?.setDisplayShowTitleEnabled(displayTitle)
     }
 
     override fun replaceFragment(fragment: Fragment) {

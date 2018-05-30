@@ -26,10 +26,10 @@ class EventFragment : NavigatorFragment() {
         if (event != null) viewingEvent(event, view as EventLayout)
     }
 
-//    override fun setupToolbar() {
-//        listener.setCustomToolbar(eventToolbar, false)
-//        eventAppbar.setExpanded(true)
-//    }
+    override fun setupToolbar() {
+        listener.setCustomToolbar(eventToolbar, false)
+        eventAppbar.setExpanded(true)
+    }
 
     private fun viewingEvent(event: Event, view: EventLayout) {
         view.loadEvent(event)
