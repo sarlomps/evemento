@@ -27,7 +27,7 @@ class EventFragment : NavigatorFragment() {
     }
 
     override fun setupToolbar() {
-        listener.setCustomToolbar(eventToolbar, null)
+        listener.setCustomToolbar(eventToolbar)
         eventAppbar.setExpanded(true)
     }
 

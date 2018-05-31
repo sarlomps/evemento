@@ -21,7 +21,7 @@ open class NavigatorFragment : Fragment() {
     }
 
     protected open fun setupToolbar() {
-        listener.setCustomToolbar(null, resources.getString(titleId))
+        listener.setCustomToolbar(title = resources.getString(titleId))
     }
 
 }
