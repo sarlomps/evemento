@@ -32,7 +32,7 @@ class EventFragment : NavigatorFragment() {
     }
 
     private fun viewingEvent(event: Event, view: EventLayout) {
-        view.loadEvent(event)
+        view.load(event)
         view.listsVisibility(View.VISIBLE)
         view.changeTextColor(R.color.text)
         view.editablesEnabled(false)
@@ -44,12 +44,12 @@ class EventFragment : NavigatorFragment() {
     }
 
     private fun editingEvent(event: Event, view: EventLayout) {
-        view.loadEvent(event)
+        view.load(event)
         view.listsVisibility(View.GONE)
         view.changeTextColor(R.color.grey)
         view.editablesEnabled(true)
 
-        eventFab.withDrawable(R.drawable.ic_check_white_24dp).setOnClickListener { viewingEvent(event, view) }
+        eventFab.withDrawable(R.drawable.ic_check_white_24dp).setOnClickListener { viewingEvent(view.edit(event), view) }
     }
 
     private fun FloatingActionButton.withDrawable(drawableId: Int): FloatingActionButton =

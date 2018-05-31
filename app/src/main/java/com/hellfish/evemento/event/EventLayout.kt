@@ -12,7 +12,14 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
 
     init { inflate(context, R.layout.fragment_event, this) }
 
-    fun loadEvent(event: Event?) {
+    fun edit(event: Event) = event.copy(
+            title = eventTitle.text.toString(),
+            description = descriptionElement.text.toString(),
+            time = timeElement.text.toString(),
+            location = locationElement.text.toString()
+    )
+
+    fun load(event: Event?) {
         eventTitle.setText(event?.title)
         descriptionElement.setText(event?.description)
         timeElement.text = event?.time
