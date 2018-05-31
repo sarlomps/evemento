@@ -3,9 +3,11 @@ package com.hellfish.evemento
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import com.hellfish.evemento.R.string.app_name
 
 open class NavigatorFragment : Fragment() {
 
+    protected open val titleId: Int = app_name
     protected lateinit var listener: Navigator
 
     override fun onAttach(context: Context?) {
@@ -19,7 +21,7 @@ open class NavigatorFragment : Fragment() {
     }
 
     protected open fun setupToolbar() {
-        listener.setCustomToolbar(null, true)
+        listener.setCustomToolbar(title = resources.getString(titleId))
     }
 
 }

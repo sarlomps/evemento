@@ -2,19 +2,31 @@ package com.hellfish.evemento
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.view.View
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.list.EventListFragment
+import android.util.Log
+import android.view.MenuItem
+import android.view.View
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.drawer.*
 
 class MainActivity : AppCompatActivity(), Navigator {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.drawer)
+
+        navView.setNavigationItemSelectedListener { menuItem ->
+            menuItem.isChecked = true
+            drawerLayout.closeDrawers()
+
+            Log.d("Selected MenuItem", menuItem.toString())
+            true
+        }
 
         if (savedInstanceState == null) {
             val fragment = EventListFragment()
@@ -83,10 +95,22 @@ class MainActivity : AppCompatActivity(), Navigator {
         }
     }
 
-    override fun setCustomToolbar(customToolbar: Toolbar?, displayTitle: Boolean) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+            android.R.id.home -> {
+                drawerLayout.openDrawer(GravityCompat.START)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
+    override fun setCustomToolbar(customToolbar: Toolbar?, title: String?) {
         defaultToolbar.visibility= if (customToolbar == null) View.VISIBLE else View.GONE
         setSupportActionBar(customToolbar ?: defaultToolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(displayTitle)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp)
+        }
+        supportActionBar?.title = title
     }
 
     override fun replaceFragment(fragment: Fragment) {
