@@ -19,6 +19,12 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
         locationElement.text = event?.location
     }
 
+    fun listsVisibility(visibility: Int) {
+        guestElement.visibility = visibility
+        rideElement.visibility = visibility
+        taskElement.visibility = visibility
+        pollElement.visibility = visibility
+        commentElement.visibility = visibility
     }
 
     fun changeTextColor(colorId: Int) {
