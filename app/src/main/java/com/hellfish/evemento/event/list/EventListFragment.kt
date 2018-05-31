@@ -19,6 +19,7 @@ class EventListFragment : NavigatorFragment() {
     lateinit var eventsRecyclerView: RecyclerView
     var events: ArrayList<Event> = ArrayList()
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_event_list, container, false)

@@ -103,14 +103,14 @@ class MainActivity : AppCompatActivity(), Navigator {
             else -> super.onOptionsItemSelected(item)
         }
 
-    override fun setCustomToolbar(customToolbar: Toolbar?, displayTitle: Boolean) {
+    override fun setCustomToolbar(customToolbar: Toolbar?, title: String?) {
         defaultToolbar.visibility= if (customToolbar == null) View.VISIBLE else View.GONE
         setSupportActionBar(customToolbar ?: defaultToolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp)
         }
-        supportActionBar?.setDisplayShowTitleEnabled(displayTitle)
+        supportActionBar?.title = title
     }
 
     override fun replaceFragment(fragment: Fragment) {

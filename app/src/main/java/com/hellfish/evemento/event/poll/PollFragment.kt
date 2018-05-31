@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.R
+import com.hellfish.evemento.R.string.title_fragment_poll_list
 
 import kotlinx.android.synthetic.main.fragment_poll_list.*
 
 class PollFragment : NavigatorFragment() {
+
+    override val titleId = title_fragment_poll_list
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_poll_list, container, false)
