@@ -17,11 +17,7 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
         descriptionElement.text = event?.description
         timeElement.text = event?.time
         locationElement.text = event?.location
-        guestElement.text = event?.guests?.joinToString()
-        rideElement.text = event?.rides?.joinToString()
-        taskElement.text = event?.tasks?.joinToString()
-        pollElement.text = event?.polls?.joinToString()
-        commentElement.text = event?.comments?.joinToString()
+    }
 
     }
 
