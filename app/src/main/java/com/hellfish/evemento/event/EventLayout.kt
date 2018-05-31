@@ -13,10 +13,16 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
     init { inflate(context, R.layout.fragment_event, this) }
 
     fun loadEvent(event: Event?) {
-        eventTitle.text = event?.title
-        descriptionElement.text = event?.description
+        eventTitle.setText(event?.title)
+        descriptionElement.setText(event?.description)
         timeElement.text = event?.time
         locationElement.text = event?.location
+    }
+
+    fun editablesEnabled(enabled: Boolean) {
+        descriptionElement.isEnabled = enabled
+        eventTitle.isEnabled = enabled
+        eventTitle.requestFocus()
     }
 
     fun listsVisibility(visibility: Int) {

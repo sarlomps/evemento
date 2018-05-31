@@ -35,6 +35,7 @@ class EventFragment : NavigatorFragment() {
         view.loadEvent(event)
         view.listsVisibility(View.VISIBLE)
         view.changeTextColor(R.color.text)
+        view.editablesEnabled(false)
 
         taskElement.setOnClickListener { listener.replaceFragment(TaskListFragment()) }
         pollElement.setOnClickListener { listener.replaceFragment(PollFragment()) }
@@ -46,6 +47,7 @@ class EventFragment : NavigatorFragment() {
         view.loadEvent(event)
         view.listsVisibility(View.GONE)
         view.changeTextColor(R.color.grey)
+        view.editablesEnabled(true)
 
         eventFab.withDrawable(R.drawable.ic_check_white_24dp).setOnClickListener { viewingEvent(event, view) }
     }

@@ -4,12 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-    <TextView style="@style/EventElementComponent"
+    <EditText style="@style/EditableEventElementComponent"
         android:id="@+id/descriptionElement"
         android:layout_marginTop="25dp"
         android:drawableStart="@drawable/ic_description_grey_24dp"
-        android:text="@string/default_description_text"
-        />
+        android:inputType="text"
+        android:hint="@string/default_description_text"
+         />
     <TextView style="@style/EventElementComponent"
         android:id="@+id/timeElement"
         android:drawableStart="@drawable/ic_time_grey_24dp"
