@@ -48,11 +48,8 @@ class EventFragment : NavigatorFragment() {
         eventFab.withDrawable(R.drawable.ic_check_white_24dp).setOnClickListener { viewingEvent(event, view) }
     }
 
-    private fun FloatingActionButton.withDrawable(drawableId: Int): FloatingActionButton {
-        setImageDrawable(ResourcesCompat.getDrawable(resources, drawableId, null))
-        return this
-    }
-
+    private fun FloatingActionButton.withDrawable(drawableId: Int): FloatingActionButton =
+        apply { setImageDrawable(ResourcesCompat.getDrawable(resources, drawableId, null)) }
 
 }
 
