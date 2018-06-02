@@ -10,6 +10,7 @@ import com.hellfish.evemento.event.list.EventListFragment
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import com.hellfish.evemento.event.EventTime
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer.*
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity(), Navigator {
             val events = arrayListOf(
                     Event("Mock Title 1",
                             "Mock Description 1",
-                            "Mock Time 1",
+                            EventTime("Mock Start Date 1", "Mock Start Date 1"),
                             "Mock Location 1",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 2",
                             "Mock Description 2",
-                            "Mock Time 2",
+                            EventTime("Mock Start Date 2", "Mock Start Date 2"),
                             "Mock Location 2",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -54,7 +55,7 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 3",
                             "Mock Description 3",
-                            "Mock Time 3",
+                            EventTime("Mock Start Date 3", "Mock Start Date 3"),
                             "Mock Location 3",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -63,7 +64,7 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 4",
                             "Mock Description 4",
-                            "Mock Time 4",
+                            EventTime("Mock Start Date 4", "Mock Start Date 4"),
                             "Mock Location 4",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -72,7 +73,7 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 5",
                             "Mock Description 5",
-                            "Mock Time 5",
+                            EventTime("Mock Start Date 5", "Mock Start Date 5"),
                             "Mock Location 5",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -81,7 +82,7 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 6",
                             "Mock Description 6",
-                            "Mock Time 6",
+                            EventTime("Mock Start Date 6", "Mock Start Date 6"),
                             "Mock Location 6",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
