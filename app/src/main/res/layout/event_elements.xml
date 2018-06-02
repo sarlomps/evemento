@@ -11,11 +11,9 @@
         android:inputType="text"
         android:hint="@string/default_description_text"
          />
-    <TextView style="@style/EventElementComponent"
-        android:id="@+id/timeElement"
-        android:drawableStart="@drawable/ic_time_grey_24dp"
-        android:text="@string/default_time_text"
-        />
+
+    <include layout="@layout/event_element_time"/>
+
     <TextView style="@style/EventElementComponent"
         android:id="@+id/locationElement"
         android:drawableStart="@drawable/ic_location_on_grey_24dp"
