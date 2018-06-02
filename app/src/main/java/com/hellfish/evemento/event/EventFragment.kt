@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.hellfish.evemento.NavigatorFragment
 import kotlinx.android.synthetic.main.event_tool_bar.*
 
-class EventFragment : NavigatorFragment(), EventModes {
+class EventFragment : NavigatorFragment(), ViewMode, EditMode {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return EventLayout(context)
