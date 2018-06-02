@@ -8,11 +8,11 @@ import com.hellfish.evemento.R.string.app_name
 open class NavigatorFragment : Fragment() {
 
     protected open val titleId: Int = app_name
-    protected lateinit var listener: Navigator
+    protected lateinit var navigatorListener: Navigator
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is Navigator) listener = context else throw ClassCastException(context.toString() + " must implement Navigator.")
+        if (context is Navigator) navigatorListener = context else throw ClassCastException(context.toString() + " must implement Navigator.")
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -21,7 +21,7 @@ open class NavigatorFragment : Fragment() {
     }
 
     protected open fun setupToolbar() {
-        listener.setCustomToolbar(title = resources.getString(titleId))
+        navigatorListener.setCustomToolbar(title = resources.getString(titleId))
     }
 
 }

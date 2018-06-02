@@ -27,7 +27,7 @@ class EventFragment : NavigatorFragment() {
     }
 
     override fun setupToolbar() {
-        listener.setCustomToolbar(eventToolbar)
+        navigatorListener.setCustomToolbar(eventToolbar)
         eventAppbar.setExpanded(true)
     }
 
@@ -37,8 +37,8 @@ class EventFragment : NavigatorFragment() {
         view.changeTextColor(R.color.text)
         view.editablesEnabled(false)
 
-        taskElement.setOnClickListener { listener.replaceFragment(TaskListFragment()) }
-        pollElement.setOnClickListener { listener.replaceFragment(PollFragment()) }
+        taskElement.setOnClickListener { navigatorListener.replaceFragment(TaskListFragment()) }
+        pollElement.setOnClickListener { navigatorListener.replaceFragment(PollFragment()) }
 
         eventFab.withDrawable(R.drawable.ic_edit_white_24dp).setOnClickListener { editingEvent(event, view) }
     }

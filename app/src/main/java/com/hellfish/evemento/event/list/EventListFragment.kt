@@ -39,7 +39,7 @@ class EventListFragment : NavigatorFragment() {
         val fab = view.findViewById<FloatingActionButton>(R.id.event_list_fab)
         fab.setOnClickListener {
             // TODO: Validar como inicializar bien el EventFragment en modo edicion de un evento nuevo.
-            listener.replaceFragment(EventFragment())
+            navigatorListener.replaceFragment(EventFragment())
         }
         return view
 
@@ -51,6 +51,6 @@ class EventListFragment : NavigatorFragment() {
         // TODO: Validar si hace falta algo mas para inicializar bien el EventFragment
         args.putParcelable("event", event)
         eventDetailFragment.arguments = args
-        listener.replaceFragment(eventDetailFragment)
+        navigatorListener.replaceFragment(eventDetailFragment)
     }
 }
