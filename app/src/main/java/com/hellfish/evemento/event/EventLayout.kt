@@ -37,7 +37,7 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
         eventTitle.requestFocus()
     }
 
-    fun listsVisibility(visibility: Int) {
+    fun notEditableElementsVisibility(visibility: Int) {
         guestElement.visibility = visibility
         rideElement.visibility = visibility
         taskElement.visibility = visibility

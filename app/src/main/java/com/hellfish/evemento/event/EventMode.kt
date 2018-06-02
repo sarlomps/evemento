@@ -28,7 +28,7 @@ interface ViewMode : EventMode {
 
     override    fun viewingEvent(event: Event, view: EventLayout): Unit = view.run {
         load(event)
-        listsVisibility(View.VISIBLE)
+        notEditableElementsVisibility(View.VISIBLE)
         changeTextColor(R.color.text)
         enabledEditableElements(false)
 
@@ -47,7 +47,7 @@ interface EditMode : EventMode {
 
     override fun editingEvent(event: Event, view: EventLayout): Unit = view.run {
         load(event)
-        listsVisibility(View.GONE)
+        notEditableElementsVisibility(View.GONE)
         changeTextColor(R.color.grey)
         enabledEditableElements(true)
 
