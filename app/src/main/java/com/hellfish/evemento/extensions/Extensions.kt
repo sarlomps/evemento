@@ -9,3 +9,5 @@ import android.view.ViewGroup
 fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutRes,this,attachToRoot)
 }
+
+fun Boolean.toVisibility() = if (this) View.VISIBLE else View.GONE

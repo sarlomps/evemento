@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import com.hellfish.evemento.event.EventTime
+import com.hellfish.evemento.extensions.toVisibility
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer.*
@@ -105,7 +106,7 @@ class MainActivity : AppCompatActivity(), Navigator {
         }
 
     override fun setCustomToolbar(customToolbar: Toolbar?, title: String?) {
-        defaultToolbar.visibility= if (customToolbar == null) View.VISIBLE else View.GONE
+        defaultToolbar.visibility= (customToolbar == null).toVisibility()
         setSupportActionBar(customToolbar ?: defaultToolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
