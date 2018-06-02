@@ -1,5 +1,6 @@
 package com.hellfish.evemento.event
 
+import android.app.DatePickerDialog
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.res.ResourcesCompat
 import android.view.View
@@ -7,6 +8,7 @@ import com.hellfish.evemento.Navigator
 import com.hellfish.evemento.R
 import com.hellfish.evemento.event.poll.PollFragment
 import com.hellfish.evemento.event.task.TaskListFragment
+import kotlinx.android.synthetic.main.event_element_time.view.*
 import kotlinx.android.synthetic.main.event_elements.view.*
 import kotlinx.android.synthetic.main.fragment_event.view.*
 
@@ -40,11 +42,17 @@ interface ViewMode : EventMode {
 
 interface EditMode : EventMode {
 
+    var startDatePicker: DatePickerDialog
+    var endDatePicker: DatePickerDialog
+
     override fun editingEvent(event: Event, view: EventLayout): Unit = view.run {
         load(event)
         listsVisibility(View.GONE)
         changeTextColor(R.color.grey)
         editablesEnabled(true)
+
+        startTimeElement.setOnClickListener { startDatePicker.show() }
+        endTimeElement.setOnClickListener { endDatePicker.show() }
 
         eventFab.withDrawable(R.drawable.ic_check_white_24dp).setOnClickListener { viewingEvent(view.edit(event), view) }
     }
