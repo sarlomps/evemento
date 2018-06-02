@@ -51,8 +51,8 @@ interface EditMode : EventMode {
         changeTextColor(R.color.grey)
         enabledEditableElements(true)
 
-        startTimeElement.setOnClickListener { startDatePicker.show() }
-        endTimeElement.setOnClickListener { endDatePicker.show() }
+        startDateElement.setOnClickListener { startDatePicker.show() }
+        endDateElement.setOnClickListener { endDatePicker.show() }
 
         eventFab.withDrawable(R.drawable.ic_check_white_24dp).setOnClickListener { viewingEvent(view.edit(event), view) }
     }

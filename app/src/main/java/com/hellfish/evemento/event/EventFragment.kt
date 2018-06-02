@@ -25,8 +25,8 @@ class EventFragment : NavigatorFragment(), ViewMode, EditMode {
 
         val calendar = Calendar.getInstance()
 
-        startDatePicker = DatePickerDialog(context, buildDateListener(startTimeElement), calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
-        endDatePicker = DatePickerDialog(context, buildDateListener(endTimeElement), calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+        startDatePicker = DatePickerDialog(context, buildDateListener(startDateElement), calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+        endDatePicker = DatePickerDialog(context, buildDateListener(endDateElement), calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
 
         val event = arguments?.getParcelable<Event>("event")
         if (event != null) viewingEvent(event, view as EventLayout)

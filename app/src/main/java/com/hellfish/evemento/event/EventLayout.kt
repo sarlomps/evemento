@@ -17,8 +17,8 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
     fun edit(event: Event) = event.copy(
             title = eventTitle.text.toString(),
             time = EventTime(
-                    startDate = startTimeElement.text.toString(),
-                    endDate = endTimeElement.text.toString()
+                    startDate = startDateElement.text.toString(),
+                    endDate = endDateElement.text.toString()
             ),
             description = descriptionElement.text.toString(),
             location = locationElement.text.toString()
@@ -29,8 +29,8 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
         descriptionElement.setText(event?.description)
         event?.time?.let {
             timeElement.text = String.format("%s - %s", it.startDate, it.endDate)
-            startTimeElement.text = it.startDate
-            endTimeElement.text = it.endDate
+            startDateElement.text = it.startDate
+            endDateElement.text = it.endDate
 
         }
         locationElement.text = event?.location
@@ -54,8 +54,8 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
 
     fun changeTextColor(colorId: Int) {
         descriptionElement.setTextColorId(colorId)
-        startTimeElement.setTextColorId(colorId)
-        endTimeElement.setTextColorId(colorId)
+        startDateElement.setTextColorId(colorId)
+        endDateElement.setTextColorId(colorId)
         locationElement.setTextColorId(colorId)
         guestElement.setTextColorId(colorId)
         rideElement.setTextColorId(colorId)

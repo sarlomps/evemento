@@ -4,14 +4,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-    <TextView style="@style/EventElementComponent"
-        android:id="@+id/startTimeElement"
-        android:drawableStart="@drawable/ic_time_grey_24dp"
-        android:text="@string/default_time_text"
-        />
-    <TextView style="@style/EventElementComponent"
-        android:id="@+id/endTimeElement"
-        android:text="@string/default_time_text"
-        android:layout_marginStart ="54dp"
-        /><!--20 (EventElement) + 24 (Drawable) + 10 (Drawable padding) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="4">
+        <TextView style="@style/EventElementComponent"
+            android:id="@+id/startDateElement"
+            android:layout_weight="1"
+            android:layout_marginEnd="0dp"
+            android:drawableStart="@drawable/ic_time_grey_24dp"
+            />
+        <TextView style="@style/EventElementComponent"
+            android:id="@+id/startTimeElement"
+            android:layout_weight="3"
+            android:layout_marginStart="0dp"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView style="@style/EventElementComponent"
+            android:id="@+id/endDateElement"
+            android:layout_weight="1"
+            android:text="@string/default_time_text"
+            android:layout_marginStart ="54dp"
+            /><!--20 (EventElement) + 24 (Drawable) + 10 (Drawable padding) -->
+        <TextView style="@style/EventElementComponent"
+            android:id="@+id/endTimeElement"
+            android:layout_marginEnd="0dp"
+            android:layout_weight="3"
+            />
+    </LinearLayout>
 </LinearLayout>
