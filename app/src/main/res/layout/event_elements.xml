@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+
     <EditText style="@style/EditableEventElementComponent"
         android:id="@+id/descriptionElement"
         android:layout_marginTop="25dp"
@@ -12,7 +13,16 @@
         android:hint="@string/default_description_text"
          />
 
-    <include layout="@layout/event_element_time"/>
+    <TextView style="@style/EventElementComponent"
+        android:id="@+id/timeElement"
+        android:drawableStart="@drawable/ic_time_grey_24dp"
+        android:text="@string/default_time_text"
+        />
+
+    <include layout="@layout/event_element_time"
+        android:id="@+id/editTimeElement"
+        android:visibility="gone"
+        />
 
     <TextView style="@style/EventElementComponent"
         android:id="@+id/locationElement"

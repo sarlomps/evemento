@@ -5,6 +5,7 @@ import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.res.ResourcesCompat
 import android.widget.TextView
 import com.hellfish.evemento.R
+import com.hellfish.evemento.extensions.toVisibility
 import kotlinx.android.synthetic.main.event_element_time.view.*
 import kotlinx.android.synthetic.main.event_elements.view.*
 import kotlinx.android.synthetic.main.event_tool_bar.view.*
@@ -26,18 +27,24 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
     fun load(event: Event?) {
         eventTitle.setText(event?.title)
         descriptionElement.setText(event?.description)
-        startTimeElement.text = event?.time?.startDate
-        endTimeElement.text = event?.time?.endDate
+        event?.time?.let {
+            timeElement.text = String.format("%s - %s", it.startDate, it.endDate)
+            startTimeElement.text = it.startDate
+            endTimeElement.text = it.endDate
+
+        }
         locationElement.text = event?.location
     }
 
     fun enabledEditableElements(enabled: Boolean) {
+        editTimeElement.visibility = enabled.toVisibility()
         descriptionElement.isEnabled = enabled
         eventTitle.isEnabled = enabled
         eventTitle.requestFocus()
     }
 
     fun notEditableElementsVisibility(visibility: Int) {
+        timeElement.visibility = visibility
         guestElement.visibility = visibility
         rideElement.visibility = visibility
         taskElement.visibility = visibility
