@@ -31,7 +31,7 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
         locationElement.text = event?.location
     }
 
-    fun editablesEnabled(enabled: Boolean) {
+    fun enabledEditableElements(enabled: Boolean) {
         descriptionElement.isEnabled = enabled
         eventTitle.isEnabled = enabled
         eventTitle.requestFocus()

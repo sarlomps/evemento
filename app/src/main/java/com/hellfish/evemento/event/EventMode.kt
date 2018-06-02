@@ -30,7 +30,7 @@ interface ViewMode : EventMode {
         load(event)
         listsVisibility(View.VISIBLE)
         changeTextColor(R.color.text)
-        editablesEnabled(false)
+        enabledEditableElements(false)
 
         taskElement.setOnClickListener { navigatorListener.replaceFragment(TaskListFragment()) }
         pollElement.setOnClickListener { navigatorListener.replaceFragment(PollFragment()) }
@@ -49,7 +49,7 @@ interface EditMode : EventMode {
         load(event)
         listsVisibility(View.GONE)
         changeTextColor(R.color.grey)
-        editablesEnabled(true)
+        enabledEditableElements(true)
 
         startTimeElement.setOnClickListener { startDatePicker.show() }
         endTimeElement.setOnClickListener { endDatePicker.show() }
