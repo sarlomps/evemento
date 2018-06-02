@@ -8,7 +8,7 @@ import com.hellfish.evemento.R.string.app_name
 open class NavigatorFragment : Fragment() {
 
     protected open val titleId: Int = app_name
-    protected lateinit var navigatorListener: Navigator
+    lateinit var navigatorListener: Navigator
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
