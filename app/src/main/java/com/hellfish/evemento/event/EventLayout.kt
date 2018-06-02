@@ -18,7 +18,9 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
             title = eventTitle.text.toString(),
             time = EventTime(
                     startDate = startDateElement.text.toString(),
-                    endDate = endDateElement.text.toString()
+                    endDate = endDateElement.text.toString(),
+                    startTime = startTimeElement.text.toString(),
+                    endTime = endTimeElement.text.toString()
             ),
             description = descriptionElement.text.toString(),
             location = locationElement.text.toString()
@@ -31,6 +33,8 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
             timeElement.text = String.format("%s - %s", it.startDate, it.endDate)
             startDateElement.text = it.startDate
             endDateElement.text = it.endDate
+            startTimeElement.text = it.startTime
+            endTimeElement.text = it.endTime
 
         }
         locationElement.text = event?.location

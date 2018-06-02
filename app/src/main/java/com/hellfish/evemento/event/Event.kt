@@ -16,4 +16,6 @@ data class Event(val title: String,
 
 @Parcelize
 data class EventTime(val startDate: String,
-                     val endDate: String): Parcelable
+                     val endDate: String,
+                     val startTime: String,
+                     val endTime: String): Parcelable

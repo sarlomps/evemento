@@ -1,6 +1,7 @@
 package com.hellfish.evemento.event
 
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.res.ResourcesCompat
 import android.view.View
@@ -42,17 +43,11 @@ interface ViewMode : EventMode {
 
 interface EditMode : EventMode {
 
-    var startDatePicker: DatePickerDialog
-    var endDatePicker: DatePickerDialog
-
     override fun editingEvent(event: Event, view: EventLayout): Unit = view.run {
         load(event)
         notEditableElementsVisibility(View.GONE)
         changeTextColor(R.color.grey)
         enabledEditableElements(true)
-
-        startDateElement.setOnClickListener { startDatePicker.show() }
-        endDateElement.setOnClickListener { endDatePicker.show() }
 
         eventFab.withDrawable(R.drawable.ic_check_white_24dp).setOnClickListener { viewingEvent(view.edit(event), view) }
     }
