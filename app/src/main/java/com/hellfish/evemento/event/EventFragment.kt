@@ -12,6 +12,8 @@ import kotlinx.android.synthetic.main.event_tool_bar.*
 
 class EventFragment : NavigatorFragment(), ViewMode, EditMode, DatePickerDialogFactory, TimePickerDialogFactory {
 
+    override lateinit var event: Event
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return EventLayout(context)
     }
@@ -27,8 +29,16 @@ class EventFragment : NavigatorFragment(), ViewMode, EditMode, DatePickerDialogF
         startTimeElement.run { setOnClickListener { startTimePicker.updateTime(this, onlyTimeFormatter).show() } }
         endTimeElement.run { setOnClickListener { endTimePicker.updateTime(this, onlyTimeFormatter).show() } }
 
-        val event = arguments?.getParcelable<Event>("event")
-        if (event != null) viewingEvent(event, view as EventLayout)
+        val argEvent = savedInstanceState?.getParcelable<Event>("event") ?: arguments?.getParcelable<Event>("event")
+        if (argEvent != null) {
+            event = argEvent
+            viewingEvent(view as EventLayout)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable("event", event)
     }
 
     override fun setupToolbar() {
