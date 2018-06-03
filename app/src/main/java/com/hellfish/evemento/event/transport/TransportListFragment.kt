@@ -26,7 +26,7 @@ class TransportListFragment : NavigatorFragment() {
         transports.add(TransportItem("Gas", "0"))
 
         carsRecyclerView.apply {
-            adapter = TransportAdapter(transports)
+            adapter = TransportAdapter(transports, navigatorListener)
         }
 
 
