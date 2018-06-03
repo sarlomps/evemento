@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/textView"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:clickable="true"
     android:layout_height="wrap_content"
-    android:paddingLeft="5dp"
-    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-    android:textColor="@android:color/darker_gray"
-    android:textSize="25sp" />
+    android:orientation="vertical"
+    android:animateLayoutChanges="true">
+    <ImageView
+        android:id="@+id/answerBackground"
+        android:src="@color/colorPrimaryDark"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_alignLeft="@+id/closedAnswerTextView"
+        android:layout_alignTop="@id/closedAnswerTextView"
+        android:layout_alignBottom="@id/closedAnswerTextView"
+        />
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/closedAnswerTextView"
+        android:layout_width="match_parent"
+        android:clickable="true"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="25sp" />
+</RelativeLayout>
