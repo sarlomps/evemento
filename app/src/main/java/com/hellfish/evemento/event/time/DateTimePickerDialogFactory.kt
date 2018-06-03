@@ -1,17 +1,13 @@
 package com.hellfish.evemento.event.time
 
-import android.animation.TimeAnimator
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
-import android.util.Log
-import android.widget.DatePicker
 import android.widget.TextView
 import org.joda.time.DateTime
 import org.joda.time.LocalTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import org.w3c.dom.Text
 
 interface DateTimePickerDialogFactory {
 
@@ -21,18 +17,9 @@ interface DateTimePickerDialogFactory {
     val onlyTimeFormatter: DateTimeFormatter
         get() = DateTimeFormat.forPattern("HH:mm")
 
-    fun createLinkedDatePickerDialogs(context: Context?, startDateView: TextView, endDateView: TextView): Pair<DatePickerDialog, DatePickerDialog> {
-        var startDatePickerDialog: DatePickerDialog? = null
-        var endDatePickerDialog: DatePickerDialog? = null
-
-        val startDateListener = createDateListener(startDateView, endText = endDateView)
-        val endDateListener = createDateListener(endDateView, startText = startDateView)
-
-        startDatePickerDialog = createDatePickerDialog(context, startDateListener)
-        endDatePickerDialog = createDatePickerDialog(context, endDateListener)
-
-        return Pair(startDatePickerDialog, endDatePickerDialog)
-    }
+    fun createLinkedDatePickerDialogs(context: Context?, startDateView: TextView, endDateView: TextView): Pair<DatePickerDialog, DatePickerDialog> =
+        Pair(createDatePickerDialog(context, createDateListener(startDateView, endText = endDateView)),
+                createDatePickerDialog(context, createDateListener(endDateView, startText = startDateView)))
 
     fun createDateListener(textView: TextView, startText: TextView? = null, endText: TextView? = null) =
             DatePickerDialog.OnDateSetListener { _, year, month, day ->
