@@ -6,7 +6,6 @@ import com.hellfish.evemento.R
 import com.hellfish.evemento.RecyclerAdapter
 import kotlinx.android.synthetic.main.poll_content.view.*
 
-
 class PollAdapter(private val polls: MutableList<Poll>) : RecyclerAdapter<CardView, Poll>(polls) {
     companion object {
         const val openPollView = 0
