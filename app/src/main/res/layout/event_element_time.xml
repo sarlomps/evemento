@@ -14,14 +14,16 @@
         <TextView style="@style/EventElementComponent"
             android:id="@+id/startDateElement"
             android:layout_weight="1"
-            android:layout_marginEnd="0dp"
+            tools:ignore="RtlSymmetry"
+            android:paddingEnd="0dp"
             android:drawableStart="@drawable/ic_time_grey_24dp"
             android:textColor="@color/grey"
             />
         <TextView style="@style/EventElementComponent"
             android:id="@+id/startTimeElement"
             android:layout_weight="3"
-            android:layout_marginStart="0dp"
+            tools:ignore="RtlSymmetry"
+            android:paddingStart="0dp"
             android:textColor="@color/grey"
             />
     </LinearLayout>
@@ -38,7 +40,8 @@
             /><!--24 (Drawable) + 10 (Drawable padding) -->
         <TextView style="@style/EventElementComponent"
             android:id="@+id/endTimeElement"
-            android:layout_marginStart="0dp"
+            tools:ignore="RtlSymmetry"
+            android:paddingStart="0dp"
             android:layout_weight="3"
             android:textColor="@color/grey"
             />
