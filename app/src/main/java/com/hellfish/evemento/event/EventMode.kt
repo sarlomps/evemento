@@ -13,7 +13,6 @@ import kotlinx.android.synthetic.main.fragment_event.view.*
 
 interface EventMode {
 
-    var navigatorListener: Navigator
     var event: Event
 
     fun editingEvent(view: EventLayout): Unit
@@ -32,11 +31,9 @@ interface ViewMode : EventMode {
         changeTextColor(R.color.text)
         enabledEditableElements(false)
 
-        taskElement.setOnClickListener { navigatorListener.replaceFragment(TaskListFragment()) }
-        pollElement.setOnClickListener { navigatorListener.replaceFragment(PollFragment()) }
-        rideElement.setOnClickListener { navigatorListener.replaceFragment(TransportFragment()) }
-
-        eventFab.withDrawable(R.drawable.ic_edit_white_24dp).setOnClickListener { editingEvent(view) }
+        eventFab.withDrawable(R.drawable.ic_edit_white_24dp).setOnClickListener {
+            editingEvent(view)
+        }
     }
 
 }

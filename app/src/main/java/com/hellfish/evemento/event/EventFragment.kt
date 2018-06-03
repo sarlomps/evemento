@@ -5,9 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.hellfish.evemento.NavigatorFragment
+import com.hellfish.evemento.event.poll.PollFragment
+import com.hellfish.evemento.event.task.TaskListFragment
 import com.hellfish.evemento.event.time.DatePickerDialogFactory
 import com.hellfish.evemento.event.time.TimePickerDialogFactory
+import com.hellfish.evemento.event.transport.TransportFragment
 import kotlinx.android.synthetic.main.event_element_time.*
+import kotlinx.android.synthetic.main.event_elements.*
+import kotlinx.android.synthetic.main.event_elements.view.*
 import kotlinx.android.synthetic.main.event_tool_bar.*
 
 class EventFragment : NavigatorFragment(), ViewMode, EditMode, DatePickerDialogFactory, TimePickerDialogFactory {
@@ -23,6 +28,10 @@ class EventFragment : NavigatorFragment(), ViewMode, EditMode, DatePickerDialogF
 
         val (startDatePicker, endDatePicker) = createLinkedDatePickerDialogs(context, startDateElement, endDateElement)
         val (startTimePicker, endTimePicker) = createLinkedTimePickerDialogs(context, startTimeElement, endTimeElement)
+
+        taskElement.setOnClickListener { navigatorListener.replaceFragment(TaskListFragment()) }
+        pollElement.setOnClickListener { navigatorListener.replaceFragment(PollFragment()) }
+        rideElement.setOnClickListener { navigatorListener.replaceFragment(TransportFragment()) }
 
         startDateElement.run { setOnClickListener { startDatePicker.updateDate(this, onlyDateFormatter).show() } }
         endDateElement.run { setOnClickListener { endDatePicker.updateDate(this, onlyDateFormatter).show() } }
