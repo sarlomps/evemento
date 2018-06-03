@@ -5,6 +5,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.widget.TextView
 import org.joda.time.DateTime
+import org.joda.time.LocalDate
 import org.joda.time.LocalTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
@@ -23,7 +24,7 @@ interface DateTimePickerDialogFactory {
 
     fun createDateListener(textView: TextView, startText: TextView? = null, endText: TextView? = null) =
             DatePickerDialog.OnDateSetListener { _, year, month, day ->
-                val date = DateTime(year, month + 1, day, 0, 0, 0)
+                val date = LocalDate(year, month + 1, day)
                 startText?.updateDateIfAfter(date, onlyDateFormatter)
                 endText?.updateDateIfBefore(date, onlyDateFormatter)
                 textView.text= onlyDateFormatter.print(date)
@@ -49,12 +50,12 @@ interface DateTimePickerDialogFactory {
         return TimePickerDialog(context, onTimeSetListener, hourOfDay, minuteOfHour, true)
     }
 
-    private fun TextView.updateDateIfAfter(date: DateTime, formatter: DateTimeFormatter) {
-        if (formatter.parseDateTime(text.toString()).isAfter(date)) text = formatter.print(date)
+    private fun TextView.updateDateIfAfter(date: LocalDate, formatter: DateTimeFormatter) {
+        if (formatter.parseLocalDate(text.toString()).isAfter(date)) text = formatter.print(date)
     }
 
-    private fun TextView.updateDateIfBefore(date: DateTime, formatter: DateTimeFormatter) {
-        if (formatter.parseDateTime(text.toString()).isBefore(date)) text = formatter.print(date)
+    private fun TextView.updateDateIfBefore(date: LocalDate, formatter: DateTimeFormatter) {
+        if (formatter.parseLocalDate(text.toString()).isBefore(date)) text = formatter.print(date)
     }
 
     private fun TextView.updateTimeIfAfter(date: LocalTime, formatter: DateTimeFormatter) {
@@ -66,7 +67,7 @@ interface DateTimePickerDialogFactory {
     }
 
     fun DatePickerDialog.updateDate(textView: TextView, formatter: DateTimeFormatter) = apply {
-        val date = formatter.parseDateTime(textView.text.toString())
+        val date = formatter.parseLocalDate(textView.text.toString())
         updateDate(date.year, date.monthOfYear -1, date.dayOfMonth)
     }
 
