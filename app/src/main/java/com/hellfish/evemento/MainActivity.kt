@@ -9,18 +9,20 @@ import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.list.EventListFragment
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import com.hellfish.evemento.event.EventTime
 import com.hellfish.evemento.extensions.toVisibility
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer.*
+import net.danlew.android.joda.JodaTimeAndroid
 
 class MainActivity : AppCompatActivity(), Navigator {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer)
+
+        JodaTimeAndroid.init(this)
 
         navView.setNavigationItemSelectedListener { menuItem ->
             menuItem.isChecked = true
