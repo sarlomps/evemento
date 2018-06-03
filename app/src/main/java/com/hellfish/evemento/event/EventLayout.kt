@@ -28,10 +28,13 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
         eventTitle.setText(event?.title)
         descriptionElement.setText(event?.description)
         event?.time?.let {
+            val (startDateString, startTimeString) = it.startDate.replace(" ", "").split("-")
+            val (endDateString, endTimeString) = it.endDate.replace(" ", "").split("-")
             timeElement.text = String.format("%s\n%s", it.startDate, it.endDate)
-            startDateElement.text = it.startDate
-            endDateElement.text = it.endDate
-
+            startDateElement.text = startDateString
+            endDateElement.text = endDateString
+            startTimeElement.text = startTimeString
+            endTimeElement.text = endTimeString
         }
         locationElement.text = event?.location
     }

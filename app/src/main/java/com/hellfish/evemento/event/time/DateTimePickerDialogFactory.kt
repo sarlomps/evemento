@@ -33,13 +33,20 @@ interface DateTimePickerDialogFactory {
         return DatePickerDialog(context, onDateSetListener, year, monthOfYear, dayOfMonth)
     }
 
-    fun createTimeListener(textView: TextView) = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
-        val date = LocalTime(hour, minute, 0)
-        textView.text= onlyTimeFormatter.print(date)
-    }
+    fun createLinkedTimePickerDialogs(context: Context?, startTimeView: TextView, endTimeView: TextView): Pair<TimePickerDialog, TimePickerDialog> =
+            Pair(createTimePickerDialog(context, createTimeListener(startTimeView, endText = endTimeView)),
+                    createTimePickerDialog(context, createTimeListener(endTimeView, startText = startTimeView)))
 
-    fun createTimePickerDialog(context: Context?, textView: TextView): TimePickerDialog = with(DateTime.now()) {
-        return TimePickerDialog(context, createTimeListener(textView), hourOfDay, minuteOfHour, true)
+    fun createTimeListener(textView: TextView, startText: TextView? = null, endText: TextView? = null) =
+            TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+                val localTime = LocalTime(hour, minute, 0)
+                startText?.updateTimeIfAfter(localTime, onlyTimeFormatter)
+                endText?.updateTimeIfBefore(localTime, onlyTimeFormatter)
+                textView.text= onlyTimeFormatter.print(localTime)
+            }
+
+    fun createTimePickerDialog(context: Context?, onTimeSetListener: TimePickerDialog.OnTimeSetListener?): TimePickerDialog = with(DateTime.now()) {
+        return TimePickerDialog(context, onTimeSetListener, hourOfDay, minuteOfHour, true)
     }
 
     private fun TextView.updateDateIfAfter(date: DateTime, formatter: DateTimeFormatter) {
@@ -50,10 +57,24 @@ interface DateTimePickerDialogFactory {
         if (formatter.parseDateTime(text.toString()).isBefore(date)) text = formatter.print(date)
     }
 
+    private fun TextView.updateTimeIfAfter(date: LocalTime, formatter: DateTimeFormatter) {
+        if (formatter.parseLocalTime(text.toString()).isAfter(date)) text = formatter.print(date)
+    }
+
+    private fun TextView.updateTimeIfBefore(date: LocalTime, formatter: DateTimeFormatter) {
+        if (formatter.parseLocalTime(text.toString()).isBefore(date)) text = formatter.print(date)
+    }
+
     fun DatePickerDialog.updateDate(textView: TextView, formatter: DateTimeFormatter) = apply {
         val date = formatter.parseDateTime(textView.text.toString())
         updateDate(date.year, date.monthOfYear -1, date.dayOfMonth)
     }
+
+    fun TimePickerDialog.updateTime(textView: TextView, formatter: DateTimeFormatter) = apply {
+        val time = formatter.parseLocalTime(textView.text.toString())
+        updateTime(time.hourOfDay, time.minuteOfHour)
+    }
+
 }
 
 

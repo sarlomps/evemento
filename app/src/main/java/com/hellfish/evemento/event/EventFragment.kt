@@ -19,13 +19,12 @@ class EventFragment : NavigatorFragment(), ViewMode, EditMode, DateTimePickerDia
         super.onViewCreated(view, savedInstanceState)
 
         val (startDatePicker, endDatePicker) = createLinkedDatePickerDialogs(context, startDateElement, endDateElement)
-        val startTimePicker = createTimePickerDialog(context, startTimeElement)
-        val endTimePicker = createTimePickerDialog(context, endTimeElement)
+        val (startTimePicker, endTimePicker) = createLinkedTimePickerDialogs(context, startTimeElement, endTimeElement)
 
-        startDateElement.run { setOnClickListener { startDatePicker.updateDate(this, onlyDateFormatter ).show() } }
-        endDateElement.run { setOnClickListener { endDatePicker.updateDate(this, onlyDateFormatter ).show() } }
-        startTimeElement.setOnClickListener { startTimePicker.show() }
-        endTimeElement.setOnClickListener { endTimePicker.show() }
+        startDateElement.run { setOnClickListener { startDatePicker.updateDate(this, onlyDateFormatter).show() } }
+        endDateElement.run { setOnClickListener { endDatePicker.updateDate(this, onlyDateFormatter).show() } }
+        startTimeElement.run { setOnClickListener { startTimePicker.updateTime(this, onlyTimeFormatter).show() } }
+        endTimeElement.run { setOnClickListener { endTimePicker.updateTime(this, onlyTimeFormatter).show() } }
 
         val event = arguments?.getParcelable<Event>("event")
         if (event != null) viewingEvent(event, view as EventLayout)
