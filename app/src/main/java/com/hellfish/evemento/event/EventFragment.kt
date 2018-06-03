@@ -8,7 +8,6 @@ import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.event.time.DateTimePickerDialogFactory
 import kotlinx.android.synthetic.main.event_element_time.*
 import kotlinx.android.synthetic.main.event_tool_bar.*
-import java.util.Calendar
 
 class EventFragment : NavigatorFragment(), ViewMode, EditMode, DateTimePickerDialogFactory {
 
@@ -19,15 +18,12 @@ class EventFragment : NavigatorFragment(), ViewMode, EditMode, DateTimePickerDia
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val calendar = Calendar.getInstance()
+        val (startDatePicker, endDatePicker) = createLinkedDatePickerDialogs(context, startDateElement, endDateElement)
+        val startTimePicker = createTimePickerDialog(context, startTimeElement)
+        val endTimePicker = createTimePickerDialog(context, endTimeElement)
 
-        val startDatePicker = createDatePickerDialog(context, calendar, startDateElement)
-        val endDatePicker = createDatePickerDialog(context, calendar, endDateElement)
-        val startTimePicker = createTimePickerDialog(context, calendar, startTimeElement)
-        val endTimePicker = createTimePickerDialog(context, calendar, endTimeElement)
-
-        startDateElement.setOnClickListener { startDatePicker.show() }
-        endDateElement.setOnClickListener { endDatePicker.show() }
+        startDateElement.run { setOnClickListener { startDatePicker.updateDate(this, onlyDateFormatter ).show() } }
+        endDateElement.run { setOnClickListener { endDatePicker.updateDate(this, onlyDateFormatter ).show() } }
         startTimeElement.setOnClickListener { startTimePicker.show() }
         endTimeElement.setOnClickListener { endTimePicker.show() }
 
