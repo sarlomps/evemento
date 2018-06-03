@@ -1,24 +1,17 @@
 package com.hellfish.evemento.event
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.hellfish.evemento.NavigatorFragment
+import com.hellfish.evemento.event.time.DateTimePickerDialogBuilder
 import kotlinx.android.synthetic.main.event_element_time.*
-import kotlinx.android.synthetic.main.event_element_time.view.*
 import kotlinx.android.synthetic.main.event_tool_bar.*
 import java.util.Calendar
 
-class EventFragment : NavigatorFragment(), ViewMode, EditMode {
-
-    private lateinit var startDatePicker: DatePickerDialog
-    private lateinit var endDatePicker: DatePickerDialog
-    private lateinit var startTimePicker: TimePickerDialog
-    private lateinit var endTimePicker: TimePickerDialog
+class EventFragment : NavigatorFragment(), ViewMode, EditMode, DateTimePickerDialogBuilder {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return EventLayout(context)
@@ -29,10 +22,10 @@ class EventFragment : NavigatorFragment(), ViewMode, EditMode {
 
         val calendar = Calendar.getInstance()
 
-        startDatePicker = buildDatePickerDialog(calendar, startDateElement)
-        endDatePicker = buildDatePickerDialog(calendar, endDateElement)
-        startTimePicker = buildTimePickerDialog(calendar, startTimeElement)
-        endTimePicker = buildTimePickerDialog(calendar, endTimeElement)
+        val startDatePicker = buildDatePickerDialog(context, calendar, startDateElement)
+        val endDatePicker = buildDatePickerDialog(context, calendar, endDateElement)
+        val startTimePicker = buildTimePickerDialog(context, calendar, startTimeElement)
+        val endTimePicker = buildTimePickerDialog(context, calendar, endTimeElement)
 
         startDateElement.setOnClickListener { startDatePicker.show() }
         endDateElement.setOnClickListener { endDatePicker.show() }
@@ -47,21 +40,6 @@ class EventFragment : NavigatorFragment(), ViewMode, EditMode {
         navigatorListener.setCustomToolbar(eventToolbar)
         eventAppbar.setExpanded(true)
     }
-
-    fun buildDateListener(textView: TextView) = DatePickerDialog.OnDateSetListener { _, year, month, day ->
-        textView.text= String.format("%d/%d/%d", day, month, year)
-    }
-
-    fun buildDatePickerDialog(calendar: Calendar, textView: TextView) =
-            DatePickerDialog(context, buildDateListener(textView), calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
-
-    fun buildTimeListener(textView: TextView) = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
-        textView.text= String.format("%d:%d", hour, minute)
-    }
-
-    fun buildTimePickerDialog(calendar: Calendar, textView: TextView) =
-            TimePickerDialog(context, buildTimeListener(textView), calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), true)
-
 
 }
 
