@@ -14,5 +14,6 @@
     <string name="default_comments_text">Comments</string>
     <string name="title_activity_transport_list">TransportList</string>
     <string name="title_activity_transport_detail">TransportDetail</string>
+    <string name="fragment_transport_show_list">Show list</string>
     <string name="drawer_menu_title_events">Eventos</string>
 </resources>
