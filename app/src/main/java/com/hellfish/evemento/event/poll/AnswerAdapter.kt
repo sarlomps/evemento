@@ -2,7 +2,6 @@ package com.hellfish.evemento.event.poll
 
 import android.content.Context
 import android.widget.TextView
-import android.widget.Toast
 import com.hellfish.evemento.R
 import com.hellfish.evemento.RecyclerAdapter
 
@@ -14,10 +13,7 @@ class OpenAnswersAdapter(private val callback: (Answer.Open) -> Unit, answers: L
 
     override fun doOnItemOnBindViewHolder(view: TextView, item: Answer.Open, context: Context) {
         view.text = item.text
-        view.setOnClickListener {
-            callback(item)
-            Toast.makeText(context, "Elegiste ${view.text}!", Toast.LENGTH_SHORT).show()
-        }
+        view.setOnClickListener { callback(item) }
     }
 }
 
@@ -28,8 +24,5 @@ class ClosedAnswersAdapter(answers: List<Answer.Closed>, private val totalAmount
 
     override fun doOnItemOnBindViewHolder(view: TextView, item: Answer.Closed, context: Context) {
         view.text = "${item.text} - ${item.votes.toFloat() / totalAmount.toFloat() * 100}%"
-        view.setOnClickListener {
-            Toast.makeText(context, "Nopes", Toast.LENGTH_SHORT).show()
-        }
     }
 }
