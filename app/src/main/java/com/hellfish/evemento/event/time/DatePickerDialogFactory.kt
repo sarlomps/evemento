@@ -1,22 +1,17 @@
 package com.hellfish.evemento.event.time
 
 import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.content.Context
 import android.widget.TextView
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
-import org.joda.time.LocalTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 
-interface DateTimePickerDialogFactory {
+interface DatePickerDialogFactory {
 
     val onlyDateFormatter: DateTimeFormatter
         get() = DateTimeFormat.forPattern("dd/MM/yyyy")
-
-    val onlyTimeFormatter: DateTimeFormatter
-        get() = DateTimeFormat.forPattern("HH:mm")
 
     fun createLinkedDatePickerDialogs(context: Context?, startDateView: TextView, endDateView: TextView): Pair<DatePickerDialog, DatePickerDialog> =
         Pair(createDatePickerDialog(context, createDateListener(startDateView, endText = endDateView)),
@@ -34,22 +29,6 @@ interface DateTimePickerDialogFactory {
         return DatePickerDialog(context, onDateSetListener, year, monthOfYear, dayOfMonth)
     }
 
-    fun createLinkedTimePickerDialogs(context: Context?, startTimeView: TextView, endTimeView: TextView): Pair<TimePickerDialog, TimePickerDialog> =
-            Pair(createTimePickerDialog(context, createTimeListener(startTimeView, endText = endTimeView)),
-                    createTimePickerDialog(context, createTimeListener(endTimeView, startText = startTimeView)))
-
-    fun createTimeListener(textView: TextView, startText: TextView? = null, endText: TextView? = null) =
-            TimePickerDialog.OnTimeSetListener { _, hour, minute ->
-                val localTime = LocalTime(hour, minute, 0)
-                startText?.updateTimeIfAfter(localTime, onlyTimeFormatter)
-                endText?.updateTimeIfBefore(localTime, onlyTimeFormatter)
-                textView.text= onlyTimeFormatter.print(localTime)
-            }
-
-    fun createTimePickerDialog(context: Context?, onTimeSetListener: TimePickerDialog.OnTimeSetListener?): TimePickerDialog = with(DateTime.now()) {
-        return TimePickerDialog(context, onTimeSetListener, hourOfDay, minuteOfHour, true)
-    }
-
     private fun TextView.updateDateIfAfter(date: LocalDate, formatter: DateTimeFormatter) {
         if (formatter.parseLocalDate(text.toString()).isAfter(date)) text = formatter.print(date)
     }
@@ -58,22 +37,9 @@ interface DateTimePickerDialogFactory {
         if (formatter.parseLocalDate(text.toString()).isBefore(date)) text = formatter.print(date)
     }
 
-    private fun TextView.updateTimeIfAfter(date: LocalTime, formatter: DateTimeFormatter) {
-        if (formatter.parseLocalTime(text.toString()).isAfter(date)) text = formatter.print(date)
-    }
-
-    private fun TextView.updateTimeIfBefore(date: LocalTime, formatter: DateTimeFormatter) {
-        if (formatter.parseLocalTime(text.toString()).isBefore(date)) text = formatter.print(date)
-    }
-
     fun DatePickerDialog.updateDate(textView: TextView, formatter: DateTimeFormatter) = apply {
         val date = formatter.parseLocalDate(textView.text.toString())
         updateDate(date.year, date.monthOfYear -1, date.dayOfMonth)
-    }
-
-    fun TimePickerDialog.updateTime(textView: TextView, formatter: DateTimeFormatter) = apply {
-        val time = formatter.parseLocalTime(textView.text.toString())
-        updateTime(time.hourOfDay, time.minuteOfHour)
     }
 
 }

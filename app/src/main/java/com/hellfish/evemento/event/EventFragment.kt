@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.hellfish.evemento.NavigatorFragment
-import com.hellfish.evemento.event.time.DateTimePickerDialogFactory
+import com.hellfish.evemento.event.time.DatePickerDialogFactory
+import com.hellfish.evemento.event.time.TimePickerDialogFactory
 import kotlinx.android.synthetic.main.event_element_time.*
 import kotlinx.android.synthetic.main.event_tool_bar.*
 
-class EventFragment : NavigatorFragment(), ViewMode, EditMode, DateTimePickerDialogFactory {
+class EventFragment : NavigatorFragment(), ViewMode, EditMode, DatePickerDialogFactory, TimePickerDialogFactory {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return EventLayout(context)
