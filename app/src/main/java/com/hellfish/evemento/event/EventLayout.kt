@@ -17,8 +17,8 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
     fun edit(event: Event) = event.copy(
             title = eventTitle.text.toString(),
             time = EventTime(
-                    startDate = startDateElement.text.toString(),
-                    endDate = endDateElement.text.toString()
+                    startDate = String.format("%s - %s", startDateElement.text, startTimeElement.text),
+                    endDate = String.format("%s - %s", endDateElement.text, endTimeElement.text)
             ),
             description = descriptionElement.text.toString(),
             location = locationElement.text.toString()
