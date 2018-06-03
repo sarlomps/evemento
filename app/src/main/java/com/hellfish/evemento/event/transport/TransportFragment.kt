@@ -14,7 +14,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.R
-import com.hellfish.evemento.R.layout.fragment_transport
+import kotlinx.android.synthetic.main.fragment_transport.*
+
+
 
 class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
 
@@ -22,7 +24,13 @@ class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
     override val titleId = R.string.title_activity_maps
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(fragment_transport, container, false)
+            inflater.inflate(R.layout.fragment_transport, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        cardView.setOnClickListener { navigatorListener.replaceFragment(TransportListFragment()) }
+
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
