@@ -2,9 +2,9 @@ package com.hellfish.evemento
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.hellfish.evemento.extensions.inflate
 
 abstract class RecyclerAdapter<V: View,
                                Item>(val items: List<Item>) : RecyclerView.Adapter<RecyclerAdapter.ViewHolder<V>>() {
@@ -14,10 +14,9 @@ abstract class RecyclerAdapter<V: View,
     class ViewHolder<out V : View>(val view: V) : RecyclerView.ViewHolder(view)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<V> {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(layout(viewType), parent, false) as V
-
         this.context = parent.context
+
+        val view = parent.inflate(layout(viewType), false) as V
 
         return ViewHolder(view)
     }
