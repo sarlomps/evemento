@@ -28,12 +28,17 @@ interface TimePickerDialogFactory {
                            endText: TextView? = null) =
             TimePickerDialog.OnTimeSetListener { _, hour, minute ->
                 val localTime = LocalTime(hour, minute, 0)
-                if (startDateView.text == endDateView.text){
-                    startText?.updateTimeIfAfter(localTime, onlyTimeFormatter)
-                    endText?.updateTimeIfBefore(localTime, onlyTimeFormatter)
-                }
+                checkTimeConsistency(localTime, startDateView, endDateView, startText, endText)
                 textView.text= onlyTimeFormatter.print(localTime)
             }
+
+    fun checkTimeConsistency(localTime: LocalTime, startDateView: TextView, endDateView: TextView, startText: TextView?, endText: TextView?) {
+        if (startDateView.text == endDateView.text){
+            startText?.updateTimeIfAfter(localTime, onlyTimeFormatter)
+            endText?.updateTimeIfBefore(localTime, onlyTimeFormatter)
+        }
+
+    }
 
     fun createTimePickerDialog(context: Context?, onTimeSetListener: TimePickerDialog.OnTimeSetListener?): TimePickerDialog = with(DateTime.now()) {
         return TimePickerDialog(context, onTimeSetListener, hourOfDay, minuteOfHour, true)
