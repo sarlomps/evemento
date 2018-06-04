@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.event_element_time.*
 import kotlinx.android.synthetic.main.event_elements.*
 import kotlinx.android.synthetic.main.event_tool_bar.*
 
-class EventFragment : NavigatorFragment(), ViewMode, EditMode, DatePickerDialogFactory, TimePickerDialogFactory {
+class EventFragment : NavigatorFragment(), ViewAndEditEvent, DatePickerDialogFactory, TimePickerDialogFactory {
 
     override lateinit var event: Event
     override var editing: Boolean = false

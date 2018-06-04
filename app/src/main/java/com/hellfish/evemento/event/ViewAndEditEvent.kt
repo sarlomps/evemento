@@ -6,22 +6,12 @@ import android.view.View
 import com.hellfish.evemento.R
 import kotlinx.android.synthetic.main.fragment_event.view.*
 
-interface EventMode {
+interface ViewAndEditEvent {
 
     var event: Event
     var editing: Boolean
 
-    fun editingEvent(view: EventLayout)
-    fun viewingEvent(view: EventLayout)
-
-    fun FloatingActionButton.withDrawable(drawableId: Int): FloatingActionButton =
-            apply { setImageDrawable(ResourcesCompat.getDrawable(resources, drawableId, null)) }
-
-}
-
-interface ViewMode : EventMode {
-
-    override fun viewingEvent(view: EventLayout): Unit = view.run {
+    fun viewingEvent(view: EventLayout): Unit = view.run {
         editing = false
         load(event)
         notEditableElementsVisibility(View.VISIBLE)
@@ -33,11 +23,7 @@ interface ViewMode : EventMode {
         }
     }
 
-}
-
-interface EditMode : EventMode {
-
-    override fun editingEvent(view: EventLayout): Unit = view.run {
+    fun editingEvent(view: EventLayout): Unit = view.run {
         editing = true
         notEditableElementsVisibility(View.GONE)
         changeTextColor(R.color.grey)
@@ -48,5 +34,8 @@ interface EditMode : EventMode {
             viewingEvent(view)
         }
     }
+
+    fun FloatingActionButton.withDrawable(drawableId: Int): FloatingActionButton =
+            apply { setImageDrawable(ResourcesCompat.getDrawable(resources, drawableId, null)) }
 
 }
