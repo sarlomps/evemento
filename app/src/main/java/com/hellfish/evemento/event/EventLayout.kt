@@ -17,10 +17,8 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
     fun edit(event: Event) = event.copy(
             title = eventTitle.text.toString(),
             time = EventTime(
-                    startDate = startDateElement.text.toString(),
-                    endDate = endDateElement.text.toString(),
-                    startTime = startTimeElement.text.toString(),
-                    endTime = endTimeElement.text.toString()
+                    startDate = String.format("%s - %s", startDateElement.text, startTimeElement.text),
+                    endDate = String.format("%s - %s", endDateElement.text, endTimeElement.text)
             ),
             description = descriptionElement.text.toString(),
             location = locationElement.text.toString()
@@ -30,12 +28,13 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
         eventTitle.setText(event?.title)
         descriptionElement.setText(event?.description)
         event?.time?.let {
-            timeElement.text = String.format("%s, %s - %s, %s", it.startDate, it.startTime, it.endDate, it.endTime)
-            startDateElement.text = it.startDate
-            endDateElement.text = it.endDate
-            startTimeElement.text = it.startTime
-            endTimeElement.text = it.endTime
-
+            val (startDateString, startTimeString) = it.startDate.replace(" ", "").split("-")
+            val (endDateString, endTimeString) = it.endDate.replace(" ", "").split("-")
+            timeElement.text = String.format("%s\n%s", it.startDate, it.endDate)
+            startDateElement.text = startDateString
+            endDateElement.text = endDateString
+            startTimeElement.text = startTimeString
+            endTimeElement.text = endTimeString
         }
         locationElement.text = event?.location
     }

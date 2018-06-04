@@ -4,14 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.hellfish.evemento.NavigatorFragment
-import com.hellfish.evemento.event.time.DateTimePickerDialogBuilder
+import com.hellfish.evemento.event.poll.PollFragment
+import com.hellfish.evemento.event.task.TaskListFragment
+import com.hellfish.evemento.event.time.DatePickerDialogFactory
+import com.hellfish.evemento.event.time.TimePickerDialogFactory
+import com.hellfish.evemento.event.transport.TransportFragment
 import kotlinx.android.synthetic.main.event_element_time.*
+import kotlinx.android.synthetic.main.event_elements.*
 import kotlinx.android.synthetic.main.event_tool_bar.*
-import java.util.Calendar
 
-class EventFragment : NavigatorFragment(), ViewMode, EditMode, DateTimePickerDialogBuilder {
+class EventFragment : NavigatorFragment(), ViewAndEditEvent, DatePickerDialogFactory, TimePickerDialogFactory {
+
+    override lateinit var event: Event
+    override var editing: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return EventLayout(context)
@@ -20,20 +26,30 @@ class EventFragment : NavigatorFragment(), ViewMode, EditMode, DateTimePickerDia
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val calendar = Calendar.getInstance()
+        val (startDatePicker, endDatePicker) = createLinkedDatePickerDialogs(context, startDateElement, endDateElement)
+        val (startTimePicker, endTimePicker) = createLinkedTimePickerDialogs(context, startTimeElement, endTimeElement)
 
-        val startDatePicker = buildDatePickerDialog(context, calendar, startDateElement)
-        val endDatePicker = buildDatePickerDialog(context, calendar, endDateElement)
-        val startTimePicker = buildTimePickerDialog(context, calendar, startTimeElement)
-        val endTimePicker = buildTimePickerDialog(context, calendar, endTimeElement)
+        taskElement.setOnClickListener { navigatorListener.replaceFragment(TaskListFragment()) }
+        pollElement.setOnClickListener { navigatorListener.replaceFragment(PollFragment()) }
+        rideElement.setOnClickListener { navigatorListener.replaceFragment(TransportFragment()) }
 
-        startDateElement.setOnClickListener { startDatePicker.show() }
-        endDateElement.setOnClickListener { endDatePicker.show() }
-        startTimeElement.setOnClickListener { startTimePicker.show() }
-        endTimeElement.setOnClickListener { endTimePicker.show() }
+        startDateElement.run { setOnClickListener { startDatePicker.updateDate(this, onlyDateFormatter).show() } }
+        endDateElement.run { setOnClickListener { endDatePicker.updateDate(this, onlyDateFormatter).show() } }
+        startTimeElement.run { setOnClickListener { startTimePicker.updateTime(this, onlyTimeFormatter).show() } }
+        endTimeElement.run { setOnClickListener { endTimePicker.updateTime(this, onlyTimeFormatter).show() } }
 
-        val event = arguments?.getParcelable<Event>("event")
-        if (event != null) viewingEvent(event, view as EventLayout)
+        editing = savedInstanceState?.getBoolean("editing") ?: false
+        val argEvent = savedInstanceState?.getParcelable<Event>("event") ?: arguments?.getParcelable<Event>("event")
+        if (argEvent != null) {
+            event = argEvent
+            if(editing) editingEvent(view as EventLayout) else viewingEvent(view as EventLayout)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("editing", editing)
+        outState.putParcelable("event", event)
     }
 
     override fun setupToolbar() {

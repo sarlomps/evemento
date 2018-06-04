@@ -1,5 +1,6 @@
 package com.hellfish.evemento
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
@@ -9,12 +10,14 @@ import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.list.EventListFragment
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import com.hellfish.evemento.event.EventTime
+import com.hellfish.evemento.extensions.showSnackbar
 import com.hellfish.evemento.extensions.toVisibility
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer.*
+import kotlinx.android.synthetic.main.nav_header.view.*
+import net.danlew.android.joda.JodaTimeAndroid
 
 class MainActivity : AppCompatActivity(), Navigator {
 
@@ -22,10 +25,19 @@ class MainActivity : AppCompatActivity(), Navigator {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer)
 
+        // Make sure we are logged in
+        if (!SessionManager.isLoggedIn) {
+            showLoginActivity()
+        }
+
+        updateNavBarHeader()
+
+        JodaTimeAndroid.init(this)
+
         navView.setNavigationItemSelectedListener { menuItem ->
             menuItem.isChecked = true
             drawerLayout.closeDrawers()
-
+            handleNavItemSelected(menuItem)
             Log.d("Selected MenuItem", menuItem.toString())
             true
         }
@@ -38,7 +50,7 @@ class MainActivity : AppCompatActivity(), Navigator {
             val events = arrayListOf(
                     Event("Mock Title 1",
                             "Mock Description 1",
-                            EventTime("Mock Start Date 1", "Mock Start Date 1", "h1:m1", "H1:M1"),
+                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
                             "Mock Location 1",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -47,7 +59,7 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 2",
                             "Mock Description 2",
-                            EventTime("Mock Start Date 2", "Mock Start Date 2", "h2:m2", "H2:M2"),
+                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
                             "Mock Location 2",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -56,7 +68,7 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 3",
                             "Mock Description 3",
-                            EventTime("Mock Start Date 3", "Mock Start Date 3", "h3:m3", "H3:M3"),
+                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
                             "Mock Location 3",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -65,7 +77,7 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 4",
                             "Mock Description 4",
-                            EventTime("Mock Start Date 4", "Mock Start Date 4", "h4:m4", "H4:M4"),
+                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
                             "Mock Location 4",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -74,7 +86,7 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 5",
                             "Mock Description 5",
-                            EventTime("Mock Start Date 5", "Mock Start Date 5", "h5:m5", "H5:M5"),
+                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
                             "Mock Location 5",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -83,7 +95,7 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 6",
                             "Mock Description 6",
-                            EventTime("Mock Start Date 6", "Mock Start Date 6", "h6:m6", "H6:M6"),
+                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
                             "Mock Location 6",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -95,6 +107,31 @@ class MainActivity : AppCompatActivity(), Navigator {
             fragment.arguments = args
             supportFragmentManager.beginTransaction().add(R.id.main_container, fragment).commit()
         }
+    }
+
+    private fun updateNavBarHeader() {
+        val headerView = navView.getHeaderView(0)
+        headerView.navBarUserName.text = SessionManager.currentUser?.displayName
+        headerView.navBarUserEmail.text = SessionManager.currentUser?.email
+    }
+
+    private fun handleNavItemSelected(menuItem: MenuItem) {
+        if (menuItem.itemId == R.id.nav_logout) {
+            SessionManager.logout(this) { success, message ->
+                if (success) {
+                    showSnackbar(message, main_container)
+                    showLoginActivity()
+                    finish()
+                }
+            }
+        }
+    }
+
+    private fun showLoginActivity() {
+        val intent = Intent(applicationContext, SignInActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {

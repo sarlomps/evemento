@@ -2,13 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hellfish.evemento">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality.
     -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -33,23 +32,15 @@
             android:name=".MainActivity"
             android:label="Evemento"
             android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".event.transport.MapsActivity"
-            android:label="@string/title_activity_maps">
-        </activity>
-        <activity
-            android:name=".event.transport.TransportListActivity"
-            android:label="@string/title_activity_transport_list">
-        </activity>
-        <activity
-            android:name=".event.transport.TransportDetailActivity"
-            android:label="@string/title_activity_transport_detail">
-        </activity>
     </application>
+
 </manifest>

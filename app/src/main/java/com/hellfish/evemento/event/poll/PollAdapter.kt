@@ -1,9 +1,7 @@
 package com.hellfish.evemento.event.poll
 
 import android.content.Context
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutManager
-import android.widget.TextView
+import android.support.v7.widget.*
 import com.hellfish.evemento.R
 import com.hellfish.evemento.RecyclerAdapter
 import kotlinx.android.synthetic.main.poll_content.view.*
@@ -34,9 +32,9 @@ class PollAdapter(private val polls: MutableList<Poll>) : RecyclerAdapter<CardVi
         }
     }
 
-    private fun answersAdapter(poll : Poll) : RecyclerAdapter<TextView, *> {
+    private fun answersAdapter(poll : Poll) : RecyclerAdapter<*, *> {
         return when(poll) {
-            is Poll.Open -> OpenAnswersAdapter({ answer -> polls[polls.indexOf(poll)] = poll.choose(answer); notifyDataSetChanged() }, poll.answers)
+            is Poll.Open -> OpenAnswersAdapter({ answer -> polls[polls.indexOf(poll)] = poll.choose(answer) }, poll.answers)
             is Poll.Closed -> ClosedAnswersAdapter(poll.answers, poll.totalVotes())
         }
     }
