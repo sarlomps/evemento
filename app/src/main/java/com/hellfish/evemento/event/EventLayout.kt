@@ -3,6 +3,7 @@ package com.hellfish.evemento.event
 import android.content.Context
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.res.ResourcesCompat
+import android.view.View
 import android.widget.TextView
 import com.hellfish.evemento.R
 import com.hellfish.evemento.extensions.toVisibility
@@ -27,6 +28,7 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
     fun load(event: Event?) {
         eventTitle.setText(event?.title)
         descriptionElement.setText(event?.description)
+        descriptionElement.run { visibility = if (text.toString() == "") View.GONE else View.VISIBLE }
         event?.time?.let {
             val (startDateString, startTimeString) = it.startDate.replace(" ", "").split("-")
             val (endDateString, endTimeString) = it.endDate.replace(" ", "").split("-")
@@ -41,6 +43,7 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
 
     fun enabledEditableElements(enabled: Boolean) {
         editTimeElement.visibility = enabled.toVisibility()
+        if (enabled) descriptionElement.visibility = View.VISIBLE
         descriptionElement.isEnabled = enabled
         eventTitle.isEnabled = enabled
         eventTitle.requestFocus()

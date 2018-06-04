@@ -5,13 +5,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <EditText style="@style/EditableEventElementComponent"
-        android:id="@+id/descriptionElement"
+    <TextView style="@style/EventElementComponent"
+        android:id="@+id/locationElement"
         android:paddingTop="25dp"
-        android:drawableStart="@drawable/ic_description_grey_24dp"
-        android:inputType="text"
-        android:hint="@string/default_description_text"
-         />
+        android:drawableStart="@drawable/ic_location_on_grey_24dp"
+        android:text="@string/default_location_text"
+        />
 
     <TextView style="@style/EventElementComponent"
         android:id="@+id/timeElement"
@@ -24,11 +23,13 @@
         android:visibility="gone"
         />
 
-    <TextView style="@style/EventElementComponent"
-        android:id="@+id/locationElement"
-        android:drawableStart="@drawable/ic_location_on_grey_24dp"
-        android:text="@string/default_location_text"
+    <EditText style="@style/EditableEventElementComponent"
+        android:id="@+id/descriptionElement"
+        android:drawableStart="@drawable/ic_description_grey_24dp"
+        android:inputType="text"
+        android:hint="@string/default_description_text"
         />
+
     <TextView style="@style/EventElementComponent"
         android:id="@+id/guestElement"
         android:drawableStart="@drawable/ic_guests_grey_24dp"
