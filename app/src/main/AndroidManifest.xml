@@ -37,14 +37,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".event.transport.TransportListActivity"
-            android:label="@string/title_activity_transport_list">
-        </activity>
-        <activity
-            android:name=".event.transport.TransportDetailActivity"
-            android:label="@string/title_activity_transport_detail">
-        </activity>
     </application>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 </manifest>
