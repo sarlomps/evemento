@@ -3,20 +3,16 @@ package com.hellfish.evemento.event
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.res.ResourcesCompat
 import android.view.View
-import com.hellfish.evemento.Navigator
 import com.hellfish.evemento.R
-import com.hellfish.evemento.event.poll.PollFragment
-import com.hellfish.evemento.event.task.TaskListFragment
-import com.hellfish.evemento.event.transport.TransportFragment
-import kotlinx.android.synthetic.main.event_elements.view.*
 import kotlinx.android.synthetic.main.fragment_event.view.*
 
 interface EventMode {
 
     var event: Event
+    var editing: Boolean
 
-    fun editingEvent(view: EventLayout): Unit
-    fun viewingEvent(view: EventLayout): Unit
+    fun editingEvent(view: EventLayout)
+    fun viewingEvent(view: EventLayout)
 
     fun FloatingActionButton.withDrawable(drawableId: Int): FloatingActionButton =
             apply { setImageDrawable(ResourcesCompat.getDrawable(resources, drawableId, null)) }
@@ -26,6 +22,7 @@ interface EventMode {
 interface ViewMode : EventMode {
 
     override fun viewingEvent(view: EventLayout): Unit = view.run {
+        editing = false
         load(event)
         notEditableElementsVisibility(View.VISIBLE)
         changeTextColor(R.color.text)
@@ -41,7 +38,7 @@ interface ViewMode : EventMode {
 interface EditMode : EventMode {
 
     override fun editingEvent(view: EventLayout): Unit = view.run {
-        load(event)
+        editing = true
         notEditableElementsVisibility(View.GONE)
         changeTextColor(R.color.grey)
         enabledEditableElements(true)

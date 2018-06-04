@@ -12,12 +12,12 @@ import com.hellfish.evemento.event.time.TimePickerDialogFactory
 import com.hellfish.evemento.event.transport.TransportFragment
 import kotlinx.android.synthetic.main.event_element_time.*
 import kotlinx.android.synthetic.main.event_elements.*
-import kotlinx.android.synthetic.main.event_elements.view.*
 import kotlinx.android.synthetic.main.event_tool_bar.*
 
 class EventFragment : NavigatorFragment(), ViewMode, EditMode, DatePickerDialogFactory, TimePickerDialogFactory {
 
     override lateinit var event: Event
+    override var editing: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return EventLayout(context)
@@ -38,15 +38,17 @@ class EventFragment : NavigatorFragment(), ViewMode, EditMode, DatePickerDialogF
         startTimeElement.run { setOnClickListener { startTimePicker.updateTime(this, onlyTimeFormatter).show() } }
         endTimeElement.run { setOnClickListener { endTimePicker.updateTime(this, onlyTimeFormatter).show() } }
 
+        editing = savedInstanceState?.getBoolean("editing") ?: false
         val argEvent = savedInstanceState?.getParcelable<Event>("event") ?: arguments?.getParcelable<Event>("event")
         if (argEvent != null) {
             event = argEvent
-            viewingEvent(view as EventLayout)
+            if(editing) editingEvent(view as EventLayout) else viewingEvent(view as EventLayout)
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        outState.putBoolean("editing", editing)
         outState.putParcelable("event", event)
     }
 
