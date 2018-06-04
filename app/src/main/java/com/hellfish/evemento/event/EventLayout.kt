@@ -58,11 +58,6 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
     fun changeTextColor(colorId: Int) {
         descriptionElement.setTextColorId(colorId)
         locationElement.setTextColorId(colorId)
-        guestElement.setTextColorId(colorId)
-        rideElement.setTextColorId(colorId)
-        taskElement.setTextColorId(colorId)
-        pollElement.setTextColorId(colorId)
-        commentElement.setTextColorId(colorId)
     }
 
     fun TextView.setTextColorId(colorId: Int) {
