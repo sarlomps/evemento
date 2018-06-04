@@ -1,5 +1,6 @@
 package com.hellfish.evemento
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
@@ -10,6 +11,8 @@ import com.hellfish.evemento.event.list.EventListFragment
 import android.util.Log
 import android.view.MenuItem
 import com.hellfish.evemento.event.EventTime
+import com.hellfish.evemento.event.SessionManager
+import com.hellfish.evemento.extensions.showSnackbar
 import com.hellfish.evemento.extensions.toVisibility
 
 import kotlinx.android.synthetic.main.activity_main.*
@@ -27,7 +30,7 @@ class MainActivity : AppCompatActivity(), Navigator {
         navView.setNavigationItemSelectedListener { menuItem ->
             menuItem.isChecked = true
             drawerLayout.closeDrawers()
-
+            handleNavItemSelected(menuItem)
             Log.d("Selected MenuItem", menuItem.toString())
             true
         }
@@ -97,6 +100,25 @@ class MainActivity : AppCompatActivity(), Navigator {
             fragment.arguments = args
             supportFragmentManager.beginTransaction().add(R.id.main_container, fragment).commit()
         }
+    }
+
+    private fun handleNavItemSelected(menuItem: MenuItem) {
+        if (menuItem.itemId == R.id.nav_logout) {
+            SessionManager.logout(this) { success, message ->
+                if (success) {
+                    showSnackbar(message, main_container)
+                    showLoginActivity()
+                    finish()
+                }
+            }
+        }
+    }
+
+    fun showLoginActivity() {
+        val intent = Intent(applicationContext, SignInActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {

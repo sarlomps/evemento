@@ -15,7 +15,11 @@
     <group
         android:checkableBehavior="single"
         android:id="@+id/menu_bottom">
-    <item
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
+            android:title="Logout" />
+        <item
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_help_black_24dp"
             android:title="Ayuda" />

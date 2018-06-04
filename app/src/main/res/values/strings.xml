@@ -16,4 +16,13 @@
     <string name="title_activity_transport_detail">TransportDetail</string>
     <string name="fragment_transport_show_list">Show list</string>
     <string name="drawer_menu_title_events">Eventos</string>
+    <string name="auth_logged_in">Logged in!</string>
+    <string name="auth_unknown_login_response">Unknown error occurred</string>
+    <string name="auth_signing_in">Logging in…</string>
+    <string name="auth_no_internet_connection">No internet connection…</string>
+    <string name="auth_login_cancelled">Login cancelled.</string>
+    <string name="auth_logged_out">Logged out!</string>
+    <string name="auth_error_not_logged_out">An error occurred, not logged out.</string>
+
+
 </resources>
