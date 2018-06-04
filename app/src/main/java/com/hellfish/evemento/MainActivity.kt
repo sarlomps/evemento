@@ -10,7 +10,6 @@ import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.list.EventListFragment
 import android.util.Log
 import android.view.MenuItem
-import com.hellfish.evemento.event.EventTime
 import com.hellfish.evemento.extensions.showSnackbar
 import com.hellfish.evemento.extensions.toVisibility
 
@@ -50,7 +49,8 @@ class MainActivity : AppCompatActivity(), Navigator {
             val events = arrayListOf(
                     Event("Mock Title 1",
                             "Mock Description 1",
-                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
+                            "03/06/2018 - 04:20",
+                            "03/06/2018 - 04:20",
                             "Mock Location 1",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -59,7 +59,8 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 2",
                             "Mock Description 2",
-                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
+                            "03/06/2018 - 04:20",
+                            "03/06/2018 - 04:20",
                             "Mock Location 2",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -68,7 +69,8 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 3",
                             "Mock Description 3",
-                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
+                            "03/06/2018 - 04:20",
+                            "03/06/2018 - 04:20",
                             "Mock Location 3",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -77,7 +79,8 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 4",
                             "Mock Description 4",
-                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
+                            "03/06/2018 - 04:20",
+                            "03/06/2018 - 04:20",
                             "Mock Location 4",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -86,7 +89,8 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 5",
                             "Mock Description 5",
-                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
+                            "03/06/2018 - 04:20",
+                            "03/06/2018 - 04:20",
                             "Mock Location 5",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -95,7 +99,8 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 6",
                             "Mock Description 6",
-                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
+                            "03/06/2018 - 04:20",
+                            "03/06/2018 - 04:20",
                             "Mock Location 6",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),

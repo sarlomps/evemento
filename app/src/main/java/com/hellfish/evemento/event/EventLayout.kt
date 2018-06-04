@@ -17,10 +17,8 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
 
     fun edit(event: Event) = event.copy(
             title = eventTitle.text.toString(),
-            time = EventTime(
-                    startDate = String.format("%s - %s", startDateElement.text, startTimeElement.text),
-                    endDate = String.format("%s - %s", endDateElement.text, endTimeElement.text)
-            ),
+            startDate = String.format("%s - %s", startDateElement.text, startTimeElement.text),
+            endDate = String.format("%s - %s", endDateElement.text, endTimeElement.text),
             description = descriptionElement.text.toString(),
             location = locationElement.text.toString()
     )
@@ -29,7 +27,7 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
         eventTitle.setText(event?.title)
         descriptionElement.setText(event?.description)
         descriptionElement.run { visibility = if (text.toString() == "") View.GONE else View.VISIBLE }
-        event?.time?.let {
+        event?.let {
             val (startDateString, startTimeString) = it.startDate.replace(" ", "").split("-")
             val (endDateString, endTimeString) = it.endDate.replace(" ", "").split("-")
             timeElement.text = String.format("%s\n%s", it.startDate, it.endDate)
