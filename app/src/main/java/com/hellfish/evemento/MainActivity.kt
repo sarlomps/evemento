@@ -11,7 +11,6 @@ import com.hellfish.evemento.event.list.EventListFragment
 import android.util.Log
 import android.view.MenuItem
 import com.hellfish.evemento.event.EventTime
-import com.hellfish.evemento.event.SessionManager
 import com.hellfish.evemento.extensions.showSnackbar
 import com.hellfish.evemento.extensions.toVisibility
 

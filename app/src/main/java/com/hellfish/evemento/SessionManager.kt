@@ -1,4 +1,4 @@
-package com.hellfish.evemento.event
+package com.hellfish.evemento
 
 import android.app.Activity
 import android.content.Context
@@ -8,7 +8,6 @@ import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.hellfish.evemento.R
 import java.util.*
 
 object SessionManager {
@@ -18,7 +17,7 @@ object SessionManager {
         get() = fbAuth.currentUser
 
     val isLoggedIn: Boolean
-        get() = this.currentUser != null
+        get() = currentUser != null
 
     fun getLoginView(): Intent {
         val providers = Arrays.asList(AuthUI.IdpConfig.GoogleBuilder().build(),
