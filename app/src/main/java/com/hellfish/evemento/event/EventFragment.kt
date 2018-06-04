@@ -27,7 +27,7 @@ class EventFragment : NavigatorFragment(), ViewAndEditEvent, DatePickerDialogFac
         super.onViewCreated(view, savedInstanceState)
 
         val (startDatePicker, endDatePicker) = createLinkedDatePickerDialogs(context, startDateElement, endDateElement)
-        val (startTimePicker, endTimePicker) = createLinkedTimePickerDialogs(context, startTimeElement, endTimeElement)
+        val (startTimePicker, endTimePicker) = createLinkedTimePickerDialogs(context, startDateElement, endDateElement, startTimeElement, endTimeElement)
 
         taskElement.setOnClickListener { navigatorListener.replaceFragment(TaskListFragment()) }
         pollElement.setOnClickListener { navigatorListener.replaceFragment(PollFragment()) }
