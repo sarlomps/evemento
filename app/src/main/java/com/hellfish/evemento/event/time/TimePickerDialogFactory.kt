@@ -13,15 +13,25 @@ interface TimePickerDialogFactory {
     val onlyTimeFormatter: DateTimeFormatter
         get() = DateTimeFormat.forPattern("HH:mm")
 
-    fun createLinkedTimePickerDialogs(context: Context?, startTimeView: TextView, endTimeView: TextView): Pair<TimePickerDialog, TimePickerDialog> =
-            Pair(createTimePickerDialog(context, createTimeListener(startTimeView, endText = endTimeView)),
-                    createTimePickerDialog(context, createTimeListener(endTimeView, startText = startTimeView)))
+    fun createLinkedTimePickerDialogs(context: Context?,
+                                      startDateView: TextView,
+                                      endDateView: TextView,
+                                      startTimeView: TextView,
+                                      endTimeView: TextView): Pair<TimePickerDialog, TimePickerDialog> =
+            Pair(createTimePickerDialog(context, createTimeListener(startDateView, endDateView, startTimeView, endText = endTimeView)),
+                    createTimePickerDialog(context, createTimeListener(startDateView, endDateView, endTimeView, startText = startTimeView)))
 
-    fun createTimeListener(textView: TextView, startText: TextView? = null, endText: TextView? = null) =
+    fun createTimeListener(startDateView: TextView,
+                           endDateView: TextView,
+                           textView: TextView,
+                           startText: TextView? = null,
+                           endText: TextView? = null) =
             TimePickerDialog.OnTimeSetListener { _, hour, minute ->
                 val localTime = LocalTime(hour, minute, 0)
-                startText?.updateTimeIfAfter(localTime, onlyTimeFormatter)
-                endText?.updateTimeIfBefore(localTime, onlyTimeFormatter)
+                if (startDateView.text == endDateView.text){
+                    startText?.updateTimeIfAfter(localTime, onlyTimeFormatter)
+                    endText?.updateTimeIfBefore(localTime, onlyTimeFormatter)
+                }
                 textView.text= onlyTimeFormatter.print(localTime)
             }
 
