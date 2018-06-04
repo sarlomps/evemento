@@ -16,6 +16,7 @@ import com.hellfish.evemento.extensions.toVisibility
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer.*
+import kotlinx.android.synthetic.main.nav_header.view.*
 import net.danlew.android.joda.JodaTimeAndroid
 
 class MainActivity : AppCompatActivity(), Navigator {
@@ -23,6 +24,13 @@ class MainActivity : AppCompatActivity(), Navigator {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer)
+
+        // Make sure we are logged in
+        if (!SessionManager.isLoggedIn) {
+            showLoginActivity()
+        }
+
+        updateNavBarHeader()
 
         JodaTimeAndroid.init(this)
 
@@ -101,6 +109,12 @@ class MainActivity : AppCompatActivity(), Navigator {
         }
     }
 
+    private fun updateNavBarHeader() {
+        val headerView = navView.getHeaderView(0)
+        headerView.navBarUserName.text = SessionManager.currentUser?.displayName
+        headerView.navBarUserEmail.text = SessionManager.currentUser?.email
+    }
+
     private fun handleNavItemSelected(menuItem: MenuItem) {
         if (menuItem.itemId == R.id.nav_logout) {
             SessionManager.logout(this) { success, message ->
@@ -113,7 +127,7 @@ class MainActivity : AppCompatActivity(), Navigator {
         }
     }
 
-    fun showLoginActivity() {
+    private fun showLoginActivity() {
         val intent = Intent(applicationContext, SignInActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
