@@ -52,6 +52,7 @@ class EventFragment : NavigatorFragment(), ViewAndEditEvent, DatePickerDialogFac
         outState.putParcelable("event", event)
     }
 
+
     override fun setupToolbar() {
         navigatorListener.setCustomToolbar(eventToolbar)
         eventAppbar.setExpanded(true)

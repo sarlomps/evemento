@@ -20,6 +20,8 @@ import net.danlew.android.joda.JodaTimeAndroid
 
 class MainActivity : AppCompatActivity(), Navigator {
 
+    override var onBackPressedListener: OnBackPressedListener? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer)
@@ -114,6 +116,11 @@ class MainActivity : AppCompatActivity(), Navigator {
         }
     }
 
+    override fun onBackPressed() {
+        if (onBackPressedListener != null) onBackPressedListener?.invoke()
+        else super.onBackPressed()
+    }
+
     private fun updateNavBarHeader() {
         val headerView = navView.getHeaderView(0)
         headerView.navBarUserName.text = SessionManager.currentUser?.displayName
@@ -158,6 +165,7 @@ class MainActivity : AppCompatActivity(), Navigator {
     }
 
     override fun replaceFragment(fragment: Fragment) {
+        onBackPressedListener = null
         supportFragmentManager.
                 beginTransaction().
                 replace(R.id.main_container, fragment).
