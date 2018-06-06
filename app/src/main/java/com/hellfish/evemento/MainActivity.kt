@@ -116,9 +116,13 @@ class MainActivity : AppCompatActivity(), Navigator {
         }
     }
 
+
     override fun onBackPressed() {
-        if (onBackPressedListener != null) onBackPressedListener?.invoke()
-        else super.onBackPressed()
+        when {
+            drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
+            onBackPressedListener != null -> onBackPressedListener?.invoke()
+            else -> super.onBackPressed()
+        }
     }
 
     private fun updateNavBarHeader() {
@@ -147,12 +151,12 @@ class MainActivity : AppCompatActivity(), Navigator {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-            android.R.id.home -> {
-                drawerLayout.openDrawer(GravityCompat.START)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+        android.R.id.home -> {
+            drawerLayout.openDrawer(GravityCompat.START)
+            true
         }
+        else -> super.onOptionsItemSelected(item)
+    }
 
     override fun setCustomToolbar(customToolbar: Toolbar?, title: String?) {
         defaultToolbar.visibility= (customToolbar == null).toVisibility()
