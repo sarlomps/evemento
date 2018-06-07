@@ -3,6 +3,7 @@ package com.hellfish.evemento.event
 import android.content.Context
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.res.ResourcesCompat
+import android.view.View
 import android.widget.TextView
 import com.hellfish.evemento.R
 import com.hellfish.evemento.extensions.toVisibility
@@ -16,10 +17,8 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
 
     fun edit(event: Event) = event.copy(
             title = eventTitle.text.toString(),
-            time = EventTime(
-                    startDate = String.format("%s - %s", startDateElement.text, startTimeElement.text),
-                    endDate = String.format("%s - %s", endDateElement.text, endTimeElement.text)
-            ),
+            startDate = String.format("%s - %s", startDateElement.text, startTimeElement.text),
+            endDate = String.format("%s - %s", endDateElement.text, endTimeElement.text),
             description = descriptionElement.text.toString(),
             location = locationElement.text.toString()
     )
@@ -27,7 +26,8 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
     fun load(event: Event?) {
         eventTitle.setText(event?.title)
         descriptionElement.setText(event?.description)
-        event?.time?.let {
+        descriptionElement.run { visibility = if (text.toString() == "") View.GONE else View.VISIBLE }
+        event?.let {
             val (startDateString, startTimeString) = it.startDate.replace(" ", "").split("-")
             val (endDateString, endTimeString) = it.endDate.replace(" ", "").split("-")
             timeElement.text = String.format("%s\n%s", it.startDate, it.endDate)
@@ -41,6 +41,7 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
 
     fun enabledEditableElements(enabled: Boolean) {
         editTimeElement.visibility = enabled.toVisibility()
+        if (enabled) descriptionElement.visibility = View.VISIBLE
         descriptionElement.isEnabled = enabled
         eventTitle.isEnabled = enabled
         eventTitle.requestFocus()
@@ -58,11 +59,6 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
     fun changeTextColor(colorId: Int) {
         descriptionElement.setTextColorId(colorId)
         locationElement.setTextColorId(colorId)
-        guestElement.setTextColorId(colorId)
-        rideElement.setTextColorId(colorId)
-        taskElement.setTextColorId(colorId)
-        pollElement.setTextColorId(colorId)
-        commentElement.setTextColorId(colorId)
     }
 
     fun TextView.setTextColorId(colorId: Int) {

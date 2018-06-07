@@ -22,7 +22,7 @@ interface DatePickerDialogFactory {
                 val date = LocalDate(year, month + 1, day)
                 startText?.updateDateIfAfter(date, onlyDateFormatter)
                 endText?.updateDateIfBefore(date, onlyDateFormatter)
-                textView.text= onlyDateFormatter.print(date)
+                textView.text = onlyDateFormatter.print(date)
             }
 
     fun createDatePickerDialog(context: Context?, onDateSetListener: DatePickerDialog.OnDateSetListener?): DatePickerDialog = with(DateTime.now()) {

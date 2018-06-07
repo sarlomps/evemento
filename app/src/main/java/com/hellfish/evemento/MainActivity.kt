@@ -10,7 +10,6 @@ import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.list.EventListFragment
 import android.util.Log
 import android.view.MenuItem
-import com.hellfish.evemento.event.EventTime
 import com.hellfish.evemento.extensions.showSnackbar
 import com.hellfish.evemento.extensions.toVisibility
 
@@ -20,6 +19,8 @@ import kotlinx.android.synthetic.main.nav_header.view.*
 import net.danlew.android.joda.JodaTimeAndroid
 
 class MainActivity : AppCompatActivity(), Navigator {
+
+    override var onBackPressedListener: OnBackPressedListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +51,8 @@ class MainActivity : AppCompatActivity(), Navigator {
             val events = arrayListOf(
                     Event("Mock Title 1",
                             "Mock Description 1",
-                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
+                            "03/06/2018 - 04:20",
+                            "03/06/2018 - 04:20",
                             "Mock Location 1",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -59,7 +61,8 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 2",
                             "Mock Description 2",
-                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
+                            "03/06/2018 - 04:20",
+                            "03/06/2018 - 04:20",
                             "Mock Location 2",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -68,7 +71,8 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 3",
                             "Mock Description 3",
-                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
+                            "03/06/2018 - 04:20",
+                            "03/06/2018 - 04:20",
                             "Mock Location 3",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -77,7 +81,8 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 4",
                             "Mock Description 4",
-                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
+                            "03/06/2018 - 04:20",
+                            "03/06/2018 - 04:20",
                             "Mock Location 4",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -86,7 +91,8 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 5",
                             "Mock Description 5",
-                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
+                            "03/06/2018 - 04:20",
+                            "03/06/2018 - 04:20",
                             "Mock Location 5",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -95,7 +101,8 @@ class MainActivity : AppCompatActivity(), Navigator {
                             listOf("comments")),
                     Event("Mock Title 6",
                             "Mock Description 6",
-                            EventTime("03/06/2018 - 04:20", "03/06/2018 - 04:20"),
+                            "03/06/2018 - 04:20",
+                            "03/06/2018 - 04:20",
                             "Mock Location 6",
                             listOf("Juan", "Juan", "Juan"),
                             listOf("rides"),
@@ -106,6 +113,15 @@ class MainActivity : AppCompatActivity(), Navigator {
             args.putParcelableArrayList("events", events)
             fragment.arguments = args
             supportFragmentManager.beginTransaction().add(R.id.main_container, fragment).commit()
+        }
+    }
+
+
+    override fun onBackPressed() {
+        when {
+            drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
+            onBackPressedListener != null -> onBackPressedListener?.invoke()
+            else -> super.onBackPressed()
         }
     }
 
@@ -135,12 +151,12 @@ class MainActivity : AppCompatActivity(), Navigator {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-            android.R.id.home -> {
-                drawerLayout.openDrawer(GravityCompat.START)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+        android.R.id.home -> {
+            drawerLayout.openDrawer(GravityCompat.START)
+            true
         }
+        else -> super.onOptionsItemSelected(item)
+    }
 
     override fun setCustomToolbar(customToolbar: Toolbar?, title: String?) {
         defaultToolbar.visibility= (customToolbar == null).toVisibility()
@@ -153,6 +169,7 @@ class MainActivity : AppCompatActivity(), Navigator {
     }
 
     override fun replaceFragment(fragment: Fragment) {
+        onBackPressedListener = null
         supportFragmentManager.
                 beginTransaction().
                 replace(R.id.main_container, fragment).

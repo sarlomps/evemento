@@ -3,6 +3,7 @@ package com.hellfish.evemento.event
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.res.ResourcesCompat
 import android.view.View
+import com.hellfish.evemento.Navigator
 import com.hellfish.evemento.R
 import kotlinx.android.synthetic.main.fragment_event.view.*
 
@@ -10,8 +11,10 @@ interface ViewAndEditEvent {
 
     var event: Event
     var editing: Boolean
+    val navigatorListener: Navigator
 
     fun viewingEvent(view: EventLayout): Unit = view.run {
+        navigatorListener.onBackPressedListener = null
         editing = false
         load(event)
         notEditableElementsVisibility(View.VISIBLE)
@@ -24,6 +27,7 @@ interface ViewAndEditEvent {
     }
 
     fun editingEvent(view: EventLayout): Unit = view.run {
+        navigatorListener.onBackPressedListener =   { viewingEvent(view) }
         editing = true
         notEditableElementsVisibility(View.GONE)
         changeTextColor(R.color.grey)
