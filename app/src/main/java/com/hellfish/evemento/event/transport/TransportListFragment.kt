@@ -22,8 +22,14 @@ class TransportListFragment : NavigatorFragment() {
 
         carsRecyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayout.VERTICAL, false)
         val transports = ArrayList<TransportItem>()
-        transports.add(TransportItem("Gus", "1"))
-        transports.add(TransportItem("Gas", "0"))
+        val driver1 = UserMiniDetail("Gus", "Sarlanga")
+        val driver2 = UserMiniDetail("Gas", "Sarlanga")
+        val pass_1_1 = UserMiniDetail("juan", "Sarlanga")
+        val pass_1_2 = UserMiniDetail("juan", "Sarlanga")
+        val pass_2_1 = UserMiniDetail("Nico", "Sarlanga")
+        val pass_2_2 = UserMiniDetail("Nico", "Sarlanga")
+        transports.add(TransportItem(driver1, listOf(pass_1_1, pass_1_2), 5))
+        transports.add(TransportItem(driver2, listOf(pass_2_1, pass_2_2), 4))
 
         carsRecyclerView.apply {
             adapter = TransportAdapter(transports, navigatorListener)
