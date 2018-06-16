@@ -6,10 +6,10 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.list.EventListFragment
 import android.util.Log
 import android.view.MenuItem
+import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.extensions.showSnackbar
 import com.hellfish.evemento.extensions.toVisibility
 
@@ -17,24 +17,27 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer.*
 import kotlinx.android.synthetic.main.nav_header.view.*
 import net.danlew.android.joda.JodaTimeAndroid
+import android.arch.lifecycle.ViewModelProviders
+
+
 
 class MainActivity : AppCompatActivity(), Navigator {
 
+    lateinit var eventViewModel: EventViewModel
     override var onBackPressedListener: OnBackPressedListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer)
 
-        // Make sure we are logged in
         if (!SessionManager.isLoggedIn) {
             showLoginActivity()
         }
 
-        updateNavBarHeader()
-
         JodaTimeAndroid.init(this)
+        eventViewModel = ViewModelProviders.of(this).get(EventViewModel::class.java)
 
+        updateNavBarHeader()
         navView.setNavigationItemSelectedListener { menuItem ->
             menuItem.isChecked = true
             drawerLayout.closeDrawers()
@@ -53,62 +56,32 @@ class MainActivity : AppCompatActivity(), Navigator {
                             "Mock Description 1",
                             "03/06/2018 - 04:20",
                             "03/06/2018 - 04:20",
-                            "Mock Location 1",
-                            listOf("Juan", "Juan", "Juan"),
-                            listOf("rides"),
-                            listOf("tasks"),
-                            listOf("polls"),
-                            listOf("comments")),
+                            "Mock Location 1"),
                     Event("Mock Title 2",
                             "Mock Description 2",
                             "03/06/2018 - 04:20",
                             "03/06/2018 - 04:20",
-                            "Mock Location 2",
-                            listOf("Juan", "Juan", "Juan"),
-                            listOf("rides"),
-                            listOf("tasks"),
-                            listOf("polls"),
-                            listOf("comments")),
+                            "Mock Location 2"),
                     Event("Mock Title 3",
                             "Mock Description 3",
                             "03/06/2018 - 04:20",
                             "03/06/2018 - 04:20",
-                            "Mock Location 3",
-                            listOf("Juan", "Juan", "Juan"),
-                            listOf("rides"),
-                            listOf("tasks"),
-                            listOf("polls"),
-                            listOf("comments")),
+                            "Mock Location 3"),
                     Event("Mock Title 4",
                             "Mock Description 4",
                             "03/06/2018 - 04:20",
                             "03/06/2018 - 04:20",
-                            "Mock Location 4",
-                            listOf("Juan", "Juan", "Juan"),
-                            listOf("rides"),
-                            listOf("tasks"),
-                            listOf("polls"),
-                            listOf("comments")),
+                            "Mock Location 4"),
                     Event("Mock Title 5",
                             "Mock Description 5",
                             "03/06/2018 - 04:20",
                             "03/06/2018 - 04:20",
-                            "Mock Location 5",
-                            listOf("Juan", "Juan", "Juan"),
-                            listOf("rides"),
-                            listOf("tasks"),
-                            listOf("polls"),
-                            listOf("comments")),
+                            "Mock Location 5"),
                     Event("Mock Title 6",
                             "Mock Description 6",
                             "03/06/2018 - 04:20",
                             "03/06/2018 - 04:20",
-                            "Mock Location 6",
-                            listOf("Juan", "Juan", "Juan"),
-                            listOf("rides"),
-                            listOf("tasks"),
-                            listOf("polls"),
-                            listOf("comments")))
+                            "Mock Location 6"))
 
             args.putParcelableArrayList("events", events)
             fragment.arguments = args

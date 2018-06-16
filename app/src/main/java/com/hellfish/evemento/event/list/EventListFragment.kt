@@ -1,5 +1,6 @@
 package com.hellfish.evemento.event.list
 
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -12,12 +13,19 @@ import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.EventListAdapter
 import com.hellfish.evemento.event.EventFragment
 import android.support.design.widget.FloatingActionButton
+import com.hellfish.evemento.EventViewModel
 
 
 class EventListFragment : NavigatorFragment() {
 
+    lateinit var eventViewModel: EventViewModel
     lateinit var eventsRecyclerView: RecyclerView
     var events: ArrayList<Event> = ArrayList()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -45,12 +53,8 @@ class EventListFragment : NavigatorFragment() {
 
     }
 
-    fun onSelectedEvent(event:Event) {
-        val eventDetailFragment = EventFragment()
-        val args = Bundle()
-        // TODO: Validar si hace falta algo mas para inicializar bien el EventFragment
-        args.putParcelable("event", event)
-        eventDetailFragment.arguments = args
-        navigatorListener.replaceFragment(eventDetailFragment)
+    fun onSelectedEvent(event: Event) {
+        eventViewModel.select(event)
+        navigatorListener.replaceFragment(EventFragment())
     }
 }

@@ -1,9 +1,11 @@
 package com.hellfish.evemento.event
 
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.hellfish.evemento.EventViewModel
 import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.event.poll.PollFragment
 import com.hellfish.evemento.event.task.TaskListFragment
@@ -16,8 +18,14 @@ import kotlinx.android.synthetic.main.event_tool_bar.*
 
 class EventFragment : NavigatorFragment(), ViewAndEditEvent, DatePickerDialogFactory, TimePickerDialogFactory {
 
+    lateinit var eventViewModel: EventViewModel
     override lateinit var event: Event
     override var editing: Boolean = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return EventLayout(context)
@@ -39,9 +47,8 @@ class EventFragment : NavigatorFragment(), ViewAndEditEvent, DatePickerDialogFac
         endTimeElement.run { setOnClickListener { endTimePicker.updateTime(this, onlyTimeFormatter).show() } }
 
         editing = savedInstanceState?.getBoolean("editing") ?: false
-        val argEvent = savedInstanceState?.getParcelable<Event>("event") ?: arguments?.getParcelable<Event>("event")
-        if (argEvent != null) {
-            event = argEvent
+        if (eventViewModel.selected() != null) {
+            event = eventViewModel.selected()!!
             if(editing) editingEvent(view as EventLayout) else viewingEvent(view as EventLayout)
         }
     }
