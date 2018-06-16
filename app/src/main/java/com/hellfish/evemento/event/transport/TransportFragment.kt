@@ -1,6 +1,5 @@
 package com.hellfish.evemento.event.transport
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
