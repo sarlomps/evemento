@@ -6,7 +6,8 @@ import com.hellfish.evemento.event.Event
 
 class EventViewModel : ViewModel() {
 
-    private var event: MutableLiveData<Event> = MutableLiveData()
+    var event: MutableLiveData<Event> = MutableLiveData()
+        private set
     private var guests: List<String> = listOf()
     private var rides: List<String> = listOf()
     private var tasks: List<String> = listOf()
