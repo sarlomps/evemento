@@ -6,7 +6,7 @@ import com.hellfish.evemento.event.Event
 
 class EventViewModel : ViewModel() {
 
-    var event: MutableLiveData<Event> = MutableLiveData()
+    var selectedEvent: MutableLiveData<Event> = MutableLiveData()
         private set
     private var guests: List<String> = listOf()
     private var rides: List<String> = listOf()
@@ -23,9 +23,11 @@ class EventViewModel : ViewModel() {
         comments = listOf() //TODO load it from Firebase
     }
 
-    fun selected() = event.value
+    fun updateView() = select(selectedEvent.value)
 
-    fun select(event: Event) { this.event.value = event }
+    fun selected() = selectedEvent.value
+
+    fun select(event: Event?) { selectedEvent.value = event }
 
     //TODO The idea is overload this mehtod with the real type (Guest / Poll / Task / Ride / Comment)
     fun add(element: String) {

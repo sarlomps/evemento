@@ -30,21 +30,22 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
-        eventViewModel.event.observe(this, Observer {
-            event ->
-            eventTitle.setText(event?.title)
-            descriptionElement.setText(event?.description)
-            descriptionElement.run { visibility = if (text.toString() == "") View.GONE else View.VISIBLE }
-            event?.let {
-                val (startDateString, startTimeString) = it.startDate.replace(" ", "").split("-")
-                val (endDateString, endTimeString) = it.endDate.replace(" ", "").split("-")
-                timeElement.text = String.format("%s\n%s", it.startDate, it.endDate)
-                startDateElement.text = startDateString
-                endDateElement.text = endDateString
-                startTimeElement.text = startTimeString
-                endTimeElement.text = endTimeString
+        eventViewModel.selectedEvent.observe(this, Observer { event ->
+            if (!editing) {
+                eventTitle.setText(event?.title)
+                descriptionElement.setText(event?.description)
+                descriptionElement.run { visibility = if (text.toString() == "") View.GONE else View.VISIBLE }
+                event?.let {
+                    val (startDateString, startTimeString) = it.startDate.replace(" ", "").split("-")
+                    val (endDateString, endTimeString) = it.endDate.replace(" ", "").split("-")
+                    timeElement.text = String.format("%s\n%s", it.startDate, it.endDate)
+                    startDateElement.text = startDateString
+                    endDateElement.text = endDateString
+                    startTimeElement.text = startTimeString
+                    endTimeElement.text = endTimeString
+                }
+                locationElement.text = event?.location
             }
-            locationElement.text = event?.location
         })
     }
 
@@ -88,10 +89,11 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
     }
 
     fun decideViewMode() {
-        if (editing) setViewMode({ toggleViewMode() }, R.drawable.ic_check_white_24dp) {
-            eventViewModel.select((view as EventLayout).event())
-            toggleViewMode()
-        }
+        if (editing) setViewMode(
+                { toggleViewMode(); eventViewModel.updateView()},
+                R.drawable.ic_check_white_24dp,
+                { toggleViewMode(); eventViewModel.select((view as EventLayout).event()) }
+        )
         else setViewMode(null, R.drawable.ic_edit_white_24dp) { toggleViewMode() }
     }
 
