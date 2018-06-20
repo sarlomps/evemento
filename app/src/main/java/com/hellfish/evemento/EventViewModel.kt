@@ -27,12 +27,9 @@ class EventViewModel : ViewModel() {
 
     fun select(event: Event) { this.event.value = event }
 
-    fun <T> add(element: T) {
-        when(element) {
-            //TODO when there is a type for every element (you get the idea)
-            is String -> guests += element
-            else -> throw InvalidEventElementException("$element is not a valid event element to add")
-        }
+    //TODO The idea is overload this mehtod with the real type (Guest / Poll / Task / Ride / Comment)
+    fun add(element: String) {
+        guests += element
     }
 
 }
