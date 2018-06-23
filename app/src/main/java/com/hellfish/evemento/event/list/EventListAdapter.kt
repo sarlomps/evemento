@@ -35,9 +35,9 @@ class EventListAdapter(private val fragment: EventListFragment, private val even
             this.event = event
             view.text_title.text = event.title
             view.text_desc.text = event.description
-            view.text_date.text = String.format("%s -> %s", event.startDate, event.endDate)
-            // TODO: Bindear todos los valores del evento que faltan cuando este completo el layout.
+            view.text_date.text = String.format("%s -> %s", fragment.dateTimeFormatter.print(event.startDate), fragment.dateTimeFormatter.print(event.endDate))
 
+            // TODO: Bindear todos los valores del evento que faltan cuando este completo el layout.
             view.setOnClickListener {
                 fragment.onSelectedEvent(event)
             }

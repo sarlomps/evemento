@@ -10,36 +10,34 @@ import com.hellfish.evemento.extensions.toVisibility
 import kotlinx.android.synthetic.main.event_element_time.view.*
 import kotlinx.android.synthetic.main.event_elements.view.*
 import kotlinx.android.synthetic.main.event_tool_bar.view.*
+import org.joda.time.format.DateTimeFormatter
 
 class EventLayout(context: Context?) : CoordinatorLayout(context) {
 
     init { inflate(context, R.layout.fragment_event, this) }
 
-    fun edit(event: Event) = event.copy(
+    fun event(dateTimeFormatter: DateTimeFormatter) = Event(
             title = eventTitle.text.toString(),
-            startDate = String.format("%s - %s", startDateElement.text, startTimeElement.text),
-            endDate = String.format("%s - %s", endDateElement.text, endTimeElement.text),
+            startDate = dateTimeFormatter.parseDateTime("${startDateElement.text} ${startTimeElement.text}"),
+            endDate = dateTimeFormatter.parseDateTime("${endDateElement.text} ${endTimeElement.text}"),
             description = descriptionElement.text.toString(),
             location = locationElement.text.toString()
     )
 
-    fun load(event: Event?) {
-        eventTitle.setText(event?.title)
-        descriptionElement.setText(event?.description)
-        descriptionElement.run { visibility = if (text.toString() == "") View.GONE else View.VISIBLE }
-        event?.let {
-            val (startDateString, startTimeString) = it.startDate.replace(" ", "").split("-")
-            val (endDateString, endTimeString) = it.endDate.replace(" ", "").split("-")
-            timeElement.text = String.format("%s\n%s", it.startDate, it.endDate)
-            startDateElement.text = startDateString
-            endDateElement.text = endDateString
-            startTimeElement.text = startTimeString
-            endTimeElement.text = endTimeString
+    fun mode(editing: Boolean) {
+        if (editing) {
+            notEditableElementsVisibility(View.GONE)
+            changeTextColor(R.color.grey)
+            enabledEditableElements(true)
+        } else {
+            notEditableElementsVisibility(View.VISIBLE)
+            changeTextColor(R.color.text)
+            enabledEditableElements(false)
         }
-        locationElement.text = event?.location
     }
 
-    fun enabledEditableElements(enabled: Boolean) {
+    private fun enabledEditableElements(enabled: Boolean) {
+        locationElement.isEnabled = enabled
         editTimeElement.visibility = enabled.toVisibility()
         if (enabled) descriptionElement.visibility = View.VISIBLE
         descriptionElement.isEnabled = enabled
@@ -47,7 +45,7 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
         eventTitle.requestFocus()
     }
 
-    fun notEditableElementsVisibility(visibility: Int) {
+    private fun notEditableElementsVisibility(visibility: Int) {
         timeElement.visibility = visibility
         guestElement.visibility = visibility
         rideElement.visibility = visibility
@@ -56,12 +54,12 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
         commentElement.visibility = visibility
     }
 
-    fun changeTextColor(colorId: Int) {
+    private fun changeTextColor(colorId: Int) {
         descriptionElement.setTextColorId(colorId)
         locationElement.setTextColorId(colorId)
     }
 
-    fun TextView.setTextColorId(colorId: Int) {
+    private fun TextView.setTextColorId(colorId: Int) {
         setTextColor(ResourcesCompat.getColor(resources, colorId, null))
     }
 

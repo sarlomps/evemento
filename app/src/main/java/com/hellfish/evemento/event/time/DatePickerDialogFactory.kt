@@ -5,13 +5,11 @@ import android.content.Context
 import android.widget.TextView
 import org.joda.time.DateTime
 import org.joda.time.LocalDate
-import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 
 interface DatePickerDialogFactory {
 
-    val onlyDateFormatter: DateTimeFormatter
-        get() = DateTimeFormat.forPattern("dd/MM/yyyy")
+    var dateFormatter: DateTimeFormatter
 
     fun createLinkedDatePickerDialogs(context: Context?, startDateView: TextView, endDateView: TextView): Pair<DatePickerDialog, DatePickerDialog> =
         Pair(createDatePickerDialog(context, createDateListener(startDateView, endText = endDateView)),
@@ -20,9 +18,9 @@ interface DatePickerDialogFactory {
     fun createDateListener(textView: TextView, startText: TextView? = null, endText: TextView? = null) =
             DatePickerDialog.OnDateSetListener { _, year, month, day ->
                 val date = LocalDate(year, month + 1, day)
-                startText?.updateDateIfAfter(date, onlyDateFormatter)
-                endText?.updateDateIfBefore(date, onlyDateFormatter)
-                textView.text = onlyDateFormatter.print(date)
+                startText?.updateDateIfAfter(date, dateFormatter)
+                endText?.updateDateIfBefore(date, dateFormatter)
+                textView.text = dateFormatter.print(date)
             }
 
     fun createDatePickerDialog(context: Context?, onDateSetListener: DatePickerDialog.OnDateSetListener?): DatePickerDialog = with(DateTime.now()) {
