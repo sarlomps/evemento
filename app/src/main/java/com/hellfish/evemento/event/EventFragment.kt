@@ -48,13 +48,11 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
                 descriptionElement.setText(event?.description)
                 descriptionElement.run { visibility = if (text.toString() == "") View.GONE else View.VISIBLE }
                 event?.let {
-                    val (startDateString, startTimeString) = it.startDate.replace(" ", "").split("-")
-                    val (endDateString, endTimeString) = it.endDate.replace(" ", "").split("-")
-                    timeElement.text = String.format("%s\n%s", it.startDate, it.endDate)
-                    startDateElement.text = startDateString
-                    endDateElement.text = endDateString
-                    startTimeElement.text = startTimeString
-                    endTimeElement.text = endTimeString
+                    timeElement.text = String.format("%s\n%s", dateTimeFormatter.print(it.startDate), dateTimeFormatter.print(it.endDate))
+                    startDateElement.text = dateFormatter.print(it.startDate)
+                    endDateElement.text = dateFormatter.print(it.endDate)
+                    startTimeElement.text = timeFormatter.print(it.startDate)
+                    endTimeElement.text = timeFormatter.print(it.endDate)
                 }
                 locationElement.text = event?.location
             }
@@ -104,7 +102,7 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
         if (editing) setViewMode(
                 { toggleViewMode(); eventViewModel.updateView()},
                 R.drawable.ic_check_white_24dp,
-                { toggleViewMode(); eventViewModel.select((view as EventLayout).event()) }
+                { toggleViewMode(); eventViewModel.select((view as EventLayout).event(dateTimeFormatter)) }
         )
         else setViewMode(null, R.drawable.ic_edit_white_24dp) { toggleViewMode() }
     }

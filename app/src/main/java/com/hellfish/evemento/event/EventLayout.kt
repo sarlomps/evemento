@@ -10,15 +10,16 @@ import com.hellfish.evemento.extensions.toVisibility
 import kotlinx.android.synthetic.main.event_element_time.view.*
 import kotlinx.android.synthetic.main.event_elements.view.*
 import kotlinx.android.synthetic.main.event_tool_bar.view.*
+import org.joda.time.format.DateTimeFormatter
 
 class EventLayout(context: Context?) : CoordinatorLayout(context) {
 
     init { inflate(context, R.layout.fragment_event, this) }
 
-    fun event() = Event(
+    fun event(dateTimeFormatter: DateTimeFormatter) = Event(
             title = eventTitle.text.toString(),
-            startDate = String.format("%s - %s", startDateElement.text, startTimeElement.text),
-            endDate = String.format("%s - %s", endDateElement.text, endTimeElement.text),
+            startDate = dateTimeFormatter.parseDateTime("${startDateElement.text} ${startTimeElement.text}"),
+            endDate = dateTimeFormatter.parseDateTime("${endDateElement.text} ${endTimeElement.text}"),
             description = descriptionElement.text.toString(),
             location = locationElement.text.toString()
     )

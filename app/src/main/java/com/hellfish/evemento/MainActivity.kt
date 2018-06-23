@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.drawer.*
 import kotlinx.android.synthetic.main.nav_header.view.*
 import net.danlew.android.joda.JodaTimeAndroid
 import android.arch.lifecycle.ViewModelProviders
-
+import org.joda.time.DateTime
 
 
 class MainActivity : AppCompatActivity(), Navigator {
@@ -50,37 +50,38 @@ class MainActivity : AppCompatActivity(), Navigator {
             val fragment = EventListFragment()
             val args = Bundle()
 
+
             // TODO: Cargar de algun lado sin hardcodear...
             val events = arrayListOf(
                     Event("Mock Title 1",
                             "Mock Description 1",
-                            "03/06/2018 - 04:20",
-                            "03/06/2018 - 04:20",
+                            DateTime(2018, 6, 3, 4, 20),
+                            DateTime(2018, 6, 3, 5, 20),
                             "Mock Location 1"),
                     Event("Mock Title 2",
                             "Mock Description 2",
-                            "03/06/2018 - 04:20",
-                            "03/06/2018 - 04:20",
+                            DateTime(2018, 6, 3, 4, 20),
+                            DateTime(2018, 6, 3, 5, 20),
                             "Mock Location 2"),
                     Event("Mock Title 3",
                             "Mock Description 3",
-                            "03/06/2018 - 04:20",
-                            "03/06/2018 - 04:20",
+                            DateTime(2018, 6, 3, 4, 20),
+                            DateTime(2018, 6, 3, 5, 20),
                             "Mock Location 3"),
                     Event("Mock Title 4",
                             "Mock Description 4",
-                            "03/06/2018 - 04:20",
-                            "03/06/2018 - 04:20",
+                            DateTime(2018, 6, 3, 4, 20),
+                            DateTime(2018, 6, 3, 5, 20),
                             "Mock Location 4"),
                     Event("Mock Title 5",
                             "Mock Description 5",
-                            "03/06/2018 - 04:20",
-                            "03/06/2018 - 04:20",
+                            DateTime(2018, 6, 3, 4, 20),
+                            DateTime(2018, 6, 3, 5, 20),
                             "Mock Location 5"),
                     Event("Mock Title 6",
                             "Mock Description 6",
-                            "03/06/2018 - 04:20",
-                            "03/06/2018 - 04:20",
+                            DateTime(2018, 6, 3, 4, 20),
+                            DateTime(2018, 6, 3, 5, 20),
                             "Mock Location 6"))
 
             args.putParcelableArrayList("events", events)

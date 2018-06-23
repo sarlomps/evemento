@@ -5,7 +5,6 @@ import android.content.Context
 import android.widget.TextView
 import org.joda.time.DateTime
 import org.joda.time.LocalTime
-import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 
 interface TimePickerDialogFactory {
