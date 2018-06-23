@@ -25,34 +25,9 @@ class TaskListFragment : NavigatorFragment() {
                 false
         )
 
-        taskItems.add(TaskItem("Much wow, much fun!", "Ringo"))
-
         val taskListAdd = view.findViewById<FloatingActionButton>(R.id.task_list_add)
         taskListAdd.setOnClickListener {
-            val itemDialog = AlertDialog.Builder(context)
-            itemDialog.setTitle("What")
-            itemDialog.setMessage("TheFuck")
-
-            val newItem = EditText(context)
-            newItem.compoundPaddingStart
-            newItem.compoundPaddingEnd
-
-            itemDialog.setView(newItem)
-
-            itemDialog.setPositiveButton("This?"){dialog, which ->
-                // Do something when user press the positive button
-                val item = TaskItem(newItem.text.toString(),"")
-                taskItems.add(item)
-            }
-
-            itemDialog.setNegativeButton("is"){dialog, which ->
-                // Display a negative button on alert dialog
-            }
-
-            val dialog = itemDialog.create()
-            dialog.show()
-
-
+            itemDialogBehaviour()
         }
 
         return view
@@ -61,12 +36,36 @@ class TaskListFragment : NavigatorFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        taskItems.add(TaskItem("Much wow, much fun!", "Ringo"))
 
         task_recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = TaskListAdapter(taskItems)
         }
+    }
 
+    private fun itemDialogBehaviour() {
+        val itemDialog = AlertDialog.Builder(context)
+        itemDialog.setTitle("What")
+        itemDialog.setMessage("TheFuck")
 
+        val newItem = EditText(context)
+        newItem.compoundPaddingStart
+        newItem.compoundPaddingEnd
+
+        itemDialog.setView(newItem)
+
+        itemDialog.setPositiveButton("This?") { dialog, which ->
+            // Do something when user press the positive button
+            val item = TaskItem(newItem.text.toString(), "")
+            taskItems.add(item)
+        }
+
+        itemDialog.setNegativeButton("is") { dialog, which ->
+            // Display a negative button on alert dialog
+        }
+
+        val dialog = itemDialog.create()
+        dialog.show()
     }
 }
