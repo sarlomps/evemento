@@ -4,8 +4,6 @@ import android.app.Activity.RESULT_OK
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v4.content.res.ResourcesCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,19 +28,21 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import android.content.Intent
 import com.google.android.gms.location.places.ui.PlaceAutocomplete.RESULT_ERROR
+import com.hellfish.evemento.extensions.withDrawable
 
 
 class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDialogFactory {
 
 
+    private lateinit var eventViewModel: EventViewModel
+    private var editing: Boolean = false
+
+    private val autocompleteRequestCode = 42
+
     lateinit var dateTimeFormatter: DateTimeFormatter
     override lateinit var dateFormatter: DateTimeFormatter
     override lateinit var timeFormatter: DateTimeFormatter
 
-    private val autocompleteRequestCode = 42
-
-    lateinit var eventViewModel: EventViewModel
-    var editing: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,30 +75,9 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        locationElement.setOnClickListener {
-            try {
-                val intent = PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN).build(activity)
-                startActivityForResult(intent, autocompleteRequestCode)
-            } catch (e: Exception) {
-                when (e) {
-                    is GooglePlayServicesRepairableException, is GooglePlayServicesNotAvailableException -> showAutocompleteErrorToast()
-                    else -> throw e
-                }
-            }
-        }
-
-        val (startDatePicker, endDatePicker) = createLinkedDatePickerDialogs(context, startDateElement, endDateElement)
-        val (startTimePicker, endTimePicker) = createLinkedTimePickerDialogs(context, startDateElement, endDateElement, startTimeElement, endTimeElement)
-
-        startDateElement.run { setOnClickListener { startDatePicker.updateDate(this, dateFormatter).show() } }
-        endDateElement.run { setOnClickListener { endDatePicker.updateDate(this, dateFormatter).show() } }
-        startTimeElement.run { setOnClickListener { startTimePicker.updateTime(this, timeFormatter).show() } }
-        endTimeElement.run { setOnClickListener { endTimePicker.updateTime(this, timeFormatter).show() } }
-
-        taskElement.setOnClickListener { navigatorListener.replaceFragment(TaskListFragment()) }
-        pollElement.setOnClickListener { navigatorListener.replaceFragment(PollFragment()) }
-        rideElement.setOnClickListener { navigatorListener.replaceFragment(TransportFragment()) }
+        setLocationListener()
+        setDateTimeListeners()
+        setListsListeners()
 
         editing = savedInstanceState?.getBoolean("editing") ?: false
         if (eventViewModel.selected() != null) decideViewMode()
@@ -107,15 +86,6 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean("editing", editing)
-    }
-
-    private fun showAutocompleteErrorToast() = Toast.makeText(activity, getString(R.string.autocompleteError), Toast.LENGTH_LONG).show()
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when {
-            requestCode == autocompleteRequestCode && resultCode == RESULT_OK -> locationElement.text = PlaceAutocomplete.getPlace(activity, data).name.toString()
-            requestCode == autocompleteRequestCode && resultCode == RESULT_ERROR-> showAutocompleteErrorToast()
-            else -> Unit
-        }
     }
 
     override fun setupToolbar() {
@@ -138,13 +108,47 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
     }
 
     private fun setViewMode(backPressedListener: OnBackPressedListener?, drawable: Int, onClickListener: () -> Unit) = (view as EventLayout).run {
-        this.mode(editing)
+        mode(editing)
         navigatorListener.onBackPressedListener = backPressedListener
         eventFab.withDrawable(drawable).setOnClickListener { onClickListener() }
     }
 
-    fun FloatingActionButton.withDrawable(drawableId: Int): FloatingActionButton =
-            apply { setImageDrawable(ResourcesCompat.getDrawable(resources, drawableId, null)) }
+    private fun setLocationListener() = locationElement.setOnClickListener {
+        try {
+            val intent = PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN).build(activity)
+            startActivityForResult(intent, autocompleteRequestCode)
+        } catch (e: Exception) {
+            when (e) {
+                is GooglePlayServicesRepairableException, is GooglePlayServicesNotAvailableException -> showAutocompleteErrorToast()
+                else -> throw e
+            }
+        }
+    }
+
+    private fun showAutocompleteErrorToast() = Toast.makeText(activity, getString(R.string.autocompleteError), Toast.LENGTH_LONG).show()
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when {
+            requestCode == autocompleteRequestCode && resultCode == RESULT_OK -> locationElement.text = PlaceAutocomplete.getPlace(activity, data).name.toString()
+            requestCode == autocompleteRequestCode && resultCode == RESULT_ERROR-> showAutocompleteErrorToast()
+            else -> Unit
+        }
+    }
+
+    private fun setDateTimeListeners() {
+        val (startDatePicker, endDatePicker) = createLinkedDatePickerDialogs(context, startDateElement, endDateElement)
+        val (startTimePicker, endTimePicker) = createLinkedTimePickerDialogs(context, startDateElement, endDateElement, startTimeElement, endTimeElement)
+
+        startDateElement.run { setOnClickListener { startDatePicker.updateDate(this, dateFormatter).show() } }
+        endDateElement.run { setOnClickListener { endDatePicker.updateDate(this, dateFormatter).show() } }
+        startTimeElement.run { setOnClickListener { startTimePicker.updateTime(this, timeFormatter).show() } }
+        endTimeElement.run { setOnClickListener { endTimePicker.updateTime(this, timeFormatter).show() } }
+    }
+
+    private fun setListsListeners() {
+        taskElement.setOnClickListener { navigatorListener.replaceFragment(TaskListFragment()) }
+        pollElement.setOnClickListener { navigatorListener.replaceFragment(PollFragment()) }
+        rideElement.setOnClickListener { navigatorListener.replaceFragment(TransportFragment()) }
+    }
 
 }
 
