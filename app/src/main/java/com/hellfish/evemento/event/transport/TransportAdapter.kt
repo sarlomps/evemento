@@ -8,7 +8,7 @@ import com.hellfish.evemento.R
 import com.hellfish.evemento.RecyclerAdapter
 import kotlinx.android.synthetic.main.transport_item.view.*
 
-class TransportAdapter(val transportList: ArrayList<TransportItem>, private val navigatorListener: Navigator): RecyclerAdapter<CardView, TransportItem>(transportList){
+class TransportAdapter(val transportList: List<TransportItem>, private val navigatorListener: Navigator): RecyclerAdapter<CardView, TransportItem>(transportList){
 
     override fun layout(item: Int): Int = R.layout.transport_item
 

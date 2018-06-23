@@ -11,29 +11,40 @@ class EventViewModel : ViewModel() {
     var selectedEvent: MutableLiveData<Event> = MutableLiveData()
         private set
     private var guests: List<String> = listOf()
-    private var rides: List<TransportItem> = mockedRides()
+    var rides: MutableLiveData<List<TransportItem>> = MutableLiveData()
+        private set
     private var tasks: List<String> = listOf()
     private var polls: List<String> = listOf()
     private var comments: List<String> = listOf()
 
     fun loadEvent(event: Event) {
         select(event)
-        guests = listOf() //TODO load it from Firebase
-        rides = mockedRides() //TODO load it from Firebase
-        tasks = listOf() //TODO load it from Firebase
-        polls = listOf() //TODO load it from Firebase
-        comments = listOf() //TODO load it from Firebase
+        loadDataFrom(event)
     }
 
     fun updateView() = select(selectedEvent.value)
 
     fun selected() = selectedEvent.value
 
-    fun select(event: Event?) { selectedEvent.value = event }
+    fun select(event: Event?) {
+        loadDataFrom(event)
+        selectedEvent.value = event
+    }
 
     //TODO The idea is overload this mehtod with the real type (Guest / Poll / Task / Ride / Comment)
     fun add(element: String) {
         guests += element
+    }
+
+    /**
+     *The idea is this methos is to called the mocked methods and then replace those methods to pull from server
+     */
+    private fun loadDataFrom(event: Event?) {
+        rides.value = mockedRides()
+        guests = listOf() //TODO load it from Firebase
+        tasks = listOf() //TODO load it from Firebase
+        polls = listOf() //TODO load it from Firebase
+        comments = listOf() //TODO load it from Firebase
     }
 
     fun mockedRides(): List<TransportItem> {
