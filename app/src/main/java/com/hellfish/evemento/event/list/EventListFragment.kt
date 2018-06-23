@@ -14,16 +14,20 @@ import com.hellfish.evemento.event.EventListAdapter
 import com.hellfish.evemento.event.EventFragment
 import android.support.design.widget.FloatingActionButton
 import com.hellfish.evemento.EventViewModel
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 
 
 class EventListFragment : NavigatorFragment() {
 
     lateinit var eventViewModel: EventViewModel
     lateinit var eventsRecyclerView: RecyclerView
+    lateinit var dateTimeFormatter: DateTimeFormatter
     var events: ArrayList<Event> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        dateTimeFormatter = DateTimeFormat.forPattern(getString(R.string.DateTimeFormat))
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
     }
 

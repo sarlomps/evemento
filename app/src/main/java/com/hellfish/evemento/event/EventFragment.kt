@@ -21,14 +21,26 @@ import kotlinx.android.synthetic.main.event_element_time.*
 import kotlinx.android.synthetic.main.event_elements.*
 import kotlinx.android.synthetic.main.event_tool_bar.*
 import kotlinx.android.synthetic.main.fragment_event.view.*
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 
 class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDialogFactory {
+
+
+    lateinit var dateTimeFormatter: DateTimeFormatter
+    override lateinit var dateFormatter: DateTimeFormatter
+    override lateinit var timeFormatter: DateTimeFormatter
 
     lateinit var eventViewModel: EventViewModel
     var editing: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        dateTimeFormatter = DateTimeFormat.forPattern(getString(R.string.DateTimeFormat))
+        dateFormatter = DateTimeFormat.forPattern(getString(R.string.DateFormat))
+        timeFormatter = DateTimeFormat.forPattern(getString(R.string.TimeFormat))
+
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
         eventViewModel.selectedEvent.observe(this, Observer { event ->
             if (!editing) {
@@ -63,10 +75,10 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
         pollElement.setOnClickListener { navigatorListener.replaceFragment(PollFragment()) }
         rideElement.setOnClickListener { navigatorListener.replaceFragment(TransportFragment()) }
 
-        startDateElement.run { setOnClickListener { startDatePicker.updateDate(this, onlyDateFormatter).show() } }
-        endDateElement.run { setOnClickListener { endDatePicker.updateDate(this, onlyDateFormatter).show() } }
-        startTimeElement.run { setOnClickListener { startTimePicker.updateTime(this, onlyTimeFormatter).show() } }
-        endTimeElement.run { setOnClickListener { endTimePicker.updateTime(this, onlyTimeFormatter).show() } }
+        startDateElement.run { setOnClickListener { startDatePicker.updateDate(this, dateFormatter).show() } }
+        endDateElement.run { setOnClickListener { endDatePicker.updateDate(this, dateFormatter).show() } }
+        startTimeElement.run { setOnClickListener { startTimePicker.updateTime(this, timeFormatter).show() } }
+        endTimeElement.run { setOnClickListener { endTimePicker.updateTime(this, timeFormatter).show() } }
 
         editing = savedInstanceState?.getBoolean("editing") ?: false
         if (eventViewModel.selected() != null) decideViewMode()

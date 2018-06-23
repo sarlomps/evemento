@@ -10,8 +10,7 @@ import org.joda.time.format.DateTimeFormatter
 
 interface TimePickerDialogFactory {
 
-    val onlyTimeFormatter: DateTimeFormatter
-        get() = DateTimeFormat.forPattern("HH:mm")
+    var timeFormatter: DateTimeFormatter
 
     fun createLinkedTimePickerDialogs(context: Context?,
                                       startDateView: TextView,
@@ -29,13 +28,13 @@ interface TimePickerDialogFactory {
             TimePickerDialog.OnTimeSetListener { _, hour, minute ->
                 val localTime = LocalTime(hour, minute, 0)
                 checkTimeConsistency(localTime, startDateView, endDateView, startText, endText)
-                textView.text= onlyTimeFormatter.print(localTime)
+                textView.text= timeFormatter.print(localTime)
             }
 
     fun checkTimeConsistency(localTime: LocalTime, startDateView: TextView, endDateView: TextView, startText: TextView?, endText: TextView?) {
         if (startDateView.text == endDateView.text){
-            startText?.updateTimeIfAfter(localTime, onlyTimeFormatter)
-            endText?.updateTimeIfBefore(localTime, onlyTimeFormatter)
+            startText?.updateTimeIfAfter(localTime, timeFormatter)
+            endText?.updateTimeIfBefore(localTime, timeFormatter)
         }
 
     }
