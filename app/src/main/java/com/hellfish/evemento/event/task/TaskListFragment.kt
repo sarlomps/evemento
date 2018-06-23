@@ -11,12 +11,12 @@ import android.widget.EditText
 import com.hellfish.evemento.R
 import com.hellfish.evemento.R.string.title_fragment_task_list
 import com.hellfish.evemento.NavigatorFragment
-import com.hellfish.evemento.event.poll.ClosedAnswersAdapter
-import kotlinx.android.synthetic.main.fragment_poll_list.*
+import kotlinx.android.synthetic.main.fragment_task_list.*
 
 class TaskListFragment : NavigatorFragment() {
 
     override val titleId = title_fragment_task_list
+    val taskItems : MutableList<TaskItem> = mutableListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(
@@ -25,7 +25,7 @@ class TaskListFragment : NavigatorFragment() {
                 false
         )
 
-        val taskItems = mutableListOf<TaskItem>(TaskItem("Much wow, much fun!", "Ringo"))
+        taskItems.add(TaskItem("Much wow, much fun!", "Ringo"))
 
         val taskListAdd = view.findViewById<FloatingActionButton>(R.id.task_list_add)
         taskListAdd.setOnClickListener {
@@ -55,10 +55,18 @@ class TaskListFragment : NavigatorFragment() {
 
         }
 
-        recyclerView.apply {
+        return view
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+
+        task_recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = TaskListAdapter(taskItems)
         }
-        return view
+
+
     }
 }

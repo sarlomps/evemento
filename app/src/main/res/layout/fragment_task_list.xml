@@ -9,7 +9,7 @@
     tools:context=".event.task.TaskListFragment">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/events_recycler_view"
+        android:id="@+id/task_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"/>
