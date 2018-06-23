@@ -37,6 +37,7 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
     }
 
     private fun enabledEditableElements(enabled: Boolean) {
+        locationElement.isEnabled = enabled
         editTimeElement.visibility = enabled.toVisibility()
         if (enabled) descriptionElement.visibility = View.VISIBLE
         descriptionElement.isEnabled = enabled
