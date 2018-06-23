@@ -1,5 +1,6 @@
 package com.hellfish.evemento.event
 
+import android.app.Activity.RESULT_OK
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -8,6 +9,10 @@ import android.support.v4.content.res.ResourcesCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException
+import com.google.android.gms.common.GooglePlayServicesRepairableException
+import com.google.android.gms.location.places.ui.PlaceAutocomplete
 import com.hellfish.evemento.EventViewModel
 import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.OnBackPressedListener
@@ -23,6 +28,9 @@ import kotlinx.android.synthetic.main.event_tool_bar.*
 import kotlinx.android.synthetic.main.fragment_event.view.*
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
+import android.content.Intent
+import com.google.android.gms.location.places.ui.PlaceAutocomplete.RESULT_ERROR
+
 
 class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDialogFactory {
 
@@ -30,6 +38,8 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
     lateinit var dateTimeFormatter: DateTimeFormatter
     override lateinit var dateFormatter: DateTimeFormatter
     override lateinit var timeFormatter: DateTimeFormatter
+
+    private val autocompleteRequestCode = 42
 
     lateinit var eventViewModel: EventViewModel
     var editing: Boolean = false
@@ -66,17 +76,29 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        locationElement.setOnClickListener {
+            try {
+                val intent = PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN).build(activity)
+                startActivityForResult(intent, autocompleteRequestCode)
+            } catch (e: Exception) {
+                when (e) {
+                    is GooglePlayServicesRepairableException, is GooglePlayServicesNotAvailableException -> showAutocompleteErrorToast()
+                    else -> throw e
+                }
+            }
+        }
+
         val (startDatePicker, endDatePicker) = createLinkedDatePickerDialogs(context, startDateElement, endDateElement)
         val (startTimePicker, endTimePicker) = createLinkedTimePickerDialogs(context, startDateElement, endDateElement, startTimeElement, endTimeElement)
-
-        taskElement.setOnClickListener { navigatorListener.replaceFragment(TaskListFragment()) }
-        pollElement.setOnClickListener { navigatorListener.replaceFragment(PollFragment()) }
-        rideElement.setOnClickListener { navigatorListener.replaceFragment(TransportFragment()) }
 
         startDateElement.run { setOnClickListener { startDatePicker.updateDate(this, dateFormatter).show() } }
         endDateElement.run { setOnClickListener { endDatePicker.updateDate(this, dateFormatter).show() } }
         startTimeElement.run { setOnClickListener { startTimePicker.updateTime(this, timeFormatter).show() } }
         endTimeElement.run { setOnClickListener { endTimePicker.updateTime(this, timeFormatter).show() } }
+
+        taskElement.setOnClickListener { navigatorListener.replaceFragment(TaskListFragment()) }
+        pollElement.setOnClickListener { navigatorListener.replaceFragment(PollFragment()) }
+        rideElement.setOnClickListener { navigatorListener.replaceFragment(TransportFragment()) }
 
         editing = savedInstanceState?.getBoolean("editing") ?: false
         if (eventViewModel.selected() != null) decideViewMode()
@@ -87,6 +109,14 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
         outState.putBoolean("editing", editing)
     }
 
+    private fun showAutocompleteErrorToast() = Toast.makeText(activity, getString(R.string.autocompleteError), Toast.LENGTH_LONG).show()
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when {
+            requestCode == autocompleteRequestCode && resultCode == RESULT_OK -> locationElement.text = PlaceAutocomplete.getPlace(activity, data).name.toString()
+            requestCode == autocompleteRequestCode && resultCode == RESULT_ERROR-> showAutocompleteErrorToast()
+            else -> Unit
+        }
+    }
 
     override fun setupToolbar() {
         navigatorListener.setCustomToolbar(eventToolbar)

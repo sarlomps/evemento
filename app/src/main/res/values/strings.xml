@@ -26,6 +26,7 @@
     <string name="DateTimeFormat">EEE dd MMM yyyy HH:mm</string>
     <string name="DateFormat">EEE dd MMM yyyy</string>
     <string name="TimeFormat">HH:mm</string>
+    <string name="autocompleteError">There was an error when loading places, please try again later</string>
 
 
 </resources>
