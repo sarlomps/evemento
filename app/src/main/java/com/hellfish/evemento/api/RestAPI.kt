@@ -17,7 +17,7 @@ class RestAPI {
         eventsApi = apiClient.create(FirebaseApiInterface::class.java)
     }
 
-    fun getEventsCall(orderBy: String, equalTo: String): Call<Map<String, EventResponse>> {
+    private fun getEventsCall(orderBy: String, equalTo: String): Call<Map<String, EventResponse>> {
         return eventsApi.getEvents(orderBy, equalTo)
     }
 
@@ -40,4 +40,28 @@ class RestAPI {
             }
         })
     }
+
+    private fun pushEventCall(event:EventResponse): Call<PushEventResponse> {
+        return eventsApi.pushEvent(event)
+    }
+
+    fun pushEvent(event:EventResponse, callback: (String?, Int?) -> Unit) {
+        val call = pushEventCall(event)
+        call.enqueue(object : Callback<PushEventResponse> {
+            override fun onResponse(call: Call<PushEventResponse>?, response: Response<PushEventResponse>?) {
+                if (response != null && response.isSuccessful) {
+                    response.body()?.let {
+                        callback(it.name, null)
+                        return
+                    }
+                }
+                callback(null, R.string.api_error_pushing_data)
+            }
+
+            override fun onFailure(call: Call<PushEventResponse>?, t: Throwable?) {
+                callback(null, R.string.api_error_pushing_data)
+            }
+        })
+    }
+
 }

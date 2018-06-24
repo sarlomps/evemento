@@ -13,14 +13,6 @@ interface  FirebaseApiInterface {
 
     @Headers("Content-Type: application/json")
     @POST("/events.json")
-    fun pushEvent(@Field("title") title: String,
-                  @Field("description") description: String,
-                  @Field("startDate") startDate: String,
-                  @Field("endDate") endDate: String,
-                  @Field("location") location: String,
-                  @Field("user") user: String)
+    fun pushEvent(@Body event: EventResponse)
             : Call<PushEventResponse>
-
-
-
 }

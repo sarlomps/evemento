@@ -20,12 +20,7 @@ class EventMapper {
             DateTime.parse(entity.startDate),
             DateTime.parse(entity.endDate),
             entity.location,
-            entity.user,
-            emptyList(),
-            emptyList(),
-            emptyList(),
-            emptyList(),
-            emptyList())
+            entity.user)
 
     fun mapToEntity(event: Event): EventResponse = EventResponse(event.title,
             event.description,
