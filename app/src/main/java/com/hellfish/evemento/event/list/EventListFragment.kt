@@ -16,6 +16,8 @@ import com.hellfish.evemento.*
 import com.hellfish.evemento.extensions.showSnackbar
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
+import kotlinx.android.synthetic.main.activity_main.*
+
 
 
 class EventListFragment : NavigatorFragment() {
