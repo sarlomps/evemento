@@ -21,7 +21,9 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
             startDate = dateTimeFormatter.parseDateTime("${startDateElement.text} ${startTimeElement.text}"),
             endDate = dateTimeFormatter.parseDateTime("${endDateElement.text} ${endTimeElement.text}"),
             description = descriptionElement.text.toString(),
-            location = locationElement.text.toString()
+            location = locationElement.text.toString(),
+            user = "", //TODO: COMPLETAR
+            eventId = "" //TODO: VALIDAR: COMO ES UN EVENTO NUEVO NO TIENE ID ASIGNADO, SE GENERA RECIEN AL PUSHEAR A FIREBASE
     )
 
     fun mode(editing: Boolean) {
