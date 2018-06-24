@@ -2,7 +2,6 @@ package com.hellfish.evemento.event.list
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -15,7 +14,6 @@ import com.hellfish.evemento.event.EventFragment
 import android.support.design.widget.FloatingActionButton
 import com.hellfish.evemento.*
 import com.hellfish.evemento.extensions.showSnackbar
-import kotlinx.android.synthetic.main.activity_main.*
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 
