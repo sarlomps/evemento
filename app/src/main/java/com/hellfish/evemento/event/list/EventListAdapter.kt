@@ -10,7 +10,13 @@ import com.hellfish.evemento.extensions.inflate
 
 import kotlinx.android.synthetic.main.fragment_event_list_item.view.*
 
-class EventListAdapter(private val fragment: EventListFragment, private val events: ArrayList<Event>) : RecyclerView.Adapter<EventListAdapter.EventHolder>() {
+class EventListAdapter(private val fragment: EventListFragment, private var events: ArrayList<Event>) : RecyclerView.Adapter<EventListAdapter.EventHolder>() {
+
+    fun refresh(newEvents: ArrayList<Event>)
+    {
+        this.events = newEvents;
+        notifyDataSetChanged();
+    }
 
     override fun getItemCount(): Int {
         return events.size
