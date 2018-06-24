@@ -1,23 +1,21 @@
 package com.hellfish.evemento.event.list
 
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.hellfish.evemento.NavigatorFragment
-import com.hellfish.evemento.R
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.EventListAdapter
 import com.hellfish.evemento.event.EventFragment
 import android.support.design.widget.FloatingActionButton
 import android.util.Log
-import com.hellfish.evemento.NetworkManager
+import com.hellfish.evemento.*
 import com.hellfish.evemento.extensions.showSnackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import com.hellfish.evemento.EventViewModel
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 
@@ -48,15 +46,19 @@ class EventListFragment : NavigatorFragment() {
         if (newEvents != null) {
             events = newEvents
         } else {
-            NetworkManager.getEventsForUser("AwrjKTnQ5CTfmfLEMxvmEmkM6Tz2") { userEvents, errorMessage ->
-                userEvents?.let {
-                    Log.d("getEventsForUser", it.toString())
-                    refresh(it)
-                    return@getEventsForUser
+            if (SessionManager.isLoggedIn) {
+                NetworkManager.getEventsForUser(SessionManager.currentUser!!.uid) { userEvents, errorMessage ->
+                    userEvents?.let {
+                        Log.d("getEventsForUser", it.toString())
+                        refresh(it)
+                        return@getEventsForUser
+                    }
+
+                    showSnackbar(errorMessage ?: R.string.network_unknown_error, main_container)
                 }
-
-                showSnackbar(errorMessage ?: R.string.network_unknown_error, main_container)
-
+            } else {
+                // TODO: TEST
+                popUserToLoginActivity()
             }
         }
 
@@ -82,4 +84,10 @@ class EventListFragment : NavigatorFragment() {
         eventViewModel.select(event)
         navigatorListener.replaceFragment(EventFragment())
     }
+    fun popUserToLoginActivity() {
+        val intent = Intent(context, SignInActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
+
 }
