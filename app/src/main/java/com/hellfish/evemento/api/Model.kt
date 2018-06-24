@@ -1,6 +1,7 @@
 package com.hellfish.evemento.api
 
 import com.hellfish.evemento.event.Event
+import org.joda.time.DateTime
 
 data class EventResponse(val title: String,
                          val description: String,
@@ -16,8 +17,8 @@ class EventMapper {
     fun mapToDomain(eventId: String, entity: EventResponse): Event = Event(eventId,
             entity.title,
             entity.description,
-            entity.startDate,
-            entity.endDate,
+            DateTime.parse(entity.startDate),
+            DateTime.parse(entity.endDate),
             entity.location,
             entity.user,
             emptyList(),
@@ -28,8 +29,8 @@ class EventMapper {
 
     fun mapToEntity(event: Event): EventResponse = EventResponse(event.title,
             event.description,
-            event.startDate,
-            event.endDate,
+            event.startDate.toString(),
+            event.endDate.toString(),
             event.location,
             event.user)
 

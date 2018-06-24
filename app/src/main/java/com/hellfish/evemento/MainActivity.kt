@@ -9,30 +9,32 @@ import android.support.v7.widget.Toolbar
 import com.hellfish.evemento.event.list.EventListFragment
 import android.util.Log
 import android.view.MenuItem
+import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.extensions.showSnackbar
 import com.hellfish.evemento.extensions.toVisibility
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer.*
 import kotlinx.android.synthetic.main.nav_header.view.*
 import net.danlew.android.joda.JodaTimeAndroid
+import android.arch.lifecycle.ViewModelProviders
 
 class MainActivity : AppCompatActivity(), Navigator {
 
+    lateinit var eventViewModel: EventViewModel
     override var onBackPressedListener: OnBackPressedListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer)
 
-        // Make sure we are logged in
         if (!SessionManager.isLoggedIn) {
             showLoginActivity()
         }
 
-        updateNavBarHeader()
-
         JodaTimeAndroid.init(this)
+        eventViewModel = ViewModelProviders.of(this).get(EventViewModel::class.java)
 
+        updateNavBarHeader()
         navView.setNavigationItemSelectedListener { menuItem ->
             menuItem.isChecked = true
             drawerLayout.closeDrawers()

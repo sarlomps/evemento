@@ -1,5 +1,6 @@
 package com.hellfish.evemento.event.list
 
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -16,12 +17,23 @@ import android.util.Log
 import com.hellfish.evemento.NetworkManager
 import com.hellfish.evemento.extensions.showSnackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import com.hellfish.evemento.EventViewModel
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 
 
 class EventListFragment : NavigatorFragment() {
 
+    lateinit var eventViewModel: EventViewModel
     lateinit var eventsRecyclerView: RecyclerView
+    lateinit var dateTimeFormatter: DateTimeFormatter
     var events: ArrayList<Event> = ArrayList()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        dateTimeFormatter = DateTimeFormat.forPattern(getString(R.string.DateTimeFormat))
+        eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -66,12 +78,8 @@ class EventListFragment : NavigatorFragment() {
 
     }
 
-    fun onSelectedEvent(event:Event) {
-        val eventDetailFragment = EventFragment()
-        val args = Bundle()
-        // TODO: Validar si hace falta algo mas para inicializar bien el EventFragment
-        args.putParcelable("event", event)
-        eventDetailFragment.arguments = args
-        navigatorListener.replaceFragment(eventDetailFragment)
+    fun onSelectedEvent(event: Event) {
+        eventViewModel.select(event)
+        navigatorListener.replaceFragment(EventFragment())
     }
 }
