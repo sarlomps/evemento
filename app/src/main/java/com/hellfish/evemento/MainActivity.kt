@@ -6,13 +6,11 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.list.EventListFragment
 import android.util.Log
 import android.view.MenuItem
 import com.hellfish.evemento.extensions.showSnackbar
 import com.hellfish.evemento.extensions.toVisibility
-
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer.*
 import kotlinx.android.synthetic.main.nav_header.view.*
@@ -45,73 +43,7 @@ class MainActivity : AppCompatActivity(), Navigator {
 
         if (savedInstanceState == null) {
             val fragment = EventListFragment()
-            val args = Bundle()
-
-            // TODO: Cargar de algun lado sin hardcodear...
-            val events = arrayListOf(
-                    Event("Mock Title 1",
-                            "Mock Description 1",
-                            "03/06/2018 - 04:20",
-                            "03/06/2018 - 04:20",
-                            "Mock Location 1",
-                            listOf("Juan", "Juan", "Juan"),
-                            listOf("rides"),
-                            listOf("tasks"),
-                            listOf("polls"),
-                            listOf("comments")),
-                    Event("Mock Title 2",
-                            "Mock Description 2",
-                            "03/06/2018 - 04:20",
-                            "03/06/2018 - 04:20",
-                            "Mock Location 2",
-                            listOf("Juan", "Juan", "Juan"),
-                            listOf("rides"),
-                            listOf("tasks"),
-                            listOf("polls"),
-                            listOf("comments")),
-                    Event("Mock Title 3",
-                            "Mock Description 3",
-                            "03/06/2018 - 04:20",
-                            "03/06/2018 - 04:20",
-                            "Mock Location 3",
-                            listOf("Juan", "Juan", "Juan"),
-                            listOf("rides"),
-                            listOf("tasks"),
-                            listOf("polls"),
-                            listOf("comments")),
-                    Event("Mock Title 4",
-                            "Mock Description 4",
-                            "03/06/2018 - 04:20",
-                            "03/06/2018 - 04:20",
-                            "Mock Location 4",
-                            listOf("Juan", "Juan", "Juan"),
-                            listOf("rides"),
-                            listOf("tasks"),
-                            listOf("polls"),
-                            listOf("comments")),
-                    Event("Mock Title 5",
-                            "Mock Description 5",
-                            "03/06/2018 - 04:20",
-                            "03/06/2018 - 04:20",
-                            "Mock Location 5",
-                            listOf("Juan", "Juan", "Juan"),
-                            listOf("rides"),
-                            listOf("tasks"),
-                            listOf("polls"),
-                            listOf("comments")),
-                    Event("Mock Title 6",
-                            "Mock Description 6",
-                            "03/06/2018 - 04:20",
-                            "03/06/2018 - 04:20",
-                            "Mock Location 6",
-                            listOf("Juan", "Juan", "Juan"),
-                            listOf("rides"),
-                            listOf("tasks"),
-                            listOf("polls"),
-                            listOf("comments")))
-
-            args.putParcelableArrayList("events", events)
-            fragment.arguments = args
+            // Cargo el EventListFragment sin pasarle argumento porque la llamada para pedir eventos la hace despues.
             supportFragmentManager.beginTransaction().add(R.id.main_container, fragment).commit()
         }
     }

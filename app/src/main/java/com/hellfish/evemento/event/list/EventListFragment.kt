@@ -12,6 +12,10 @@ import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.EventListAdapter
 import com.hellfish.evemento.event.EventFragment
 import android.support.design.widget.FloatingActionButton
+import android.util.Log
+import com.hellfish.evemento.NetworkManager
+import com.hellfish.evemento.extensions.showSnackbar
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class EventListFragment : NavigatorFragment() {
@@ -31,6 +35,17 @@ class EventListFragment : NavigatorFragment() {
         val newEvents: ArrayList<Event>? = arguments?.getParcelableArrayList<Event>("events")
         if (newEvents != null) {
             events = newEvents
+        } else {
+            NetworkManager.getEventsForUser("AwrjKTnQ5CTfmfLEMxvmEmkM6Tz2") { userEvents, errorMessage ->
+                userEvents?.let {
+                    Log.d("getEventsForUser", it.toString())
+                    refresh(it)
+                    return@getEventsForUser
+                }
+
+                showSnackbar(errorMessage ?: R.string.network_unknown_error, main_container)
+
+            }
         }
 
         eventsRecyclerView.adapter = EventListAdapter(this, events)
@@ -42,6 +57,12 @@ class EventListFragment : NavigatorFragment() {
             navigatorListener.replaceFragment(EventFragment())
         }
         return view
+
+    }
+
+    fun refresh(newEvents: List<Event>) {
+        events = ArrayList(newEvents)
+        (eventsRecyclerView.adapter as EventListAdapter).refresh(events)
 
     }
 
