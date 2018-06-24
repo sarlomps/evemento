@@ -1,5 +1,6 @@
 package com.hellfish.evemento.event.list
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
@@ -12,7 +13,6 @@ import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.EventListAdapter
 import com.hellfish.evemento.event.EventFragment
 import android.support.design.widget.FloatingActionButton
-import android.util.Log
 import com.hellfish.evemento.*
 import com.hellfish.evemento.extensions.showSnackbar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -23,6 +23,7 @@ import org.joda.time.format.DateTimeFormatter
 class EventListFragment : NavigatorFragment() {
 
     lateinit var eventViewModel: EventViewModel
+    lateinit var eventListViewModel: EventListViewModel
     lateinit var eventsRecyclerView: RecyclerView
     lateinit var dateTimeFormatter: DateTimeFormatter
     var events: ArrayList<Event> = ArrayList()
@@ -31,6 +32,7 @@ class EventListFragment : NavigatorFragment() {
         super.onCreate(savedInstanceState)
         dateTimeFormatter = DateTimeFormat.forPattern(getString(R.string.DateTimeFormat))
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
+        eventListViewModel = ViewModelProviders.of(activity!!).get(EventListViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -45,31 +47,29 @@ class EventListFragment : NavigatorFragment() {
         val newEvents: ArrayList<Event>? = arguments?.getParcelableArrayList<Event>("events")
         if (newEvents != null) {
             events = newEvents
-        } else {
-            if (SessionManager.isLoggedIn) {
-                NetworkManager.getEventsForUser(SessionManager.currentUser!!.uid) { userEvents, errorMessage ->
-                    userEvents?.let {
-                        Log.d("getEventsForUser", it.toString())
-                        refresh(it)
-                        return@getEventsForUser
-                    }
-
-                    showSnackbar(errorMessage ?: R.string.network_unknown_error, main_container)
-                }
-            } else {
-                // TODO: TEST
-                popUserToLoginActivity()
-            }
         }
-
         eventsRecyclerView.adapter = EventListAdapter(this, events)
 
+        eventListViewModel.events.observe(this, Observer { newEvents ->
+            newEvents?.let {
+                refresh(newEvents)
+            }
+        })
 
         val fab = view.findViewById<FloatingActionButton>(R.id.event_list_fab)
         fab.setOnClickListener {
             // TODO: Validar como inicializar bien el EventFragment en modo edicion de un evento nuevo.
             navigatorListener.replaceFragment(EventFragment())
         }
+
+        // Fetch user events
+        eventListViewModel.fetchEventsForCurrentUser { errorMessage ->
+            // Let user know if there was an error
+            errorMessage?.let {
+                showSnackbar(it, main_container)
+            }
+        }
+
         return view
 
     }
@@ -84,10 +84,4 @@ class EventListFragment : NavigatorFragment() {
         eventViewModel.select(event)
         navigatorListener.replaceFragment(EventFragment())
     }
-    fun popUserToLoginActivity() {
-        val intent = Intent(context, SignInActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-    }
-
 }
