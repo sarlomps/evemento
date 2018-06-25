@@ -11,10 +11,6 @@ import android.widget.Toast
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.location.places.ui.PlaceAutocomplete
-import com.hellfish.evemento.EventViewModel
-import com.hellfish.evemento.NavigatorFragment
-import com.hellfish.evemento.OnBackPressedListener
-import com.hellfish.evemento.R
 import com.hellfish.evemento.event.poll.PollFragment
 import com.hellfish.evemento.event.task.TaskListFragment
 import com.hellfish.evemento.event.time.DateTimePickerDialogFactory
@@ -32,8 +28,8 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Callback
 import android.support.v7.app.AlertDialog
 import android.widget.EditText
-
-
+import com.hellfish.evemento.*
+import org.joda.time.DateTime
 
 
 class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
@@ -103,6 +99,22 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
 
         editing = savedInstanceState?.getBoolean("editing") ?: false
         if (eventViewModel.selected() != null) decideViewMode()
+        else {
+            editing = true
+            setEditDateTimeFieldsToday()
+            setViewMode(null, R.drawable.ic_check_white_24dp) {
+                toggleViewMode()
+                val newEvent = (view as EventLayout).event(dateTimeFormatter)
+                NetworkManager.pushEvent(newEvent) { newEventId, errorMessage ->
+                    newEventId?.let {
+                        eventViewModel.select(newEvent.copy(eventId = newEventId))
+                        return@pushEvent
+                    }
+                    showToast(errorMessage ?: R.string.network_unknown_error)
+                }
+
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -179,6 +191,15 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         endDateElement.run { setOnClickListener { endDatePicker.updateDate(this, dateFormatter).show() } }
         startTimeElement.run { setOnClickListener { startTimePicker.updateTime(this, timeFormatter).show() } }
         endTimeElement.run { setOnClickListener { endTimePicker.updateTime(this, timeFormatter).show() } }
+    }
+
+    private fun setEditDateTimeFieldsToday() {
+        val start = DateTime.now().plusHours(2)
+        val end = DateTime.now().plusHours(4)
+        startDateElement.text = dateFormatter.print(start)
+        endDateElement.text = dateFormatter.print(end)
+        startTimeElement.text = timeFormatter.print(start)
+        endTimeElement.text = timeFormatter.print(end)
     }
 
     private fun setListsListeners() {
