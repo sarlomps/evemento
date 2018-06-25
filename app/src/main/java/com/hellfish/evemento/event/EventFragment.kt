@@ -17,8 +17,7 @@ import com.hellfish.evemento.OnBackPressedListener
 import com.hellfish.evemento.R
 import com.hellfish.evemento.event.poll.PollFragment
 import com.hellfish.evemento.event.task.TaskListFragment
-import com.hellfish.evemento.event.time.DatePickerDialogFactory
-import com.hellfish.evemento.event.time.TimePickerDialogFactory
+import com.hellfish.evemento.event.time.DateTimePickerDialogFactory
 import com.hellfish.evemento.event.transport.TransportFragment
 import kotlinx.android.synthetic.main.event_element_time.*
 import kotlinx.android.synthetic.main.event_elements.*
@@ -37,7 +36,7 @@ import android.widget.EditText
 
 
 
-class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDialogFactory {
+class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
 
 
     private lateinit var eventViewModel: EventViewModel
@@ -173,7 +172,7 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
     }
 
     private fun setDateTimeListeners() {
-        val (startDatePicker, endDatePicker) = createLinkedDatePickerDialogs(context, startDateElement, endDateElement)
+        val (startDatePicker, endDatePicker) = createLinkedDatePickerDialogs(context, startDateElement, endDateElement, startTimeElement, endTimeElement)
         val (startTimePicker, endTimePicker) = createLinkedTimePickerDialogs(context, startDateElement, endDateElement, startTimeElement, endTimeElement)
 
         startDateElement.run { setOnClickListener { startDatePicker.updateDate(this, dateFormatter).show() } }
