@@ -5,9 +5,11 @@ import kotlinx.android.parcel.Parcelize
 import org.joda.time.DateTime
 
 @Parcelize
-data class Event(val title: String,
+data class Event(var eventId:String,
+                 var title: String,
                  val imageUrl: String,
-                 val description: String,
-                 val startDate: DateTime,
-                 val endDate: DateTime,
-                 val location: String) : Parcelable
+                 var description: String,
+                 var startDate: DateTime,
+                 var endDate: DateTime,
+                 var location: String,
+                 var user: String ) : Parcelable
