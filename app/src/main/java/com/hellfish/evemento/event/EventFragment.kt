@@ -30,6 +30,11 @@ import android.content.Intent
 import com.google.android.gms.location.places.ui.PlaceAutocomplete.RESULT_ERROR
 import com.hellfish.evemento.extensions.withDrawable
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.Callback
+import android.support.v7.app.AlertDialog
+import android.widget.EditText
+
+
 
 
 class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDialogFactory {
@@ -37,6 +42,9 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
 
     private lateinit var eventViewModel: EventViewModel
     private var editing: Boolean = false
+
+    private lateinit var imageDialogInput: EditText
+    private lateinit var imageDialog: AlertDialog
 
     private val autocompleteRequestCode = 42
 
@@ -57,8 +65,7 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
             if (!editing) {
                 eventTitle.setText(event?.title)
 
-                imageUrl.text = event?.imageUrl
-                if (event?.imageUrl != "") Picasso.get().load(event?.imageUrl).fit().into(eventImage)
+                loadImage(event?.imageUrl)
 
                 descriptionElement.setText(event?.description)
                 descriptionElement.run { visibility = if (text.toString() == "") View.GONE else View.VISIBLE }
@@ -77,14 +84,20 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        imageDialogInput = EditText(activity!!)
+        imageDialog = AlertDialog.Builder(activity!!)
+                .setTitle("Add image url")
+                .setView(imageDialogInput)
+                .setPositiveButton(getString(R.string.accept)) { _, _ -> loadImage(imageDialogInput.text.toString()) }
+                .setNegativeButton(getString(R.string.cancel)) { _, _ -> Unit }
+                .setNeutralButton(getString(R.string.removeImage)) { _, _ -> loadImage("") }
+                .create()
         return EventLayout(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        eventImage.setOnClickListener {
-            Toast.makeText(activity, "Sarlomp: Add Photo Dialog", Toast.LENGTH_LONG).show()
-        }
+        setImageListener()
         setLocationListener()
         setDateTimeListeners()
         setListsListeners()
@@ -123,23 +136,38 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
         eventFab.withDrawable(drawable).setOnClickListener { onClickListener() }
     }
 
+    private fun showToast(stringId: Int) = Toast.makeText(activity, getString(stringId), Toast.LENGTH_LONG).show()
+
+    private fun setImageListener() = eventImage.setOnClickListener {
+        imageDialogInput.setText(imageUrl.text)
+        imageDialog.show()
+    }
+
+    fun loadImage(url: String?) {
+        imageUrl.text = url
+        if (imageUrl.text != "") Picasso.get().load(url).fit().into(eventImage, object: Callback {
+            override fun onError(e: java.lang.Exception?) { showToast(R.string.errorLoadingImage) }
+            override fun onSuccess() { }
+        })
+        else eventImage.setImageResource(0)
+    }
+
     private fun setLocationListener() = locationElement.setOnClickListener {
         try {
             val intent = PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN).build(activity)
             startActivityForResult(intent, autocompleteRequestCode)
         } catch (e: Exception) {
             when (e) {
-                is GooglePlayServicesRepairableException, is GooglePlayServicesNotAvailableException -> showAutocompleteErrorToast()
+                is GooglePlayServicesRepairableException, is GooglePlayServicesNotAvailableException -> showToast(R.string.autocompleteError)
                 else -> throw e
             }
         }
     }
 
-    private fun showAutocompleteErrorToast() = Toast.makeText(activity, getString(R.string.autocompleteError), Toast.LENGTH_LONG).show()
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when {
             requestCode == autocompleteRequestCode && resultCode == RESULT_OK -> locationElement.text = PlaceAutocomplete.getPlace(activity, data).name.toString()
-            requestCode == autocompleteRequestCode && resultCode == RESULT_ERROR-> showAutocompleteErrorToast()
+            requestCode == autocompleteRequestCode && resultCode == RESULT_ERROR-> showToast(R.string.autocompleteError)
             else -> Unit
         }
     }

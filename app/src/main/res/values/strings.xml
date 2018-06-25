@@ -30,6 +30,8 @@
     <string name="DateFormat">EEE dd MMM yyyy</string>
     <string name="TimeFormat">HH:mm</string>
     <string name="autocompleteError">There was an error when loading places, please try again later</string>
-
-
+    <string name="accept">Accept</string>
+    <string name="cancel">Cancel</string>
+    <string name="removeImage">Remove Image</string>
+    <string name="errorLoadingImage">There was an error when loading the image, please check the url or try again later</string>
 </resources>
