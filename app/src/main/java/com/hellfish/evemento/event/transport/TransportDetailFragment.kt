@@ -1,6 +1,7 @@
 package com.hellfish.evemento.event.transport
 
-import android.annotation.SuppressLint
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -8,32 +9,60 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.hellfish.evemento.EventViewModel
 import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.R
+import kotlinx.android.synthetic.main.fragment_transport_detail.*
 import kotlinx.android.synthetic.main.fragment_transport_detail.view.*
 
-class TransportDetailFragment : NavigatorFragment(){
+class TransportDetailFragment() : NavigatorFragment(){
 
-    lateinit var transport: TransportItem
+    lateinit var driver: UserMiniDetail
+    private lateinit var loggedInUser: UserMiniDetail
+    private lateinit var transport: TransportItem
+    private lateinit var eventViewModel: EventViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
+        eventViewModel.rides.observe(this, Observer { rides ->
+            transport = rides?.find{driver.sameUser(it.driver)}!!
+            llTransportDetail.removeAllViews()
+            transport.passangers.forEach { addPassanger(view!!, it) }
+            toogleFabIfTransportIsFull(transport)
+
+        })
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_transport_detail, container, false)
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val argTransport = arguments?.getParcelable<TransportItem>("transport")
-        if (argTransport != null) {
-            transport = argTransport
-            view.txtDriverName.text = transport.driver.nickname
-            transport.passangers
-                    .map { createPassanger(view.context, it) }
-                    .forEach { view.llTransportDetail.addView(it) }
+        val argDriver = arguments?.getParcelable<UserMiniDetail>("driver")
+        this.loggedInUser = UserMiniDetail("juanchiLoggeado", "sarlanga")
+
+        if (argDriver != null) {
+            driver = argDriver
+            view.txtDriverName.text = driver.nickname
+
+            transport_detail_fab.setOnClickListener{
+                transport.passangers.add(loggedInUser)
+                eventViewModel.edit(transport)
+            }
+
         }
     }
 
-    private fun createPassanger(context: Context, passanger: UserMiniDetail): TextView {
+
+    private fun addPassanger(view: View, passanger: UserMiniDetail) {
+        val passagerView = createPassangerView(view.context, passanger)
+        view.llTransportDetail.addView(passagerView)
+    }
+
+    private fun createPassangerView(context: Context, passanger: UserMiniDetail): TextView {
         return TextView(context).apply {
             layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                                     ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -43,6 +72,14 @@ class TransportDetailFragment : NavigatorFragment(){
                 setTextAppearance(context, R.style.Base_TextAppearance_AppCompat_Medium)
             }
             text = passanger.nickname
+        }
+    }
+
+    private fun toogleFabIfTransportIsFull(transport: TransportItem) {
+        if (transport.isFull() || transport.isAlreadyInTransport(loggedInUser)) {
+            transport_detail_fab.hide()
+        } else {
+            transport_detail_fab.show()
         }
     }
 }
