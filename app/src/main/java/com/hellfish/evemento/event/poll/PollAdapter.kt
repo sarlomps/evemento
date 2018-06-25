@@ -6,7 +6,7 @@ import com.hellfish.evemento.R
 import com.hellfish.evemento.RecyclerAdapter
 import kotlinx.android.synthetic.main.poll_content.view.*
 
-class PollAdapter(private val polls: MutableList<Poll>) : RecyclerAdapter<CardView, Poll>(polls) {
+class PollAdapter(polls: MutableList<Poll>, private val f: (Poll) -> Unit) : RecyclerAdapter<CardView, Poll>(polls) {
     companion object {
         const val openPollView = 0
         const val closedPollView = 1
@@ -18,8 +18,8 @@ class PollAdapter(private val polls: MutableList<Poll>) : RecyclerAdapter<CardVi
 
     override fun getItemView(item: Poll): Int {
         return when (item) {
-            is Poll.Open -> openPollView
-            is Poll.Closed -> closedPollView
+            is Poll.Votable -> openPollView
+            is Poll.NoVotable -> closedPollView
         }
     }
 
@@ -34,8 +34,8 @@ class PollAdapter(private val polls: MutableList<Poll>) : RecyclerAdapter<CardVi
 
     private fun answersAdapter(poll : Poll) : RecyclerAdapter<*, *> {
         return when(poll) {
-            is Poll.Open -> OpenAnswersAdapter({ answer -> polls[polls.indexOf(poll)] = poll.choose(answer) }, poll.answers)
-            is Poll.Closed -> ClosedAnswersAdapter(poll.answers, poll.totalVotes())
+            is Poll.Votable -> OpenAnswersAdapter({ answer -> f(poll.choose(answer)) }, poll.answers)
+            is Poll.NoVotable -> ClosedAnswersAdapter(poll.answers, poll.totalVotes())
         }
     }
 }
