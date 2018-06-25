@@ -29,6 +29,7 @@ import org.joda.time.format.DateTimeFormatter
 import android.content.Intent
 import com.google.android.gms.location.places.ui.PlaceAutocomplete.RESULT_ERROR
 import com.hellfish.evemento.extensions.withDrawable
+import com.squareup.picasso.Picasso
 
 
 class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDialogFactory {
@@ -55,8 +56,13 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
         eventViewModel.selectedEvent.observe(this, Observer { event ->
             if (!editing) {
                 eventTitle.setText(event?.title)
+
+                imageUrl.text = event?.imageUrl
+                if (event?.imageUrl != "") Picasso.get().load(event?.imageUrl).fit().into(eventImage)
+
                 descriptionElement.setText(event?.description)
                 descriptionElement.run { visibility = if (text.toString() == "") View.GONE else View.VISIBLE }
+
                 event?.let {
                     timeElement.text = String.format("%s\n%s", dateTimeFormatter.print(it.startDate), dateTimeFormatter.print(it.endDate))
                     startDateElement.text = dateFormatter.print(it.startDate)
@@ -64,6 +70,7 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
                     startTimeElement.text = timeFormatter.print(it.startDate)
                     endTimeElement.text = timeFormatter.print(it.endDate)
                 }
+
                 locationElement.text = event?.location
             }
         })
@@ -75,6 +82,9 @@ class EventFragment : NavigatorFragment(), DatePickerDialogFactory, TimePickerDi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        eventImage.setOnClickListener {
+            Toast.makeText(activity, "Sarlomp: Add Photo Dialog", Toast.LENGTH_LONG).show()
+        }
         setLocationListener()
         setDateTimeListeners()
         setListsListeners()

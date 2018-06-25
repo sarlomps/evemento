@@ -18,6 +18,7 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
 
     fun event(dateTimeFormatter: DateTimeFormatter) = Event(
             title = eventTitle.text.toString(),
+            imageUrl = imageUrl.text.toString(),
             startDate = dateTimeFormatter.parseDateTime("${startDateElement.text} ${startTimeElement.text}"),
             endDate = dateTimeFormatter.parseDateTime("${endDateElement.text} ${endTimeElement.text}"),
             description = descriptionElement.text.toString(),
@@ -27,16 +28,19 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
     fun mode(editing: Boolean) {
         if (editing) {
             notEditableElementsVisibility(View.GONE)
+            addPhotoHolder.visibility = View.VISIBLE
             changeTextColor(R.color.grey)
             enabledEditableElements(true)
         } else {
             notEditableElementsVisibility(View.VISIBLE)
+            addPhotoHolder.visibility = if (imageUrl.text == "") View.GONE else View.VISIBLE
             changeTextColor(R.color.text)
             enabledEditableElements(false)
         }
     }
 
     private fun enabledEditableElements(enabled: Boolean) {
+        eventImage.isEnabled = enabled
         locationElement.isEnabled = enabled
         editTimeElement.visibility = enabled.toVisibility()
         if (enabled) descriptionElement.visibility = View.VISIBLE
