@@ -1,17 +1,18 @@
 package com.hellfish.evemento.event.task
 
 import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import com.hellfish.evemento.R
 import com.hellfish.evemento.R.string.title_fragment_task_list
 import com.hellfish.evemento.NavigatorFragment
 import kotlinx.android.synthetic.main.fragment_task_list.*
+import kotlinx.android.synthetic.main.fragment_task_list_item_add.view.*
 
 class TaskListFragment : NavigatorFragment() {
 
@@ -46,26 +47,45 @@ class TaskListFragment : NavigatorFragment() {
 
     private fun itemDialogBehaviour() {
         val itemDialog = AlertDialog.Builder(context)
-        itemDialog.setTitle("What")
-        itemDialog.setMessage("TheFuck")
+        itemDialog.setTitle("Add Item")
 
-        val newItem = EditText(context)
-        newItem.compoundPaddingStart
-        newItem.compoundPaddingEnd
+        val viewItemToModify = activity!!.layoutInflater.inflate(
+                R.layout.fragment_task_list_item_add,
+                null
+        )
+        itemDialog.setView(viewItemToModify)
 
-        itemDialog.setView(newItem)
-
-        itemDialog.setPositiveButton("This?") { dialog, which ->
+        itemDialog.setPositiveButton("Ok") { dialog, which ->
             // Do something when user press the positive button
-            val item = TaskItem(newItem.text.toString(), "")
-            taskItems.add(item)
+            addItemIfCorrect(
+                    viewItemToModify.item_description.text.toString(),
+                    dialog,
+                    viewItemToModify.item_owner.text.toString()
+            )
         }
 
-        itemDialog.setNegativeButton("is") { dialog, which ->
-            // Display a negative button on alert dialog
+        itemDialog.setNegativeButton("Cancel") { dialog, which ->
+            dialog.cancel()
         }
 
         val dialog = itemDialog.create()
         dialog.show()
     }
+
+    private fun addItemIfCorrect(description: String, dialog: DialogInterface, owner: String) {
+        var owner1 = owner
+        if (description.equals("Item_Description")) {
+            dialog.dismiss()
+        } else {
+            if (owner1.equals("Owner")) {
+                owner1 = ""
+            }
+            var item = TaskItem(
+                    description,
+                    owner1
+            )
+            taskItems.add(item)
+        }
+    }
+
 }
