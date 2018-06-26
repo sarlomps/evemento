@@ -16,7 +16,7 @@ class SignInActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sign_in)
 
         if(SessionManager.isLoggedIn){
-            showMainActivity()
+            getUserDataAndShowMainActivity()
         } else {
             val loginIntent = SessionManager.getLoginView()
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -31,7 +31,7 @@ class SignInActivity : AppCompatActivity() {
             SessionManager.handleLoginResponse(resultCode, data) { success, message ->
                 showSnackbar(message, sign_in_container)
                 if (success) {
-                    showMainActivity()
+                    getUserDataAndShowMainActivity()
                 }
                 else {
                     finish()
@@ -41,6 +41,16 @@ class SignInActivity : AppCompatActivity() {
 
     }
 
+    private fun getUserDataAndShowMainActivity() {
+        // At this point the user must be logged in so we force a non null SessionManager.getCurrentUserId()
+        SessionManager.refreshUserIfNecessary { user, errorMessage ->
+            user?.let {
+                showMainActivity()
+                return@refreshUserIfNecessary
+            }
+            showSnackbar(errorMessage ?: R.string.api_error_fetching_data, sign_in_container)
+        }
+    }
     private fun showMainActivity() {
         val intent = Intent(applicationContext, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

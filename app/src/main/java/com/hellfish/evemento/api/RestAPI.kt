@@ -85,4 +85,52 @@ class RestAPI {
         })
     }
 
+
+    private fun getCreateOrUpdateUserCall(userId: String, user:UserPartialResponse): Call<UserResponse> {
+        return eventsApi.createOrUpdateUser(userId, user)
+    }
+    fun createOrUpdateUser(userId: String, user:UserResponse, callback: (User?, Int?) -> (Unit)) {
+        createOrUpdateUser(userId, UserMapper().mapToPartialEntity(user), callback)
+    }
+    fun createOrUpdateUser(userId: String, user:UserPartialResponse, callback: (User?, Int?) -> (Unit)) {
+        val call = getCreateOrUpdateUserCall(userId, user)
+        call.enqueue(object : Callback<UserResponse> {
+            override fun onResponse(call: Call<UserResponse>?, response: Response<UserResponse>?) {
+                if (response != null && response.isSuccessful) {
+                    response.body()?.let {
+                        callback(UserMapper().mapToDomain(userId, it), null)
+                        return
+                    }
+                }
+                callback(null, R.string.api_error_fetching_data)
+            }
+
+            override fun onFailure(call: Call<UserResponse>?, t: Throwable?) {
+                callback(null, R.string.api_error_fetching_data)
+            }
+        })
+    }
+
+    private fun getUserCall(userId: String): Call<UserResponse> {
+        return eventsApi.getUser(userId)
+    }
+    fun getUser(userId: String, callback: (User?, Int?) -> (Unit)) {
+        val call = getUserCall(userId)
+        call.enqueue(object : Callback<UserResponse> {
+            override fun onResponse(call: Call<UserResponse>?, response: Response<UserResponse>?) {
+                if (response != null && response.isSuccessful) {
+                    response.body()?.let {
+                        callback(UserMapper().mapToDomain(userId, it), null)
+                        return
+                    }
+                }
+                callback(null, R.string.api_error_fetching_data)
+            }
+
+            override fun onFailure(call: Call<UserResponse>?, t: Throwable?) {
+                callback(null, R.string.api_error_fetching_data)
+            }
+        })
+    }
+
 }

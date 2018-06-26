@@ -10,7 +10,7 @@ class EventListViewModel : ViewModel() {
         private set
 
     fun fetchEventsForCurrentUser(errorCallback: (Int?) -> (Unit)) {
-        NetworkManager.getEventsForUser(SessionManager.currentUser!!.uid) { userEvents, errorMessage ->
+        NetworkManager.getEventsForUser(SessionManager.getCurrentUser()!!.userId) { userEvents, errorMessage ->
             userEvents?.let {
                 Log.d("getEventsForUser", it.toString())
                 events.value = it
