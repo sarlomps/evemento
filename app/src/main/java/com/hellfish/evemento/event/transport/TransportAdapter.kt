@@ -18,7 +18,7 @@ class TransportAdapter(val transportList: List<TransportItem>, private val navig
 
         val transportDetailFragment = TransportDetailFragment()
         val args = Bundle()
-        args.putParcelable("transport", transport)
+        args.putParcelable("driver", transport.driver)
         transportDetailFragment.arguments = args
         view.setOnClickListener { navigatorListener.replaceFragment(transportDetailFragment)}
     }

@@ -1,11 +1,8 @@
 package com.hellfish.evemento.event.poll
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Rect
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
-import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.hellfish.evemento.R
@@ -15,7 +12,6 @@ import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import com.hellfish.evemento.extensions.animateWidth
 import kotlin.math.roundToInt
-import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 
 

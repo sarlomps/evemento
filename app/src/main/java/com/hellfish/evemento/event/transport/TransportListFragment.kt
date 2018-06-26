@@ -23,7 +23,7 @@ class TransportListFragment : NavigatorFragment() {
         super.onCreate(savedInstanceState)
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
         eventViewModel.rides.observe(this, Observer { rides ->
-            val transports = rides ?: listOf()
+            val transports = rides ?: ArrayList()
             this.transports = transports;
             carsRecyclerView.apply {
                 adapter = TransportAdapter(transports, navigatorListener)
