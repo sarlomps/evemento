@@ -44,7 +44,6 @@ class RestAPI {
     private fun pushEventCall(event:EventResponse): Call<PushEventResponse> {
         return eventsApi.pushEvent(event)
     }
-
     fun pushEvent(event:EventResponse, callback: (String?, Int?) -> Unit) {
         val call = pushEventCall(event)
         call.enqueue(object : Callback<PushEventResponse> {
@@ -59,6 +58,28 @@ class RestAPI {
             }
 
             override fun onFailure(call: Call<PushEventResponse>?, t: Throwable?) {
+                callback(null, R.string.api_error_pushing_data)
+            }
+        })
+    }
+
+    private fun updateEventCall(eventId: String, event:EventResponse): Call<EventResponse> {
+        return eventsApi.updateEvent(eventId, event)
+    }
+    fun updateEvent(eventId:String, event:EventResponse, callback: (Event?, Int?) -> Unit) {
+        val call = updateEventCall(eventId, event)
+        call.enqueue(object : Callback<EventResponse> {
+            override fun onResponse(call: Call<EventResponse>?, response: Response<EventResponse>?) {
+                if (response != null && response.isSuccessful) {
+                    response.body()?.let {
+                        callback(EventMapper().mapToDomain(eventId, it), null)
+                        return
+                    }
+                }
+                callback(null, R.string.api_error_pushing_data)
+            }
+
+            override fun onFailure(call: Call<EventResponse>?, t: Throwable?) {
                 callback(null, R.string.api_error_pushing_data)
             }
         })
