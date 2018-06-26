@@ -73,7 +73,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
                     endTimeElement.text = timeFormatter.print(it.endDate)
                 }
 
-                locationElement.text = event?.location
+                locationElement.setText(event?.location)
             }
         })
     }
@@ -103,16 +103,20 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
             editing = true
             setEditDateTimeFieldsToday()
             setViewMode(null, R.drawable.ic_check_white_24dp) {
-                toggleViewMode()
-                val newEvent = (view as EventLayout).event(dateTimeFormatter)
-                NetworkManager.pushEvent(newEvent) { newEventId, errorMessage ->
-                    newEventId?.let {
-                        eventViewModel.select(newEvent.copy(eventId = newEventId))
-                        return@pushEvent
-                    }
-                    showToast(errorMessage ?: R.string.network_unknown_error)
-                }
+                if (eventTitle.text.isEmpty()) eventTitleLayout.setError(getString(R.string.titleValidation))
+                if (locationElement.text.isEmpty()) locationElementLayout.setError(getString(R.string.locationValidation))
 
+                if (eventTitle.text.isNotEmpty() && locationElement.text.isNotEmpty()) {
+                    toggleViewMode()
+                    val newEvent = (view as EventLayout).event(dateTimeFormatter)
+                    NetworkManager.pushEvent(newEvent) { newEventId, errorMessage ->
+                        newEventId?.let {
+                            eventViewModel.select(newEvent.copy(eventId = newEventId))
+                            return@pushEvent
+                        }
+                        showToast(errorMessage ?: R.string.network_unknown_error)
+                    }
+                }
             }
         }
     }
@@ -177,7 +181,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when {
-            requestCode == autocompleteRequestCode && resultCode == RESULT_OK -> locationElement.text = PlaceAutocomplete.getPlace(activity, data).name.toString()
+            requestCode == autocompleteRequestCode && resultCode == RESULT_OK -> locationElement.setText(PlaceAutocomplete.getPlace(activity, data).name)
             requestCode == autocompleteRequestCode && resultCode == RESULT_ERROR-> showToast(R.string.autocompleteError)
             else -> Unit
         }
