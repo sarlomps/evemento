@@ -24,7 +24,7 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
             endDate = dateTimeFormatter.parseDateTime("${endDateElement.text} ${endTimeElement.text}"),
             description = descriptionElement.text.toString(),
             location = locationElement.text.toString(),
-            user = SessionManager.currentUser!!.uid,
+            user = SessionManager.getCurrentUser()!!.userId,
             eventId = eventId
     )
 

@@ -2,6 +2,9 @@ package com.hellfish.evemento.api
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import com.google.gson.GsonBuilder
+
+
 
 class FirebaseApiClient {
 
@@ -17,7 +20,7 @@ class FirebaseApiClient {
                 if (retofit == null) {
                     retofit = Retrofit.Builder()
                             .baseUrl(baseURL)
-                            .addConverterFactory(GsonConverterFactory.create())
+                            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().serializeNulls().create()))
                             .build()
                 }
                 return retofit!!

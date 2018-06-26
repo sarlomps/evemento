@@ -61,8 +61,8 @@ class MainActivity : AppCompatActivity(), Navigator {
 
     private fun updateNavBarHeader() {
         val headerView = navView.getHeaderView(0)
-        headerView.navBarUserName.text = SessionManager.currentUser?.displayName
-        headerView.navBarUserEmail.text = SessionManager.currentUser?.email
+        headerView.navBarUserName.text = SessionManager.getCurrentUser()?.displayName
+        headerView.navBarUserEmail.text = SessionManager.getCurrentUser()?.email
     }
 
     private fun handleNavItemSelected(menuItem: MenuItem) {

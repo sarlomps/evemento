@@ -1,11 +1,20 @@
 package com.hellfish.evemento
-import com.hellfish.evemento.api.EventMapper
-import com.hellfish.evemento.api.RestAPI
+import com.hellfish.evemento.api.*
 import com.hellfish.evemento.event.Event
 
 object NetworkManager {
     
     private val api: RestAPI = RestAPI()
+
+    fun getUser(userId: String, callback: (User?, Int?) -> (Unit)) {
+        api.getUser(userId, callback)
+    }
+    fun updateUser(userId: String, user:UserPartialResponse, callback: (User?, Int?) -> (Unit)) {
+        api.createOrUpdateUser(userId, user, callback)
+    }
+    fun updateUser(userId: String, user:User, callback: (User?, Int?) -> (Unit)) {
+        api.createOrUpdateUser(userId, UserMapper().mapToEntity(user), callback)
+    }
 
     fun getEventsForUser(user: String, callback: (List<Event>?, Int?) -> (Unit)) {
         api.getEventsForUser(user, callback)

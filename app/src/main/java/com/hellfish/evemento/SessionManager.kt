@@ -8,16 +8,22 @@ import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.hellfish.evemento.api.User
+import com.hellfish.evemento.api.UserMapper
 import java.util.*
 
 object SessionManager {
     private var fbAuth = FirebaseAuth.getInstance()
 
-    val currentUser: FirebaseUser?
+    private var currentUser: User? = null
+
+    fun getCurrentUser(): User? = currentUser
+
+    private val currentFbUser: FirebaseUser?
         get() = fbAuth.currentUser
 
     val isLoggedIn: Boolean
-        get() = currentUser != null
+        get() = currentFbUser != null
 
     fun getLoginView(): Intent {
         val providers = Arrays.asList(AuthUI.IdpConfig.GoogleBuilder().build(),
@@ -35,7 +41,9 @@ object SessionManager {
                 .signOut(context)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        currentUser = null
                         callback(true, R.string.auth_logged_out)
+
                     } else {
                         callback(false, R.string.auth_error_not_logged_out)
                     }
@@ -66,5 +74,30 @@ object SessionManager {
             }
         }
         callback(false, R.string.auth_unknown_login_response) //if the sign in response was unknown
+    }
+
+    fun refreshUserIfNecessary(callback: (User?, Int?) -> (Unit)){
+        currentUser?.let {
+            callback(it, null)
+            return@refreshUserIfNecessary
+        }
+        currentFbUser?.let {
+            NetworkManager.getUser(it.uid) { newUser, errorMessage ->
+                newUser?.let {
+                    currentUser = it
+                    callback(currentUser, null)
+                    return@getUser
+                }
+
+                NetworkManager.updateUser(it.uid, UserMapper().mapToPartialEntity(it)) { newUser, errorMessage ->
+                    newUser?.let {
+                        currentUser = it
+                        callback(currentUser, null)
+                        return@updateUser
+                    }
+                    callback(null, errorMessage ?: R.string.api_error_fetching_data)
+                }
+            }
+        }
     }
 }
