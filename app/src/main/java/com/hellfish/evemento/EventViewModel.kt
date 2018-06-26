@@ -77,8 +77,8 @@ class EventViewModel : ViewModel() {
         passangers2.add(pass_2_1)
         passangers2.add(pass_2_2)
 
-        transports.add(TransportItem(driver1, passangers1, 4))
-        transports.add(TransportItem(driver2, passangers2, 3))
+        transports.add(TransportItem(driver1, passangers1, "casa de gus" ,4))
+        transports.add(TransportItem(driver2, passangers2, "casa de gas",3))
         return transports
     }
 
@@ -95,6 +95,10 @@ class EventViewModel : ViewModel() {
             if (newTransport.sameTransport(transport)) { newTransport }
             else { transport }
         }?.toMutableList()
+    }
+
+    fun add(transportItem: TransportItem) {
+        rides.value = rides.value?.plus(transportItem)?.toMutableList()
     }
 }
 

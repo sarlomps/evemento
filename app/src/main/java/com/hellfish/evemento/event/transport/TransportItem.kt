@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class TransportItem(val driver: UserMiniDetail, val passangers: ArrayList<UserMiniDetail>, val totalSlots: Int) : Parcelable {
+data class TransportItem(val driver: UserMiniDetail, val passangers: ArrayList<UserMiniDetail>, val startpoint: String,val totalSlots: Int) : Parcelable {
     fun sameTransport(transportItem: TransportItem): Boolean = driver.sameUser(transportItem.driver)
     fun driverName(): String = driver.nickname
     fun availableSlots(): Int = maxOf(totalSlots - passangers.size, 0)

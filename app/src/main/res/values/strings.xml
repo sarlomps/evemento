@@ -36,4 +36,9 @@
     <string name="errorLoadingImage">There was an error when loading the image, please check the url or try again later</string>
     <string name="titleValidation">Events should have title!</string>
     <string name="locationValidation">Events should have a place!</string>
+    <string name="hint_transport_build_available_slots">Add available slots</string>
+    <string name="hint_transport_build_available_location">Where is the start point?</string>
+    <string name="transport_build_total_slots_validation">Transport should have available slots!</string>
+    <string name="transport_build_location_validation">Transport should have starting point!</string>
+
 </resources>
