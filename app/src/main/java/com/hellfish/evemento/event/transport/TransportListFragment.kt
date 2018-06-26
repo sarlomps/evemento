@@ -48,6 +48,8 @@ class TransportListFragment : NavigatorFragment() {
         carsRecyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayout.VERTICAL, false)
 
         transport_list_fab.setOnClickListener{ navigatorListener.replaceFragment(TransportBuilderFragment()) }
+        toogleFabIfNecessary()
+
 
         if(transports.isNotEmpty()) {
             carsRecyclerView.adapter = TransportAdapter(transports, navigatorListener)

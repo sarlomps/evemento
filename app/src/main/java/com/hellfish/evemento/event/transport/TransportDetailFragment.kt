@@ -23,10 +23,13 @@ class TransportDetailFragment() : NavigatorFragment() {
     private lateinit var transport: TransportItem
     private lateinit var eventViewModel: EventViewModel
 
+    private lateinit var transports: MutableList<TransportItem>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
         eventViewModel.rides.observe(this, Observer { rides ->
+            transports = rides ?: ArrayList()
             transport = rides?.find { driver.sameUser(it.driver) }!!
             llTransportDetail.removeAllViews()
             transport.passangers.forEach { addPassanger(view!!, it) }
@@ -72,7 +75,7 @@ class TransportDetailFragment() : NavigatorFragment() {
     }
 
     private fun toogleFabIfNecessary(transport: TransportItem) {
-        if (transport.isFull() && !transport.isAlreadyInTransport(loggedInUser))
+        if (transport.isFull() || transports.any { it.isAlreadyInTransport(loggedInUser) } )
             transport_detail_fab.hide()
         else {
             transport_detail_fab.show()
