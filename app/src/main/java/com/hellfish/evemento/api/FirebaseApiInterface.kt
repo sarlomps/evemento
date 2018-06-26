@@ -15,4 +15,10 @@ interface  FirebaseApiInterface {
     @POST("/events.json")
     fun pushEvent(@Body event: EventResponse)
             : Call<PushEventResponse>
+
+    @Headers("Content-Type: application/json")
+    @PUT("/events/{eventId}.json")
+    fun updateEvent(@Path("eventId") eventId: String,
+                    @Body event: EventResponse)
+            : Call<EventResponse>
 }
