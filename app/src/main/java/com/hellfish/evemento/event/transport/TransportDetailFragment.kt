@@ -75,7 +75,15 @@ class TransportDetailFragment() : NavigatorFragment() {
     }
 
     private fun toogleFabIfNecessary(transport: TransportItem) {
-        if (transport.isFull() || transports.any { it.isAlreadyInTransport(loggedInUser) } )
+        if (transport.driver.sameUser(this.loggedInUser))
+            transport_detail_fab.withDrawable(R.drawable.ic_edit_white_24dp).setOnClickListener {
+                val transportBuilderFragment = TransportBuilderFragment()
+                val args = Bundle()
+                args.putParcelable("transport", transport)
+                transportBuilderFragment.arguments = args
+                navigatorListener.replaceFragment(transportBuilderFragment)
+            }
+        else if (transport.isFull() || (transports.any { it.isAlreadyInTransport(loggedInUser) } && !transport.isAlreadyInTransport(loggedInUser)))
             transport_detail_fab.hide()
         else {
             transport_detail_fab.show()

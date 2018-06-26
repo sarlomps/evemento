@@ -4,6 +4,7 @@ import android.app.Activity
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,10 @@ import com.hellfish.evemento.EventViewModel
 import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.R
 import kotlinx.android.synthetic.main.fragment_transport_builder.*
+import android.content.DialogInterface
+import android.support.v7.app.AlertDialog
+
+
 
 class TransportBuilderFragment : NavigatorFragment() {
     private lateinit var loggedInUser: UserMiniDetail
@@ -34,6 +39,35 @@ class TransportBuilderFragment : NavigatorFragment() {
         loggedInUser = UserMiniDetail("juanchiLoggeado", "sarlanga")
         setLocationListener()
         setSavedListener()
+
+        val argTransport = arguments?.getParcelable<TransportItem>("transport")
+
+        if (argTransport != null) {
+            transport_builder_slots.setText(argTransport.totalSlots.toString())
+            transport_builder_location.setText(argTransport.startpoint)
+            transport_builder_fab.setOnClickListener {
+                if (validateTransport()) {
+                    eventViewModel.edit(transport())
+                    navigatorListener.replaceFragment(TransportListFragment())
+                }
+            }
+            delete_transport.visibility = ViewGroup.VISIBLE
+            delete_transport.setOnClickListener {
+                showDialogConfirmation(argTransport)
+            }
+        }
+    }
+
+    private fun showDialogConfirmation(transport: TransportItem) {
+        AlertDialog.Builder(view!!.context)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Deleting transport")
+                .setMessage("Are you sure you want to delete this transport?")
+                .setPositiveButton("Delete", {_, _ ->
+                    eventViewModel.remove(transport)
+                    navigatorListener.replaceFragment(TransportListFragment()) })
+                .setNegativeButton("Cancel", null)
+                .show()
     }
 
     private fun setSavedListener() {

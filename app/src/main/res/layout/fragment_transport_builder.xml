@@ -12,6 +12,15 @@
         android:orientation="vertical"
         android:padding="10dp">
 
+        <Button
+            android:id="@+id/delete_transport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@android:color/transparent"
+            android:drawableEnd="@drawable/ic_delete_grey_24dp"
+            android:visibility="gone" />
+
         <EditText
             android:id="@+id/transport_builder_slots"
             style="@style/editableTransportBuilderComponent"

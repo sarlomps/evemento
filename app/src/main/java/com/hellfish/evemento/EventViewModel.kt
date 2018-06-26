@@ -100,6 +100,11 @@ class EventViewModel : ViewModel() {
     fun add(transportItem: TransportItem) {
         rides.value = rides.value?.plus(transportItem)?.toMutableList()
     }
+
+    fun remove(transportItem: TransportItem) {
+        rides.value = rides.value?.minus(transportItem)?.toMutableList()
+
+    }
 }
 
 class InvalidEventElementException(override var message: String): Exception(message)
