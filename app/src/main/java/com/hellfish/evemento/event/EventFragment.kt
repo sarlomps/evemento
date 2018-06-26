@@ -110,20 +110,9 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         } else {
             editing = true
             setEditDateTimeFieldsToday()
-            setViewMode(null, R.drawable.ic_check_white_24dp) {
-                validatingEvent { validatedEvent ->
-                    NetworkManager.pushEvent(validatedEvent) { newEventId, errorMessage ->
-                        newEventId?.let {
-                            eventViewModel.select(validatedEvent.copy(eventId = newEventId))
-                            return@pushEvent
-                        }
-                        showToast(errorMessage ?: R.string.network_unknown_error)
-                    }
-                }
-            }
+            setViewMode(null, R.drawable.ic_check_white_24dp) { validatingEvent { validatedEvent -> upsertEvent(validatedEvent) } }
         }
     }
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -144,9 +133,20 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         if (editing) setViewMode(
                 { toggleViewMode(); eventViewModel.updateView()},
                 R.drawable.ic_check_white_24dp,
-                { validatingEvent { validatedEvent -> eventViewModel.select(validatedEvent) } }
+                { validatingEvent { validatedEvent -> upsertEvent(validatedEvent.copy(eventId = eventViewModel.selected()?.eventId!!))} }
         )
         else setViewMode(null, R.drawable.ic_edit_white_24dp) { toggleViewMode() }
+    }
+
+    private fun upsertEvent(event: Event) {
+        if (event.eventId != "") NetworkManager.updateEvent(event) { updatedEvent, errorMessage ->
+            updatedEvent?.let { eventViewModel.select(updatedEvent); return@updateEvent }
+            showToast(errorMessage ?: R.string.network_unknown_error)
+        }
+        else NetworkManager.pushEvent(event) { newEventId, errorMessage ->
+            newEventId?.let { eventViewModel.select(event.copy(eventId = newEventId)); return@pushEvent }
+            showToast(errorMessage ?: R.string.network_unknown_error)
+        }
     }
 
     private fun setViewMode(backPressedListener: OnBackPressedListener?, drawable: Int, onClickListener: () -> Unit) = (view as EventLayout).run {
