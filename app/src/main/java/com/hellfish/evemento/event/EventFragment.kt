@@ -11,10 +11,6 @@ import android.widget.Toast
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.location.places.ui.PlaceAutocomplete
-import com.hellfish.evemento.EventViewModel
-import com.hellfish.evemento.NavigatorFragment
-import com.hellfish.evemento.OnBackPressedListener
-import com.hellfish.evemento.R
 import com.hellfish.evemento.event.poll.PollFragment
 import com.hellfish.evemento.event.task.TaskListFragment
 import com.hellfish.evemento.event.time.DateTimePickerDialogFactory
@@ -32,8 +28,9 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Callback
 import android.support.v7.app.AlertDialog
 import android.widget.EditText
-
-
+import com.hellfish.evemento.*
+import kotlinx.android.synthetic.main.fragment_event.*
+import org.joda.time.DateTime
 
 
 class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
@@ -77,7 +74,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
                     endTimeElement.text = timeFormatter.print(it.endDate)
                 }
 
-                locationElement.text = event?.location
+                locationElement.setText(event?.location)
             }
         })
     }
@@ -101,9 +98,32 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         setDateTimeListeners()
         setListsListeners()
 
-        editing = savedInstanceState?.getBoolean("editing") ?: false
-        if (eventViewModel.selected() != null) decideViewMode()
+        if (eventViewModel.selected() != null) {
+            if (eventViewModel.selected()?.user == SessionManager.currentUser?.uid) {
+                eventFab.visibility = View.VISIBLE
+                editing = savedInstanceState?.getBoolean("editing") ?: false
+            } else {
+                eventFab.visibility = View.GONE
+                editing = false
+            }
+            decideViewMode()
+        } else {
+            editing = true
+            setEditDateTimeFieldsToday()
+            setViewMode(null, R.drawable.ic_check_white_24dp) {
+                validatingEvent { validatedEvent ->
+                    NetworkManager.pushEvent(validatedEvent) { newEventId, errorMessage ->
+                        newEventId?.let {
+                            eventViewModel.select(validatedEvent.copy(eventId = newEventId))
+                            return@pushEvent
+                        }
+                        showToast(errorMessage ?: R.string.network_unknown_error)
+                    }
+                }
+            }
+        }
     }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -124,7 +144,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         if (editing) setViewMode(
                 { toggleViewMode(); eventViewModel.updateView()},
                 R.drawable.ic_check_white_24dp,
-                { toggleViewMode(); eventViewModel.select((view as EventLayout).event(dateTimeFormatter)) }
+                { validatingEvent { validatedEvent -> eventViewModel.select(validatedEvent) } }
         )
         else setViewMode(null, R.drawable.ic_edit_white_24dp) { toggleViewMode() }
     }
@@ -134,6 +154,18 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         navigatorListener.onBackPressedListener = backPressedListener
         eventFab.withDrawable(drawable).setOnClickListener { onClickListener() }
     }
+
+    private fun validatingEvent(action: (Event) -> Unit) {
+        if (eventTitle.text.isEmpty()) eventTitleLayout.setError(getString(R.string.titleValidation))
+        if (locationElement.text.isEmpty()) locationElementLayout.setError(getString(R.string.locationValidation))
+
+        if (eventTitle.text.isNotEmpty() && locationElement.text.isNotEmpty()) {
+            toggleViewMode()
+            val event = (view as EventLayout).event(dateTimeFormatter)
+            action(event)
+        }
+    }
+
 
     private fun showToast(stringId: Int) = Toast.makeText(activity, getString(stringId), Toast.LENGTH_LONG).show()
 
@@ -165,7 +197,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when {
-            requestCode == autocompleteRequestCode && resultCode == RESULT_OK -> locationElement.text = PlaceAutocomplete.getPlace(activity, data).name.toString()
+            requestCode == autocompleteRequestCode && resultCode == RESULT_OK -> locationElement.setText(PlaceAutocomplete.getPlace(activity, data).name)
             requestCode == autocompleteRequestCode && resultCode == RESULT_ERROR-> showToast(R.string.autocompleteError)
             else -> Unit
         }
@@ -179,6 +211,15 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         endDateElement.run { setOnClickListener { endDatePicker.updateDate(this, dateFormatter).show() } }
         startTimeElement.run { setOnClickListener { startTimePicker.updateTime(this, timeFormatter).show() } }
         endTimeElement.run { setOnClickListener { endTimePicker.updateTime(this, timeFormatter).show() } }
+    }
+
+    private fun setEditDateTimeFieldsToday() {
+        val start = DateTime.now().plusHours(2)
+        val end = DateTime.now().plusHours(4)
+        startDateElement.text = dateFormatter.print(start)
+        endDateElement.text = dateFormatter.print(end)
+        startTimeElement.text = timeFormatter.print(start)
+        endTimeElement.text = timeFormatter.print(end)
     }
 
     private fun setListsListeners() {

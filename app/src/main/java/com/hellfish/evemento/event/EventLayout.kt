@@ -6,6 +6,7 @@ import android.support.v4.content.res.ResourcesCompat
 import android.view.View
 import android.widget.TextView
 import com.hellfish.evemento.R
+import com.hellfish.evemento.SessionManager
 import com.hellfish.evemento.extensions.toVisibility
 import kotlinx.android.synthetic.main.event_element_time.view.*
 import kotlinx.android.synthetic.main.event_elements.view.*
@@ -16,15 +17,15 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
 
     init { inflate(context, R.layout.fragment_event, this) }
 
-    fun event(dateTimeFormatter: DateTimeFormatter) = Event(
+    fun event(dateTimeFormatter: DateTimeFormatter, eventId: String = "") = Event(
             title = eventTitle.text.toString(),
             imageUrl = imageUrl.text.toString(),
             startDate = dateTimeFormatter.parseDateTime("${startDateElement.text} ${startTimeElement.text}"),
             endDate = dateTimeFormatter.parseDateTime("${endDateElement.text} ${endTimeElement.text}"),
             description = descriptionElement.text.toString(),
             location = locationElement.text.toString(),
-            user = "", //TODO: COMPLETAR
-            eventId = "" //TODO: VALIDAR: COMO ES UN EVENTO NUEVO NO TIENE ID ASIGNADO, SE GENERA RECIEN AL PUSHEAR A FIREBASE
+            user = SessionManager.currentUser!!.uid,
+            eventId = eventId
     )
 
     fun mode(editing: Boolean) {

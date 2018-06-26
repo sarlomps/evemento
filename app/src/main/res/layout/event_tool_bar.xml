@@ -41,17 +41,27 @@
             android:layout_height="wrap_content"
             android:visibility="gone"/>
 
-        <EditText
-            android:id="@+id/eventTitle"
-            android:layout_width="wrap_content"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/eventTitleLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginStart="20dp"
-            android:layout_marginBottom="10dp"
-            android:inputType="text"
-            android:hint="@string/default_event_title"
-            style="@style/TitleText"
-            />
+            app:errorEnabled="true"
+            android:hint=" "
+            >
+
+            <android.support.design.widget.TextInputEditText
+                style="@style/TitleText"
+                android:id="@+id/eventTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:hint="@string/default_event_title"
+                />
+
+        </android.support.design.widget.TextInputLayout>
+
 
     </android.support.design.widget.CollapsingToolbarLayout>
 
