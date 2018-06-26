@@ -29,6 +29,7 @@ import com.squareup.picasso.Callback
 import android.support.v7.app.AlertDialog
 import android.widget.EditText
 import com.hellfish.evemento.*
+import kotlinx.android.synthetic.main.fragment_event.*
 import org.joda.time.DateTime
 
 
@@ -97,9 +98,16 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         setDateTimeListeners()
         setListsListeners()
 
-        editing = savedInstanceState?.getBoolean("editing") ?: false
-        if (eventViewModel.selected() != null) decideViewMode()
-        else {
+        if (eventViewModel.selected() != null) {
+            if (eventViewModel.selected()?.user == SessionManager.currentUser?.uid) {
+                eventFab.visibility = View.VISIBLE
+                editing = savedInstanceState?.getBoolean("editing") ?: false
+            } else {
+                eventFab.visibility = View.GONE
+                editing = false
+            }
+            decideViewMode()
+        } else {
             editing = true
             setEditDateTimeFieldsToday()
             setViewMode(null, R.drawable.ic_check_white_24dp) {
