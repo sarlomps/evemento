@@ -111,15 +111,10 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
             editing = true
             setEditDateTimeFieldsToday()
             setViewMode(null, R.drawable.ic_check_white_24dp) {
-                if (eventTitle.text.isEmpty()) eventTitleLayout.setError(getString(R.string.titleValidation))
-                if (locationElement.text.isEmpty()) locationElementLayout.setError(getString(R.string.locationValidation))
-
-                if (eventTitle.text.isNotEmpty() && locationElement.text.isNotEmpty()) {
-                    toggleViewMode()
-                    val newEvent = (view as EventLayout).event(dateTimeFormatter)
-                    NetworkManager.pushEvent(newEvent) { newEventId, errorMessage ->
+                validatingEvent { validatedEvent ->
+                    NetworkManager.pushEvent(validatedEvent) { newEventId, errorMessage ->
                         newEventId?.let {
-                            eventViewModel.select(newEvent.copy(eventId = newEventId))
+                            eventViewModel.select(validatedEvent.copy(eventId = newEventId))
                             return@pushEvent
                         }
                         showToast(errorMessage ?: R.string.network_unknown_error)
@@ -128,6 +123,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
             }
         }
     }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -148,7 +144,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         if (editing) setViewMode(
                 { toggleViewMode(); eventViewModel.updateView()},
                 R.drawable.ic_check_white_24dp,
-                { toggleViewMode(); eventViewModel.select((view as EventLayout).event(dateTimeFormatter)) }
+                { validatingEvent { validatedEvent -> eventViewModel.select(validatedEvent) } }
         )
         else setViewMode(null, R.drawable.ic_edit_white_24dp) { toggleViewMode() }
     }
@@ -158,6 +154,18 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         navigatorListener.onBackPressedListener = backPressedListener
         eventFab.withDrawable(drawable).setOnClickListener { onClickListener() }
     }
+
+    private fun validatingEvent(action: (Event) -> Unit) {
+        if (eventTitle.text.isEmpty()) eventTitleLayout.setError(getString(R.string.titleValidation))
+        if (locationElement.text.isEmpty()) locationElementLayout.setError(getString(R.string.locationValidation))
+
+        if (eventTitle.text.isNotEmpty() && locationElement.text.isNotEmpty()) {
+            toggleViewMode()
+            val event = (view as EventLayout).event(dateTimeFormatter)
+            action(event)
+        }
+    }
+
 
     private fun showToast(stringId: Int) = Toast.makeText(activity, getString(stringId), Toast.LENGTH_LONG).show()
 
