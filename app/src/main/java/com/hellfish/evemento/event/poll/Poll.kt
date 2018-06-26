@@ -1,13 +1,23 @@
 package com.hellfish.evemento.event.poll
 
-sealed class Poll(open val question: String, open val answers: List<Answer>) {
+import com.google.firebase.auth.FirebaseUser
 
-    fun totalVotes() : Int = answers.sumBy { it.votes }
+typealias EvementoUser = FirebaseUser
+
+sealed class Poll(open val question: String, open val answers: List<Answer>) {
+    fun totalVotes() : Int = answers.sumBy { it.votesAmount }
+
+    companion object {
+        fun forUser(user: EvementoUser, question: String, answers: List<Answer>) : Poll  =
+            if(answers.any { it.wasVotedBy(user) }) {
+                NoVotable(question, answers as List<Answer.Closed>)
+            } else Votable(question, answers as List<Answer.Open>)
+    }
 
     class Votable(override val question: String,
                   override val answers: List<Answer.Open>) : Poll(question, answers) {
-        fun choose(answer: Answer.Open) : NoVotable {
-            val updatedAnswers = answers.map { anAnswer -> if (answer == anAnswer) { anAnswer.vote() } else { anAnswer.close() } }
+        fun choose(answer: Answer.Open, user: EvementoUser) : NoVotable {
+            val updatedAnswers = answers.map { anAnswer -> if (answer == anAnswer) { anAnswer.vote(user) } else { anAnswer.close() } }
             return NoVotable(question, updatedAnswers)
         }
     }

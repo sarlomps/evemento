@@ -22,8 +22,8 @@ class EventViewModel : ViewModel() {
     fun getPolls(): MutableLiveData<MutableList<Poll>> {
         if (polls.value?.isEmpty() ?: true) {
             polls.value = mutableListOf(
-                    Poll.NoVotable("Asdasdesd", listOf(Answer.Closed("Sí", 2), Answer.Closed("No", 1))),
-                    Poll.Votable("Asdasdesdo", listOf(Answer.Open("Sí", 2), Answer.Open("No", 1)))
+                    Poll.NoVotable("Asdasdesd", listOf(Answer.Closed("Sí", listOf(SessionManager.currentUser!!)), Answer.Closed("No", listOf()))),
+                    Poll.Votable("Asdasdesdo", listOf(Answer.Open("Sí", listOf()), Answer.Open("No", listOf())))
             )
             }
         return polls
@@ -56,8 +56,8 @@ class EventViewModel : ViewModel() {
         guests = listOf() //TODO load it from Firebase
         tasks = listOf() //TODO load it from Firebase
         polls.value = mutableListOf(
-                Poll.NoVotable("Asdasdesd", listOf(Answer.Closed("Sí", 2), Answer.Closed("No", 1))),
-                Poll.Votable("Asdasdesdo", listOf(Answer.Open("Sí", 2), Answer.Open("No", 1)))
+                Poll.NoVotable("Asdasdesd", listOf(Answer.Closed("Sí", listOf(SessionManager.currentUser!!)), Answer.Closed("No", listOf()))),
+                Poll.Votable("Asdasdesdo", listOf(Answer.Open("Sí", listOf()), Answer.Open("No", listOf())))
         )
         comments = listOf() //TODO load it from Firebase
     }

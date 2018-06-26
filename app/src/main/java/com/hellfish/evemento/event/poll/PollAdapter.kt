@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v7.widget.*
 import com.hellfish.evemento.R
 import com.hellfish.evemento.RecyclerAdapter
+import com.hellfish.evemento.SessionManager
 import kotlinx.android.synthetic.main.poll_content.view.*
 
 class PollAdapter(polls: MutableList<Poll>, private val f: (Poll) -> Unit) : RecyclerAdapter<CardView, Poll>(polls) {
@@ -34,7 +35,7 @@ class PollAdapter(polls: MutableList<Poll>, private val f: (Poll) -> Unit) : Rec
 
     private fun answersAdapter(poll : Poll) : RecyclerAdapter<*, *> {
         return when(poll) {
-            is Poll.Votable -> OpenAnswersAdapter({ answer -> f(poll.choose(answer)) }, poll.answers)
+            is Poll.Votable -> OpenAnswersAdapter({ answer -> f(poll.choose(answer, SessionManager.currentUser!!)) }, poll.answers)
             is Poll.NoVotable -> ClosedAnswersAdapter(poll.answers, poll.totalVotes())
         }
     }
