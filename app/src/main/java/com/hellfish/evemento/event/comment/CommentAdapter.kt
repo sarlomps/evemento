@@ -3,7 +3,6 @@ package com.hellfish.evemento.event.comment
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
-import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.*
 import com.hellfish.evemento.R

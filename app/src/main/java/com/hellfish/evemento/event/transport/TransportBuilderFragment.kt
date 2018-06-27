@@ -104,9 +104,6 @@ class TransportBuilderFragment : NavigatorFragment() {
 //        }
 //    }
 
-    private fun showToast(stringId: Int) = Toast.makeText(activity, getString(stringId), Toast.LENGTH_LONG).show()
-
-
     private fun setLocationListener() = transport_builder_location.setOnClickListener {
         try {
             val intent = PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN).build(activity)

@@ -21,7 +21,7 @@ class EventViewModel : ViewModel() {
         private set
     private var tasks: List<String> = listOf()
     private var polls: MutableLiveData<MutableList<PollObject>> = MutableLiveData()
-    var comments: MutableLiveData<MutableList<Comment>> = MutableLiveData()
+    var comments: MutableLiveData<List<Comment>> = MutableLiveData()
         private set
 
     fun getPolls(): MutableLiveData<MutableList<PollObject>> {
@@ -64,19 +64,15 @@ class EventViewModel : ViewModel() {
 //TODO: IMPLEMENT
     }
 
-    fun loadComments(callback: (List<Comment>?, Int?) -> (Unit)) {
+    fun loadComments(onError: (Int?) -> (Unit)) {
         selectedEvent.value?.let {
             NetworkManager.getComments(it) { newComments, errorMessage ->
-                newComments?.let {
-                    comments.value = it.toMutableList()
-                    callback(comments.value, null)
-                    return@getComments
-                }
-                callback(null, errorMessage)
+                newComments?.let { comments.value = it; return@getComments }
+                onError(errorMessage)
             }
             return
         }
-        callback(null, R.string.api_error_fetching_data)
+        onError(R.string.api_error_fetching_data)
     }
 
     fun loadTasks(callback: (List<TaskItem>?, Int?) -> (Unit)) {

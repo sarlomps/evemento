@@ -185,8 +185,6 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         else textInputLayout.error = null
     }
 
-    private fun showToast(stringId: Int) = Toast.makeText(activity, getString(stringId), Toast.LENGTH_LONG).show()
-
     private fun setImageListener() = eventImage.setOnClickListener {
         imageDialogInput.setText(imageUrl.text)
         imageDialog.show()

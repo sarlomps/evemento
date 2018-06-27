@@ -3,6 +3,7 @@ package com.hellfish.evemento
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.widget.Toast
 import com.hellfish.evemento.R.string.app_name
 
 open class NavigatorFragment : Fragment() {
@@ -23,5 +24,7 @@ open class NavigatorFragment : Fragment() {
     protected open fun setupToolbar() {
         navigatorListener.setCustomToolbar(title = resources.getString(titleId))
     }
+
+    protected fun showToast(stringId: Int) = Toast.makeText(activity, getString(stringId), Toast.LENGTH_LONG).show()
 
 }

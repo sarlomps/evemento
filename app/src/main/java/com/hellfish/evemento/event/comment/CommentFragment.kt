@@ -27,11 +27,9 @@ class CommentFragment : NavigatorFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
-        eventViewModel.loadComments { _, _ -> Unit }
+        eventViewModel.loadComments { _ -> showToast(R.string.errorLoadingComments) }
         eventViewModel.comments.observe(this, Observer { comments ->
-            commentsRecyclerView.apply {
-                comments?.let { adapter = CommentAdapter(it) }
-            }
+                comments?.let { commentsRecyclerView.adapter = CommentAdapter(it.toMutableList()) }
         })
     }
 
@@ -40,13 +38,7 @@ class CommentFragment : NavigatorFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        val comments = mutableListOf<Comment>()
-
-        commentsRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = CommentAdapter(comments)
-        }
+        commentsRecyclerView.layoutManager = LinearLayoutManager(context)
     }
 
 }

@@ -31,11 +31,12 @@
     <string name="DateTimeFormat">EEE dd MMM yyyy HH:mm</string>
     <string name="DateFormat">EEE dd MMM yyyy</string>
     <string name="TimeFormat">HH:mm</string>
-    <string name="autocompleteError">There was an error when loading places, please try again later</string>
+    <string name="autocompleteError">There was an error loading places, please try again later</string>
+    <string name="errorLoadingImage">There was an error loading the image, please check the url or try again later</string>
+    <string name="errorLoadingComments">There was an error loading the comments, please try again later</string>
     <string name="accept">Accept</string>
     <string name="cancel">Cancel</string>
     <string name="removeImage">Remove Image</string>
-    <string name="errorLoadingImage">There was an error when loading the image, please check the url or try again later</string>
     <string name="titleValidation">Events should have title!</string>
     <string name="locationValidation">Events should have a place!</string>
     <string name="hint_transport_build_available_slots">Add available slots</string>
