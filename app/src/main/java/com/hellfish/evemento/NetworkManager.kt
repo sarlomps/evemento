@@ -6,6 +6,7 @@ object NetworkManager {
     
     private val api: RestAPI = RestAPI()
 
+    /// USERS
     fun getUser(userId: String, callback: (User?, Int?) -> (Unit)) {
         api.getUser(userId, callback)
     }
@@ -16,6 +17,7 @@ object NetworkManager {
         api.createOrUpdateUser(userId, UserMapper().mapToEntity(user), callback)
     }
 
+    /// EVENTS
     fun getEventsForUser(user: String, callback: (List<Event>?, Int?) -> (Unit)) {
         api.getEventsForUser(user, callback)
     }
@@ -34,7 +36,6 @@ object NetworkManager {
 //        showSnackbar(errorMessage ?: R.string.network_unknown_error, main_container)
 //    }
 
-
     fun updateEvent(event:Event, callback: (Event?, Int?) -> (Unit)) {
         api.updateEvent(event.eventId, EventMapper().mapToEntity(event), callback)
     }
@@ -48,13 +49,21 @@ object NetworkManager {
 //        showSnackbar(errorMessage ?: R.string.network_unknown_error, main_container)
 //    }
 
+    /// POLLS
     fun getPolls(event:Event, callback: (List<Poll>?, Int?) -> (Unit)) {
         api.getPollsForEvent(event.eventId, callback)
     }
+    fun pushPolls(poll: Poll, callback: (String?, Int?) -> (Unit)) {
+        api.pushPoll(PollMapper().mapToEntity(poll), callback)
+    }
 
+    /// COMMENTS
     fun getComments(event:Event, callback: (List<Comment>?, Int?) -> (Unit)) {
         api.getCommentsForEvent(event.eventId, callback)
 
+    }
+    fun pushComment(comment: Comment, callback: (String?, Int?) -> (Unit)) {
+        api.pushComment(CommentMapper().mapToEntity(comment), callback)
     }
 
 }

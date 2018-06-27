@@ -2,8 +2,6 @@ package com.hellfish.evemento.api
 
 import com.google.firebase.auth.FirebaseUser
 import com.hellfish.evemento.event.Event
-import com.hellfish.evemento.event.task.TaskItem
-import com.hellfish.evemento.event.transport.TransportItem
 import org.joda.time.DateTime
 
 data class EventResponse(val title: String,
@@ -37,8 +35,8 @@ data class Poll(val pollId: String,
                 val eventId: String,
                 val items: Map<String,Map<String,Map<String,Boolean>>>) // {pregunta:{respuesta:{usuario:true}}}
 
-/// Push new event response
-data class PushEventResponse(val name:String)
+/// Push new element response, name has new ID
+data class PushResponse(val name:String)
 data class PollResponse(val eventId:String,
                         val items: Map<String,Map<String,Map<String,Boolean>>>) // {pregunta:{respuesta:{usuario:true}}}
 data class CommentResponse(val eventId:String,

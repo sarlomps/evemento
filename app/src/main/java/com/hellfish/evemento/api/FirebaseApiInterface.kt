@@ -18,6 +18,11 @@ interface  FirebaseApiInterface {
                  @Query("equalTo") equalTo: String)
             : Call<Map<String, PollResponse>>
 
+    @Headers("Content-Type: application/json")
+    @POST("/polls.json")
+    fun pushPoll(@Body poll: PollResponse)
+            : Call<PushResponse>
+
     //https://deep-hook-204120.firebaseio.com/comments.json?orderBy=%22eventId%22&equalTo=%22-LFkNSwG9kj9Ytw_5mXa%22
     @GET("/comments.json")
     fun getComments(@Query("orderBy") orderBy: String,
@@ -26,9 +31,14 @@ interface  FirebaseApiInterface {
 
 
     @Headers("Content-Type: application/json")
+    @POST("/comments.json")
+    fun pushComment(@Body comment: CommentResponse)
+            : Call<PushResponse>
+
+    @Headers("Content-Type: application/json")
     @POST("/events.json")
     fun pushEvent(@Body event: EventResponse)
-            : Call<PushEventResponse>
+            : Call<PushResponse>
 
     @Headers("Content-Type: application/json")
     @PUT("/events/{eventId}.json")
