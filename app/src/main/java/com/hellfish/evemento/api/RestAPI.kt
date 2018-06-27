@@ -20,7 +20,6 @@ class RestAPI {
     private fun getEventsCall(orderBy: String, equalTo: String): Call<Map<String, EventResponse>> {
         return firebaseApi.getEvents(orderBy, equalTo)
     }
-
     //https://deep-hook-204120.firebaseio.com/events.json?orderBy=%22user%22&equalTo=%22AwrjKTnQ5CTfmfLEMxvmEmkM6Tz2%22
     fun getEventsForUser(user: String, callback: (List<Event>?, Int?) -> (Unit)) {
         val call = getEventsCall("\"user\"", "\"$user\"")
@@ -136,7 +135,6 @@ class RestAPI {
     private fun getPollsForEventCall(orderBy: String, equalTo: String): Call<Map<String, PollResponse>> {
         return firebaseApi.getPolls(orderBy, equalTo)
     }
-
     //https://deep-hook-204120.firebaseio.com/polls.json?orderBy=%22eventId%22&equalTo=%22-LFkNSwG9kj9Ytw_5mXa%22
     fun getPollsForEvent(eventId: String, callback: (List<Poll>?, Int?) -> (Unit)) {
         val call = getPollsForEventCall("\"eventId\"", "\"$eventId\"")
@@ -180,13 +178,29 @@ class RestAPI {
         })
     }
 
+    private fun deletePollCall(pollId: String): Call<DeleteResponse> {
+        return firebaseApi.deletePoll(pollId)
+    }
+    fun deletePoll(pollId: String, callback: (Boolean, Int?) -> Unit) {
+        val call = deletePollCall(pollId)
+        call.enqueue(object : Callback<DeleteResponse> {
+            override fun onResponse(call: Call<DeleteResponse>?, response: Response<DeleteResponse>?) {
+                if (response != null && response.isSuccessful) {
+                    callback(true, null)
+                    return
+                }
+                callback(false, R.string.api_error_deleting_data)
+            }
 
-
+            override fun onFailure(call: Call<DeleteResponse>?, t: Throwable?) {
+                callback(false, R.string.api_error_deleting_data)
+            }
+        })
+    }
 
     private fun getCommentsForEventCall(orderBy: String, equalTo: String): Call<Map<String, CommentResponse>> {
         return firebaseApi.getComments(orderBy, equalTo)
     }
-
     //https://deep-hook-204120.firebaseio.com/polls.json?orderBy=%22eventId%22&equalTo=%22-LFkNSwG9kj9Ytw_5mXa%22
     fun getCommentsForEvent(eventId: String, callback: (List<Comment>?, Int?) -> (Unit)) {
         val call = getCommentsForEventCall("\"eventId\"", "\"$eventId\"")
@@ -225,6 +239,26 @@ class RestAPI {
 
             override fun onFailure(call: Call<PushResponse>?, t: Throwable?) {
                 callback(null, R.string.api_error_pushing_data)
+            }
+        })
+    }
+
+    private fun deleteCommentCall(commentId: String): Call<DeleteResponse> {
+        return firebaseApi.deleteComment(commentId)
+    }
+    fun deleteComment(commentId: String, callback: (Boolean, Int?) -> Unit) {
+        val call = deleteCommentCall(commentId)
+        call.enqueue(object : Callback<DeleteResponse> {
+            override fun onResponse(call: Call<DeleteResponse>?, response: Response<DeleteResponse>?) {
+                if (response != null && response.isSuccessful) {
+                    callback(true, null)
+                    return
+                }
+                callback(false, R.string.api_error_deleting_data)
+            }
+
+            override fun onFailure(call: Call<DeleteResponse>?, t: Throwable?) {
+                callback(false, R.string.api_error_deleting_data)
             }
         })
     }

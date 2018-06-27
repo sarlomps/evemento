@@ -56,6 +56,9 @@ object NetworkManager {
     fun pushPolls(poll: Poll, callback: (String?, Int?) -> (Unit)) {
         api.pushPoll(PollMapper().mapToEntity(poll), callback)
     }
+    fun deletePoll(poll: Poll, callback: (Boolean, Int?) -> (Unit)) {
+        api.deletePoll(poll.pollId, callback)
+    }
 
     /// COMMENTS
     fun getComments(event:Event, callback: (List<Comment>?, Int?) -> (Unit)) {
@@ -65,5 +68,17 @@ object NetworkManager {
     fun pushComment(comment: Comment, callback: (String?, Int?) -> (Unit)) {
         api.pushComment(CommentMapper().mapToEntity(comment), callback)
     }
+    fun deleteComment(comment: Comment, callback: (Boolean, Int?) -> (Unit)) {
+        api.deleteComment(comment.commentId, callback)
+    }
+    // EJEMPLO DE COMO SE USA:
+    // BORRA EL COMMENT DEL SERVER
+//    NetworkManager.deleteComment(comment) { success, errorMessage ->
+//        if (success) {
+//            // hacer algo y avisar al usuario que se borro bien
+//            return@deleteComment
+//        }
+//        showSnackbar(errorMessage ?: R.string.network_unknown_error, main_container)
+//    }
 
 }

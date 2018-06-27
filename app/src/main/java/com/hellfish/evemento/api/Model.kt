@@ -26,7 +26,7 @@ data class User(val userId: String,
                 val email: String)
 
 
-data class Comment(val commentsId:String,
+data class Comment(val commentId:String,
                     val eventId:String,
                     val text: String,
                     val userId: String)
@@ -42,6 +42,7 @@ data class PollResponse(val eventId:String,
 data class CommentResponse(val eventId:String,
                            val text: String,
                            val userId: String)
+data class DeleteResponse(val nothing: String?)
 
 class UserMapper {
 
