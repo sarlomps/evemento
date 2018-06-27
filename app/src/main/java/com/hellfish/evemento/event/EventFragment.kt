@@ -22,11 +22,15 @@ import kotlinx.android.synthetic.main.fragment_event.view.*
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import android.content.Intent
+import android.support.design.widget.TextInputEditText
+import android.support.design.widget.TextInputLayout
 import com.google.android.gms.location.places.ui.PlaceAutocomplete.RESULT_ERROR
 import com.hellfish.evemento.extensions.withDrawable
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Callback
 import android.support.v7.app.AlertDialog
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.EditText
 import com.hellfish.evemento.*
 import kotlinx.android.synthetic.main.fragment_event.*
@@ -93,6 +97,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setTextInputWatchers()
         setImageListener()
         setLocationListener()
         setDateTimeListeners()
@@ -156,8 +161,8 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     }
 
     private fun validatingEvent(action: (Event) -> Unit) {
-        if (eventTitle.text.isEmpty()) eventTitleLayout.setError(getString(R.string.titleValidation))
-        if (locationElement.text.isEmpty()) locationElementLayout.setError(getString(R.string.locationValidation))
+        validateTextInput(eventTitleLayout, eventTitle, getString(R.string.titleValidation))
+        validateTextInput(locationElementLayout, locationElement, getString(R.string.locationValidation))
 
         if (eventTitle.text.isNotEmpty() && locationElement.text.isNotEmpty()) {
             toggleViewMode()
@@ -166,6 +171,22 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         }
     }
 
+    private fun setTextInputWatchers() {
+        eventTitle.addTextChangedListener(textInputValidator { validateTextInput(eventTitleLayout, eventTitle, getString(R.string.titleValidation)) })
+        locationElement.addTextChangedListener(textInputValidator { validateTextInput(locationElementLayout, locationElement, getString(R.string.locationValidation)) })
+    }
+
+    private fun textInputValidator(validation: () -> Unit) = object: TextWatcher {
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { validation() }
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun afterTextChanged(s: Editable?) {}
+
+    }
+
+    private fun validateTextInput(textInputLayout: TextInputLayout, textInputEditText: TextInputEditText, errorMessage: String) {
+        if (textInputEditText.text.toString() == "") textInputLayout.error = errorMessage
+        else textInputLayout.error = null
+    }
 
     private fun showToast(stringId: Int) = Toast.makeText(activity, getString(stringId), Toast.LENGTH_LONG).show()
 
