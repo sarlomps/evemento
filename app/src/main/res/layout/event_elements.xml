@@ -40,7 +40,6 @@
     <EditText style="@style/EditableEventElementComponent"
         android:id="@+id/descriptionElement"
         android:drawableStart="@drawable/ic_description_grey_24dp"
-        android:inputType="text"
         android:hint="@string/default_description_text"
         />
 
