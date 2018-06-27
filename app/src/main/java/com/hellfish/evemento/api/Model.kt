@@ -25,8 +25,24 @@ data class User(val userId: String,
                 val imageUrl: String?,
                 val email: String)
 
-/// Push new event response
-data class PushEventResponse(val name:String)
+
+data class Comment(val commentId:String,
+                    val eventId:String,
+                    val text: String,
+                    val userId: String)
+
+data class Poll(val pollId: String,
+                val eventId: String,
+                val items: Map<String,Map<String,Map<String,Boolean>>>) // {pregunta:{respuesta:{usuario:true}}}
+
+/// Push new element response, name has new ID
+data class PushResponse(val name:String)
+data class PollResponse(val eventId:String,
+                        val items: Map<String,Map<String,Map<String,Boolean>>>) // {pregunta:{respuesta:{usuario:true}}}
+data class CommentResponse(val eventId:String,
+                           val text: String,
+                           val userId: String)
+data class DeleteResponse(val nothing: String?)
 
 class UserMapper {
 
@@ -75,5 +91,30 @@ class EventMapper {
             event.endDate.toString(),
             event.location,
             event.user)
+
+}
+
+class PollMapper {
+    fun mapToDomain(pollId: String, entity: PollResponse): Poll = Poll(
+            pollId,
+            entity.eventId,
+            entity.items)
+
+    fun mapToEntity(poll: Poll): PollResponse = PollResponse(
+            poll.eventId,
+            poll.items)
+}
+
+class CommentMapper {
+    fun mapToDomain(commentId: String, entity: CommentResponse): Comment = Comment(
+            commentId,
+            entity.eventId,
+            entity.text,
+            entity.userId)
+
+    fun mapToEntity(comment: Comment): CommentResponse = CommentResponse(
+            comment.eventId,
+            comment.text,
+            comment.userId)
 
 }

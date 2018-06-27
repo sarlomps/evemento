@@ -25,6 +25,7 @@
     <string name="auth_error_not_logged_out">An error occurred, not logged out.</string>
     <string name="api_error_fetching_data">An error occurred while fetching data from server.</string>
     <string name="api_error_pushing_data">An error occurred while sending data to server.</string>
+    <string name="api_error_deleting_data">An error occurred while deleting data from server.</string>
     <string name="network_unknown_error">Unknown network error occurred</string>
     <string name="DateTimeFormat">EEE dd MMM yyyy HH:mm</string>
     <string name="DateFormat">EEE dd MMM yyyy</string>
