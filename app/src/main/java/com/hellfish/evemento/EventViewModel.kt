@@ -21,7 +21,9 @@ class EventViewModel : ViewModel() {
         private set
     private var tasks: List<String> = listOf()
     private var polls: MutableLiveData<MutableList<PollObject>> = MutableLiveData()
-    private var comments: MutableLiveData<MutableList<Comment>> = MutableLiveData()
+    var comments: MutableLiveData<MutableList<Comment>> = MutableLiveData()
+        private set
+
     fun getPolls(): MutableLiveData<MutableList<PollObject>> {
         if (polls.value?.isEmpty() ?: true) {
             polls.value = mutableListOf(
@@ -61,6 +63,7 @@ class EventViewModel : ViewModel() {
     fun loadRides(callback: (List<TransportItem>?, Int?) -> (Unit)) {
 //TODO: IMPLEMENT
     }
+
     fun loadComments(callback: (List<Comment>?, Int?) -> (Unit)) {
         selectedEvent.value?.let {
             NetworkManager.getComments(it) { newComments, errorMessage ->
@@ -75,6 +78,7 @@ class EventViewModel : ViewModel() {
         }
         callback(null, R.string.api_error_fetching_data)
     }
+
     fun loadTasks(callback: (List<TaskItem>?, Int?) -> (Unit)) {
 //TODO: IMPLEMENT
     }
