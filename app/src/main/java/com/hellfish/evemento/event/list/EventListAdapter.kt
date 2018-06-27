@@ -1,4 +1,6 @@
 package com.hellfish.evemento.event
+import android.graphics.drawable.ColorDrawable
+import android.support.v4.content.res.ResourcesCompat
 import com.hellfish.evemento.R
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -7,6 +9,7 @@ import com.hellfish.evemento.event.list.EventListFragment
 
 
 import com.hellfish.evemento.extensions.inflate
+import com.squareup.picasso.Picasso
 
 import kotlinx.android.synthetic.main.fragment_event_list_item.view.*
 
@@ -39,9 +42,23 @@ class EventListAdapter(private val fragment: EventListFragment, private var even
 
         fun bindEvent(event: Event, fragment: EventListFragment) {
             this.event = event
-            view.text_title.text = event.title
-            view.text_desc.text = event.description
-            view.text_date.text = String.format("%s -> %s", fragment.dateTimeFormatter.print(event.startDate), fragment.dateTimeFormatter.print(event.endDate))
+            if (event.imageUrl != "") {
+                Picasso.get().load(event.imageUrl).placeholder(R.color.colorPrimaryDark).into(view.eventCardImage)
+                view.eventCardScrim.visibility = View.VISIBLE
+
+            } else {
+                view.eventCardScrim.visibility = View.GONE
+                view. eventCardImage.layoutParams.height = view.resources.getDimension(R.dimen.eventCardImageShort).toInt()
+            }
+
+            view.eventCardTitle.text = event.title
+
+            view.eventCardDescription.text = event.description
+            view.eventCardDescription. visibility = if (event.description != "") View.VISIBLE else View.GONE
+
+
+            view.eventCardStartsDate.text = String.format("Starts: %s", fragment.dateTimeFormatter.print(event.startDate))
+            view.eventCardEndsDate.text = String.format("Ends: %s", fragment.dateTimeFormatter.print(event.endDate))
 
             // TODO: Bindear todos los valores del evento que faltan cuando este completo el layout.
             view.setOnClickListener {

@@ -11,52 +11,75 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         app:cardCornerRadius="4dp"
-        app:cardElevation="4dp">
+        app:cardElevation="4dp"
+        >
 
-        <android.support.constraint.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/image_cover"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+                android:layout_height="wrap_content">
 
+                <ImageView
+                    android:id="@+id/eventCardImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:scaleType="centerCrop"
+                    android:background="@color/colorPrimaryDark"
+                    />
+
+                <ImageView
+                    android:id="@+id/eventCardScrim"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="@drawable/scrim"/>
+
+                <TextView
+                    android:id="@+id/eventCardTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:layout_gravity="bottom"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    />
+
+            </FrameLayout>
 
             <TextView
-                android:id="@+id/text_title"
+                android:id="@+id/eventCardDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Titulo del Evento"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="10dp"
                 />
 
             <TextView
-                android:id="@+id/text_desc"
+                android:id="@+id/eventCardStartsDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Este evento es tiene una descripcion interesante."
-                app:layout_constraintTop_toBottomOf="@+id/text_title"
-                />
-            <TextView
-                android:id="@+id/text_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10/10/10 20hs"
-                app:layout_constraintTop_toBottomOf="@+id/text_desc"
+                android:textStyle="italic"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="10dp"
                 />
 
-        </android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/eventCardEndsDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="italic"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="10dp"
+                />
+
+        </LinearLayout>
 
     </android.support.v7.widget.CardView>
 
