@@ -27,9 +27,9 @@ data class User(val userId: String,
 
 
 data class Comment(val commentId:String,
-                    val eventId:String,
-                    val text: String,
-                    val userId: String)
+                   val userId: String,
+                   val name: String,
+                   val message: String)
 
 data class Poll(val pollId: String,
                 val eventId: String,
@@ -40,8 +40,9 @@ data class PushResponse(val name:String)
 data class PollResponse(val eventId:String,
                         val items: Map<String,Map<String,Map<String,Boolean>>>) // {pregunta:{respuesta:{usuario:true}}}
 data class CommentResponse(val eventId:String,
-                           val text: String,
-                           val userId: String)
+                           val userId: String,
+                           val name: String,
+                           val message: String)
 data class DeleteResponse(val nothing: String?)
 
 class UserMapper {
@@ -108,13 +109,14 @@ class PollMapper {
 class CommentMapper {
     fun mapToDomain(commentId: String, entity: CommentResponse): Comment = Comment(
             commentId,
-            entity.eventId,
-            entity.text,
-            entity.userId)
+            entity.userId,
+            entity.name,
+            entity.message)
 
-    fun mapToEntity(comment: Comment): CommentResponse = CommentResponse(
-            comment.eventId,
-            comment.text,
-            comment.userId)
+    fun mapToEntity(eventId: String, comment: Comment): CommentResponse = CommentResponse(
+            eventId,
+            comment.userId,
+            comment.name,
+            comment .message)
 
 }
