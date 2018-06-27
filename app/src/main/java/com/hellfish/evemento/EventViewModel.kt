@@ -40,7 +40,7 @@ class EventViewModel : ViewModel() {
 
     fun select(event: Event?) {
         selectedEvent.value = event
-
+        comments.value = listOf()
         loadDataFrom(event)     /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
     }
 
