@@ -2,11 +2,14 @@ package com.hellfish.evemento
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import com.hellfish.evemento.api.Comment
+import com.hellfish.evemento.api.Poll
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.transport.TransportItem
 import com.hellfish.evemento.event.transport.UserMiniDetail
-import com.hellfish.evemento.event.poll.Poll
 import com.hellfish.evemento.event.poll.Answer
+import com.hellfish.evemento.event.poll.PollObject
+import com.hellfish.evemento.event.task.TaskItem
 
 
 class EventViewModel : ViewModel() {
@@ -17,21 +20,16 @@ class EventViewModel : ViewModel() {
     var rides: MutableLiveData<MutableList<TransportItem>> = MutableLiveData()
         private set
     private var tasks: List<String> = listOf()
-    private var polls: MutableLiveData<MutableList<Poll>> = MutableLiveData()
-    private var comments: List<String> = listOf()
-    fun getPolls(): MutableLiveData<MutableList<Poll>> {
+    private var polls: MutableLiveData<MutableList<PollObject>> = MutableLiveData()
+    private var comments: MutableLiveData<MutableList<Comment>> = MutableLiveData()
+    fun getPolls(): MutableLiveData<MutableList<PollObject>> {
         if (polls.value?.isEmpty() ?: true) {
             polls.value = mutableListOf(
-                    Poll.NoVotable("Asdasdesd", listOf(Answer.Closed("Sí", 2), Answer.Closed("No", 1))),
-                    Poll.Votable("Asdasdesdo", listOf(Answer.Open("Sí", 2), Answer.Open("No", 1)))
+                    PollObject.NoVotable("Asdasdesd", listOf(Answer.Closed("Sí", 2), Answer.Closed("No", 1))),
+                    PollObject.Votable("Asdasdesdo", listOf(Answer.Open("Sí", 2), Answer.Open("No", 1)))
             )
-            }
+        }
         return polls
-    }
-
-    fun loadEvent(event: Event) {
-        select(event)
-        loadDataFrom(event)
     }
 
     fun updateView() = select(selectedEvent.value)
@@ -39,27 +37,59 @@ class EventViewModel : ViewModel() {
     fun selected() = selectedEvent.value
 
     fun select(event: Event?) {
-        loadDataFrom(event)
         selectedEvent.value = event
+
+        loadDataFrom(event)     /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
     }
 
-    //TODO The idea is overload this mehtod with the real type (Guest / Poll / Task / Ride / Comment)
-    fun add(element: String) {
-        guests += element
-    }
+    fun loadPolls(callback: (List<Poll>?, Int?) -> (Unit)) {
+        selectedEvent.value?.let {
+            NetworkManager.getPolls(it) { newPolls, errorMessage ->
+                newPolls?.let {
+//TODO: DESCOMENTAR CUANDO ESTE LISTO EL REFACTOR DE POLLS
+//                    polls.value = it.toMutableList()
+//                    callback(polls.value, null)
+                    return@getPolls
+                }
+                callback(null, errorMessage)
+            }
 
+        return
+        }
+        callback(null, R.string.api_error_fetching_data)
+    }
+    fun loadRides(callback: (List<TransportItem>?, Int?) -> (Unit)) {
+//TODO: IMPLEMENT
+    }
+    fun loadComments(callback: (List<Comment>?, Int?) -> (Unit)) {
+        selectedEvent.value?.let {
+            NetworkManager.getComments(it) { newComments, errorMessage ->
+                newComments?.let {
+                    comments.value = it.toMutableList()
+                    callback(comments.value, null)
+                    return@getComments
+                }
+                callback(null, errorMessage)
+            }
+            return
+        }
+        callback(null, R.string.api_error_fetching_data)
+    }
+    fun loadTasks(callback: (List<TaskItem>?, Int?) -> (Unit)) {
+//TODO: IMPLEMENT
+    }
     /**
      *The idea is this methos is to called the mocked methods and then replace those methods to pull from server
      */
+    /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
     private fun loadDataFrom(event: Event?) {
         rides.value = mockedRides()
         guests = listOf() //TODO load it from Firebase
         tasks = listOf() //TODO load it from Firebase
         polls.value = mutableListOf(
-                Poll.NoVotable("Asdasdesd", listOf(Answer.Closed("Sí", 2), Answer.Closed("No", 1))),
-                Poll.Votable("Asdasdesdo", listOf(Answer.Open("Sí", 2), Answer.Open("No", 1)))
+                PollObject.NoVotable("Asdasdesd", listOf(Answer.Closed("Sí", 2), Answer.Closed("No", 1))),
+                PollObject.Votable("Asdasdesdo", listOf(Answer.Open("Sí", 2), Answer.Open("No", 1)))
         )
-        comments = listOf() //TODO load it from Firebase
     }
 
     private fun mockedRides(): MutableList<TransportItem> {
@@ -82,11 +112,15 @@ class EventViewModel : ViewModel() {
         return transports
     }
 
-    fun add(poll: Poll) {
+    fun add(element: String) {
+        guests += element
+    }
+
+    fun add(poll: PollObject) {
         polls.value = polls.value?.plus(poll)?.toMutableList()
     }
 
-    fun edit(newPoll: Poll) {
+    fun edit(newPoll: PollObject) {
         polls.value = polls.value?.map { poll -> if (newPoll.question == poll.question) { newPoll } else { poll } }?.toMutableList()
     }
 

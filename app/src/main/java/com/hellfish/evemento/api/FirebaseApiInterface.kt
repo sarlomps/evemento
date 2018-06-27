@@ -12,6 +12,19 @@ interface  FirebaseApiInterface {
                   @Query("equalTo") equalTo: String)
             : Call<Map<String, EventResponse>>
 
+    //https://deep-hook-204120.firebaseio.com/polls.json?orderBy=%22eventId%22&equalTo=%22-LFkNSwG9kj9Ytw_5mXa%22
+    @GET("/polls.json")
+    fun getPolls(@Query("orderBy") orderBy: String,
+                 @Query("equalTo") equalTo: String)
+            : Call<Map<String, PollResponse>>
+
+    //https://deep-hook-204120.firebaseio.com/comments.json?orderBy=%22eventId%22&equalTo=%22-LFkNSwG9kj9Ytw_5mXa%22
+    @GET("/comments.json")
+    fun getComments(@Query("orderBy") orderBy: String,
+                    @Query("equalTo") equalTo: String)
+            : Call<Map<String, CommentResponse>>
+
+
     @Headers("Content-Type: application/json")
     @POST("/events.json")
     fun pushEvent(@Body event: EventResponse)

@@ -38,7 +38,7 @@ class PollFragment : NavigatorFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val polls = mutableListOf<Poll>()
+        val polls = mutableListOf<PollObject>()
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)

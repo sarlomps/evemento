@@ -133,4 +133,51 @@ class RestAPI {
         })
     }
 
+    private fun getPollsForEventCall(orderBy: String, equalTo: String): Call<Map<String, PollResponse>> {
+        return eventsApi.getPolls(orderBy, equalTo)
+    }
+
+    //https://deep-hook-204120.firebaseio.com/polls.json?orderBy=%22eventId%22&equalTo=%22-LFkNSwG9kj9Ytw_5mXa%22
+    fun getPollsForEvent(eventId: String, callback: (List<Poll>?, Int?) -> (Unit)) {
+        val call = getPollsForEventCall("\"eventId\"", "\"$eventId\"")
+        call.enqueue(object : Callback<Map<String, PollResponse>> {
+            override fun onResponse(call: Call<Map<String, PollResponse>>?, response: Response<Map<String, PollResponse>>?) {
+                if (response != null && response.isSuccessful) {
+                    response.body()?.let {
+                        callback(it.map {entry -> PollMapper().mapToDomain(entry.key, entry.value)}, null)
+                        return
+                    }
+                }
+                callback(null, R.string.api_error_fetching_data)
+            }
+
+            override fun onFailure(call: Call<Map<String, PollResponse>>?, t: Throwable?) {
+                callback(null, R.string.api_error_fetching_data)
+            }
+        })
+    }
+
+    private fun getCommentsForEventCall(orderBy: String, equalTo: String): Call<Map<String, CommentResponse>> {
+        return eventsApi.getComments(orderBy, equalTo)
+    }
+
+    //https://deep-hook-204120.firebaseio.com/polls.json?orderBy=%22eventId%22&equalTo=%22-LFkNSwG9kj9Ytw_5mXa%22
+    fun getCommentsForEvent(eventId: String, callback: (List<Comment>?, Int?) -> (Unit)) {
+        val call = getCommentsForEventCall("\"eventId\"", "\"$eventId\"")
+        call.enqueue(object : Callback<Map<String, CommentResponse>> {
+            override fun onResponse(call: Call<Map<String, CommentResponse>>?, response: Response<Map<String, CommentResponse>>?) {
+                if (response != null && response.isSuccessful) {
+                    response.body()?.let {
+                        callback(it.map {entry -> CommentMapper().mapToDomain(entry.key, entry.value)}, null)
+                        return
+                    }
+                }
+                callback(null, R.string.api_error_fetching_data)
+            }
+
+            override fun onFailure(call: Call<Map<String, CommentResponse>>?, t: Throwable?) {
+                callback(null, R.string.api_error_fetching_data)
+            }
+        })
+    }
 }

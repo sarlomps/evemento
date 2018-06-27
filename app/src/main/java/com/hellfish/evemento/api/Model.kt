@@ -2,6 +2,8 @@ package com.hellfish.evemento.api
 
 import com.google.firebase.auth.FirebaseUser
 import com.hellfish.evemento.event.Event
+import com.hellfish.evemento.event.task.TaskItem
+import com.hellfish.evemento.event.transport.TransportItem
 import org.joda.time.DateTime
 
 data class EventResponse(val title: String,
@@ -25,8 +27,23 @@ data class User(val userId: String,
                 val imageUrl: String?,
                 val email: String)
 
+
+data class Comment(val commentsId:String,
+                    val eventId:String,
+                    val text: String,
+                    val userId: String)
+
+data class Poll(val pollId: String,
+                val eventId: String,
+                val items: Map<String,Map<String,Map<String,Boolean>>>) // {pregunta:{respuesta:{usuario:true}}}
+
 /// Push new event response
 data class PushEventResponse(val name:String)
+data class PollResponse(val eventId:String,
+                        val items: Map<String,Map<String,Map<String,Boolean>>>) // {pregunta:{respuesta:{usuario:true}}}
+data class CommentResponse(val eventId:String,
+                           val text: String,
+                           val userId: String)
 
 class UserMapper {
 
@@ -75,5 +92,30 @@ class EventMapper {
             event.endDate.toString(),
             event.location,
             event.user)
+
+}
+
+class PollMapper {
+    fun mapToDomain(pollId: String, entity: PollResponse): Poll = Poll(
+            pollId,
+            entity.eventId,
+            entity.items)
+
+    fun mapToEntity(poll: Poll): PollResponse = PollResponse(
+            poll.eventId,
+            poll.items)
+}
+
+class CommentMapper {
+    fun mapToDomain(commentId: String, entity: CommentResponse): Comment = Comment(
+            commentId,
+            entity.eventId,
+            entity.text,
+            entity.userId)
+
+    fun mapToEntity(comment: Comment): CommentResponse = CommentResponse(
+            comment.eventId,
+            comment.text,
+            comment.userId)
 
 }

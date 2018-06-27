@@ -48,5 +48,13 @@ object NetworkManager {
 //        showSnackbar(errorMessage ?: R.string.network_unknown_error, main_container)
 //    }
 
+    fun getPolls(event:Event, callback: (List<Poll>?, Int?) -> (Unit)) {
+        api.getPollsForEvent(event.eventId, callback)
+    }
+
+    fun getComments(event:Event, callback: (List<Comment>?, Int?) -> (Unit)) {
+        api.getCommentsForEvent(event.eventId, callback)
+
+    }
 
 }

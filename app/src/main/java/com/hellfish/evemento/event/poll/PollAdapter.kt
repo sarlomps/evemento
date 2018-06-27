@@ -6,7 +6,7 @@ import com.hellfish.evemento.R
 import com.hellfish.evemento.RecyclerAdapter
 import kotlinx.android.synthetic.main.poll_content.view.*
 
-class PollAdapter(polls: MutableList<Poll>, private val f: (Poll) -> Unit) : RecyclerAdapter<CardView, Poll>(polls) {
+class PollAdapter(polls: MutableList<PollObject>, private val f: (PollObject) -> Unit) : RecyclerAdapter<CardView, PollObject>(polls) {
     companion object {
         const val openPollView = 0
         const val closedPollView = 1
@@ -16,14 +16,14 @@ class PollAdapter(polls: MutableList<Poll>, private val f: (Poll) -> Unit) : Rec
         return R.layout.poll_content
     }
 
-    override fun getItemView(item: Poll): Int {
+    override fun getItemView(item: PollObject): Int {
         return when (item) {
-            is Poll.Votable -> openPollView
-            is Poll.NoVotable -> closedPollView
+            is PollObject.Votable -> openPollView
+            is PollObject.NoVotable -> closedPollView
         }
     }
 
-    override fun doOnItemOnBindViewHolder(view: CardView, item: Poll, context: Context) {
+    override fun doOnItemOnBindViewHolder(view: CardView, item: PollObject, context: Context) {
         view.question.text = item.question
 
         view.answers.apply {
@@ -32,10 +32,10 @@ class PollAdapter(polls: MutableList<Poll>, private val f: (Poll) -> Unit) : Rec
         }
     }
 
-    private fun answersAdapter(poll : Poll) : RecyclerAdapter<*, *> {
+    private fun answersAdapter(poll : PollObject) : RecyclerAdapter<*, *> {
         return when(poll) {
-            is Poll.Votable -> OpenAnswersAdapter({ answer -> f(poll.choose(answer)) }, poll.answers)
-            is Poll.NoVotable -> ClosedAnswersAdapter(poll.answers, poll.totalVotes())
+            is PollObject.Votable -> OpenAnswersAdapter({ answer -> f(poll.choose(answer)) }, poll.answers)
+            is PollObject.NoVotable -> ClosedAnswersAdapter(poll.answers, poll.totalVotes())
         }
     }
 }
