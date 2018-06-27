@@ -7,16 +7,12 @@
     android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
-    android:layout_marginBottom="10dp"
-    card_view:contentPaddingLeft="10dp"
-    card_view:contentPaddingRight="10dp"
-    card_view:cardCornerRadius="3dp"
-    card_view:cardElevation="10dp"
-    card_view:contentPadding="3dp"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp"
     card_view:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".event.poll.PollFragment"
-    tools:showIn="@layout/fragment_poll_list">
+    tools:context=".event.comment.CommentFragment"
+    tools:showIn="@layout/fragment_comment_list">
 
     <LinearLayout
         android:layout_width="match_parent"
