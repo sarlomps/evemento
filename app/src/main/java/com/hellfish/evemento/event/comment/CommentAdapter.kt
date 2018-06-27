@@ -9,7 +9,6 @@ import com.hellfish.evemento.R
 import com.hellfish.evemento.RecyclerAdapter
 import com.hellfish.evemento.api.Comment
 import kotlinx.android.synthetic.main.comment_content.view.*
-import java.util.*
 
 class CommentAdapter(comments: MutableList<Comment>) : RecyclerAdapter<CardView, Comment>(comments) {
 
@@ -18,8 +17,7 @@ class CommentAdapter(comments: MutableList<Comment>) : RecyclerAdapter<CardView,
     }
 
     override fun doOnItemOnBindViewHolder(view: CardView, item: Comment, context: Context) {
-        DrawableCompat.setTint(view.commentCircle.drawable, randomColor())
-
+        DrawableCompat.setTint(view.commentCircle.drawable, userColor(item.userId, item.name))
         view.commentInitial.text = item.name.first().toUpperCase().toString()
 
         view.commentUserName.text = item.name
@@ -27,9 +25,11 @@ class CommentAdapter(comments: MutableList<Comment>) : RecyclerAdapter<CardView,
         view.commentMessage.text = item.message
     }
 
-    private fun randomColor(): Int {
-        val rnd = Random()
-        return Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
+    private fun userColor(userId: String, name: String): Int {
+        val red = (userId + name).hashCode() % 256
+        val green = userId.hashCode() % 256
+        val blue = name.hashCode() % 256
+        return Color.argb(255, red, green, blue)
     }
 
 }
