@@ -112,6 +112,14 @@ class EventViewModel : ViewModel() {
         return transports
     }
 
+    fun add(comment: Comment) {
+        comments.value = comments.value?.plus(comment)?.toMutableList()
+    }
+
+    fun remove(comment: Comment) {
+        comments.value = comments.value?.minus(comment)?.toMutableList()
+    }
+
     fun add(element: String) {
         guests += element
     }
