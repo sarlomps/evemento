@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_event.view.*
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import android.content.Intent
+import android.support.constraint.ConstraintLayout
 import android.support.design.widget.TextInputEditText
 import android.support.design.widget.TextInputLayout
 import com.google.android.gms.location.places.ui.PlaceAutocomplete.RESULT_ERROR
@@ -32,6 +33,8 @@ import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import com.hellfish.evemento.*
 import kotlinx.android.synthetic.main.fragment_event.*
 import org.joda.time.DateTime
@@ -84,14 +87,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        imageDialogInput = EditText(activity!!)
-        imageDialog = AlertDialog.Builder(activity!!)
-                .setTitle("Add image url")
-                .setView(imageDialogInput)
-                .setPositiveButton(getString(R.string.accept)) { _, _ -> loadImage(imageDialogInput.text.toString()) }
-                .setNegativeButton(getString(R.string.cancel)) { _, _ -> Unit }
-                .setNeutralButton(getString(R.string.removeImage)) { _, _ -> loadImage("") }
-                .create()
+        imageDialog = createImageDialog()
         return EventLayout(context)
     }
 
@@ -195,7 +191,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         imageDialog.show()
     }
 
-    fun loadImage(url: String?) {
+    private fun loadImage(url: String?) {
         imageUrl.text = url
         if (url != "") Picasso.get().load(url).fit().into(eventImage, object: Callback {
             override fun onError(e: java.lang.Exception?) { showToast(R.string.errorLoadingImage); toolbarScrim.visibility = View.GONE }
@@ -205,6 +201,25 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
             toolbarScrim.visibility = View.GONE
             eventImage.setImageResource(0)
         }
+    }
+
+    private fun createImageDialog(): AlertDialog {
+        val inputContainer = FrameLayout(activity!!)
+        imageDialogInput = EditText(activity!!)
+        imageDialogInput.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+            marginStart = resources.getDimension(R.dimen.alertDialogPadding).toInt()
+            marginEnd = resources.getDimension(R.dimen.alertDialogPadding).toInt()
+        }
+        inputContainer.addView(imageDialogInput)
+
+        return AlertDialog.Builder(activity!!)
+                .setTitle("Add image url")
+                .setView(inputContainer)
+                .setPositiveButton(getString(R.string.accept)) { _, _ -> loadImage(imageDialogInput.text.toString()) }
+                .setNegativeButton(getString(R.string.cancel)) { _, _ -> Unit }
+                .setNeutralButton(getString(R.string.removeImage)) { _, _ -> loadImage("") }
+                .create()
+
     }
 
     private fun setLocationListener() = locationElement.setOnClickListener {
@@ -253,4 +268,6 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     }
 
 }
+
+
 
