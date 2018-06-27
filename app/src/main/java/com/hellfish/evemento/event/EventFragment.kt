@@ -176,11 +176,14 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
 
     fun loadImage(url: String?) {
         imageUrl.text = url
-        if (imageUrl.text != "") Picasso.get().load(url).fit().into(eventImage, object: Callback {
-            override fun onError(e: java.lang.Exception?) { showToast(R.string.errorLoadingImage) }
-            override fun onSuccess() { }
+        if (url != "") Picasso.get().load(url).fit().into(eventImage, object: Callback {
+            override fun onError(e: java.lang.Exception?) { showToast(R.string.errorLoadingImage); toolbarScrim.visibility = View.GONE }
+            override fun onSuccess() { toolbarScrim.visibility = View.VISIBLE }
         })
-        else eventImage.setImageResource(0)
+        else {
+            toolbarScrim.visibility = View.GONE
+            eventImage.setImageResource(0)
+        }
     }
 
     private fun setLocationListener() = locationElement.setOnClickListener {
