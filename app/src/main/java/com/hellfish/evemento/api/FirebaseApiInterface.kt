@@ -59,6 +59,12 @@ interface  FirebaseApiInterface {
     fun pushComment(@Body comment: CommentResponse)
             : Call<PushResponse>
 
+    @Headers("Content-Type: application/json")
+    @PUT("/comments/{commentId}.json")
+    fun updateComment(@Path("commentId") commentId: String,
+                    @Body comment: CommentResponse)
+            : Call<CommentResponse>
+
     @DELETE("/comments/{commentId}.json")
     fun deleteComment(@Path("commentId") commentId: String)
             : Call<DeleteResponse>

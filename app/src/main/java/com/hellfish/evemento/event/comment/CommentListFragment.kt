@@ -70,22 +70,27 @@ class CommentListFragment : NavigatorFragment() {
     }
 
     private fun editListener() = { comment: Comment ->
-            View.OnClickListener {
-                if (comment.userId == SessionManager.getCurrentUser()!!.userId) {
-                    dialogInput.setText(comment.message)
-                    clickDialog.run {
-                        setButton(Dialog.BUTTON_POSITIVE, getString(R.string.accept)) { _, _ -> eventViewModel.edit(comment.copy(message = dialogInput.text.toString())) }
-                        setButton(Dialog.BUTTON_NEUTRAL, getString(R.string.delete)) { _, _ ->
-                            NetworkManager.deleteComment(comment) { success, _ ->
-                                if(success) eventViewModel.remove(comment)
-                                else showToast(R.string.errorDeleteComments)
-                            }
+        View.OnClickListener {
+            if (comment.userId == SessionManager.getCurrentUser()!!.userId) {
+                dialogInput.setText(comment.message)
+                clickDialog.run {
+                    setButton(Dialog.BUTTON_POSITIVE, getString(R.string.accept)) { _, _ ->
+                        NetworkManager.updateComment(eventViewModel.selected()!!.eventId, comment.copy(message = dialogInput.text.toString())) { updatedComment, errorMessage ->
+                            updatedComment?.let { eventViewModel.edit(updatedComment); return@updateComment }
+                            showToast(errorMessage ?: R.string.network_unknown_error)
                         }
-                        show()
-                        getButton(Dialog.BUTTON_NEUTRAL).visibility = View.VISIBLE
                     }
+                    setButton(Dialog.BUTTON_NEUTRAL, getString(R.string.delete)) { _, _ ->
+                        NetworkManager.deleteComment(comment) { success, _ ->
+                            if(success) eventViewModel.remove(comment)
+                            else showToast(R.string.errorDeleteComments)
+                        }
+                    }
+                    show()
+                    getButton(Dialog.BUTTON_NEUTRAL).visibility = View.VISIBLE
                 }
             }
+        }
     }
 
 }

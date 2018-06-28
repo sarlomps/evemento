@@ -70,6 +70,10 @@ object NetworkManager {
         api.pushComment(CommentMapper().mapToEntity(eventId, comment), callback)
     }
 
+    fun updateComment(eventId: String, comment: Comment, callback: (Comment?, Int?) -> (Unit)) {
+        api.updateComment(comment.commentId, CommentMapper().mapToEntity(eventId, comment), callback)
+    }
+
     fun deleteComment(comment: Comment, callback: (Boolean, Int?) -> (Unit)) {
         api.deleteComment(comment.commentId, callback)
     }

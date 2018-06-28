@@ -243,6 +243,28 @@ class RestAPI {
         })
     }
 
+    private fun updateCommentCall(commentId: String, comment: CommentResponse): Call<CommentResponse> {
+        return firebaseApi.updateComment(commentId, comment)
+    }
+    fun updateComment(commentId: String, comment: CommentResponse, callback: (Comment?, Int?) -> Unit) {
+        val call = updateCommentCall(commentId, comment)
+        call.enqueue(object : Callback<CommentResponse> {
+            override fun onResponse(call: Call<CommentResponse>?, response: Response<CommentResponse>?) {
+                if (response != null && response.isSuccessful) {
+                    response.body()?.let {
+                        callback(CommentMapper().mapToDomain(commentId, it), null)
+                        return
+                    }
+                }
+                callback(null, R.string.api_error_pushing_data)
+            }
+
+            override fun onFailure(call: Call<CommentResponse>?, t: Throwable?) {
+                callback(null, R.string.api_error_pushing_data)
+            }
+        })
+    }
+
     private fun deleteCommentCall(commentId: String): Call<DeleteResponse> {
         return firebaseApi.deleteComment(commentId)
     }
