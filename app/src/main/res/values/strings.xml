@@ -3,6 +3,7 @@
     <string name="title_fragment_poll_list">Polls</string>
     <string name="title_fragment_task_list">Tasks</string>
     <string name="title_fragment_comments_list">Comments</string>
+    <string name="title_fragment_guests_list">Guests</string>
     <string name="title_activity_maps">Transporte</string>
     <string name="default_event_title">Title</string>
     <string name="default_description_text">Add a description?</string>
@@ -42,6 +43,7 @@
     <string name="removeImage">Remove Image</string>
     <string name="imageDialogTitle">Add image url</string>
     <string name="commentDialogTitle">Comment:</string>
+    <string name="guestDialogTitle">Mail Guest:</string>
     <string name="titleValidation">Events should have title!</string>
     <string name="locationValidation">Events should have a place!</string>
     <string name="hint_transport_build_available_slots">Add available slots</string>

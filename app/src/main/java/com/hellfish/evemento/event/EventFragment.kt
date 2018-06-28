@@ -33,6 +33,7 @@ import android.text.TextWatcher
 import android.widget.EditText
 import com.hellfish.evemento.*
 import com.hellfish.evemento.event.comment.CommentListFragment
+import com.hellfish.evemento.event.guest.GuestListFragment
 import kotlinx.android.synthetic.main.fragment_event.*
 import org.joda.time.DateTime
 
@@ -252,6 +253,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     }
 
     private fun setListsListeners() {
+        guestElement.setOnClickListener { navigatorListener.replaceFragment(GuestListFragment()) }
         taskElement.setOnClickListener { navigatorListener.replaceFragment(TaskListFragment()) }
         pollElement.setOnClickListener { navigatorListener.replaceFragment(PollFragment()) }
         rideElement.setOnClickListener { navigatorListener.replaceFragment(TransportFragment()) }

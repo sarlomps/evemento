@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.hellfish.evemento.api.Comment
 import com.hellfish.evemento.api.Poll
+import com.hellfish.evemento.api.User
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.transport.TransportItem
 import com.hellfish.evemento.event.transport.UserMiniDetail
@@ -16,7 +17,8 @@ class EventViewModel : ViewModel() {
 
     var selectedEvent: MutableLiveData<Event> = MutableLiveData()
         private set
-    private var guests: List<String> = listOf()
+    var guests: MutableLiveData<MutableList<User>> = MutableLiveData()
+        private set
     var rides: MutableLiveData<MutableList<TransportItem>> = MutableLiveData()
         private set
     private var tasks: List<String> = listOf()
@@ -75,6 +77,16 @@ class EventViewModel : ViewModel() {
         onError(R.string.api_error_fetching_data)
     }
 
+    fun loadGuests(onError: (Int?) -> (Unit)) {
+        selectedEvent.value?.let {
+            guests.value = mutableListOf(
+                    User("w98n4ignsoeiugnesg9i8u4nv49n", "Juan", "", "hechicero@juan.com"),
+                    User("lkngmspw489njpwio4ugne948ng4", "Juan", "", "nosql@juan.com"),
+                    User("lskngp48ngap948ngp948nang498", "Juaasdasdasdn", "", "sarlomp@juan.com")
+            )
+        }
+    }
+
     fun loadTasks(callback: (List<TaskItem>?, Int?) -> (Unit)) {
 //TODO: IMPLEMENT
     }
@@ -84,7 +96,6 @@ class EventViewModel : ViewModel() {
     /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
     private fun loadDataFrom(event: Event?) {
         rides.value = mockedRides()
-        guests = listOf() //TODO load it from Firebase
         tasks = listOf() //TODO load it from Firebase
         polls.value = mutableListOf(
                 PollObject.NoVotable("Asdasdesd", listOf(Answer.Closed("Sí", 2), Answer.Closed("No", 1))),
@@ -127,8 +138,12 @@ class EventViewModel : ViewModel() {
         comments.value = editList(comments.value, newComment) { c1, c2 -> c1.commentId == c2.commentId}
     }
 
-    fun add(element: String) {
-        guests += element
+    fun add(guest: User) {
+        guests.value = guests.value?.plus(guest)?.toMutableList()
+    }
+
+    fun remove(guest: User) {
+        guests.value = guests.value?.minus(guest)?.toMutableList()
     }
 
     fun add(poll: PollObject) {
