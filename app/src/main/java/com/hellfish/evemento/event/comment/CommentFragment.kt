@@ -70,20 +70,22 @@ class CommentFragment : NavigatorFragment() {
     }
 
     private fun editListener() = { comment: Comment ->
-        View.OnClickListener {
-            dialogInput.setText(comment.message)
-            clickDialog.run {
-                setButton(Dialog.BUTTON_POSITIVE, getString(R.string.accept)) { _, _ -> eventViewModel.edit(comment.copy(message = dialogInput.text.toString())) }
-                setButton(Dialog.BUTTON_NEUTRAL, getString(R.string.delete)) { _, _ ->
-                    NetworkManager.deleteComment(comment) { success, _ ->
-                        if(success) eventViewModel.remove(comment)
-                        else showToast(R.string.errorDeleteComments)
+            View.OnClickListener {
+                if (comment.userId == SessionManager.getCurrentUser()!!.userId) {
+                    dialogInput.setText(comment.message)
+                    clickDialog.run {
+                        setButton(Dialog.BUTTON_POSITIVE, getString(R.string.accept)) { _, _ -> eventViewModel.edit(comment.copy(message = dialogInput.text.toString())) }
+                        setButton(Dialog.BUTTON_NEUTRAL, getString(R.string.delete)) { _, _ ->
+                            NetworkManager.deleteComment(comment) { success, _ ->
+                                if(success) eventViewModel.remove(comment)
+                                else showToast(R.string.errorDeleteComments)
+                            }
+                        }
+                        show()
+                        getButton(Dialog.BUTTON_NEUTRAL).visibility = View.VISIBLE
                     }
                 }
-                show()
-                getButton(Dialog.BUTTON_NEUTRAL).visibility = View.VISIBLE
             }
-        }
     }
 
 }
