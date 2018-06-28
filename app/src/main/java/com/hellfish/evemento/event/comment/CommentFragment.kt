@@ -10,11 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import com.hellfish.evemento.EventViewModel
-import com.hellfish.evemento.NavigatorFragment
-import com.hellfish.evemento.R
+import com.hellfish.evemento.*
 import com.hellfish.evemento.R.string.title_fragment_comments_list
-import com.hellfish.evemento.SessionManager
 import com.hellfish.evemento.api.Comment
 import kotlinx.android.synthetic.main.fragment_comment_list.*
 
@@ -54,12 +51,18 @@ class CommentFragment : NavigatorFragment() {
         dialogInput.setText("")
         clickDialog.run {
             setButton(Dialog.BUTTON_POSITIVE, getString(R.string.accept)) { _, _ ->
-                eventViewModel.add(Comment(
-                        "",
+                val newComment = Comment("",
                         SessionManager.getCurrentUser()!!.userId,
                         SessionManager.getCurrentUser()!!.displayName,
-                        dialogInput.text.toString()
-                ))
+                        dialogInput.text.toString())
+
+                NetworkManager.pushComment(eventViewModel.selected()!!.eventId, newComment) { name, _ ->
+                    name?.let {
+                        eventViewModel.add(newComment.copy(commentId = name))
+                        return@pushComment
+                    }
+                    showToast(R.string.errorAddComments)
+                }
             }
             show()
             getButton(Dialog.BUTTON_NEUTRAL)?.visibility = View.GONE
@@ -71,7 +74,12 @@ class CommentFragment : NavigatorFragment() {
             dialogInput.setText(comment.message)
             clickDialog.run {
                 setButton(Dialog.BUTTON_POSITIVE, getString(R.string.accept)) { _, _ -> eventViewModel.edit(comment.copy(message = dialogInput.text.toString())) }
-                setButton(Dialog.BUTTON_NEUTRAL, getString(R.string.delete)) { _, _ -> eventViewModel.remove(comment) }
+                setButton(Dialog.BUTTON_NEUTRAL, getString(R.string.delete)) { _, _ ->
+                    NetworkManager.deleteComment(comment) { success, _ ->
+                        if(success) eventViewModel.remove(comment)
+                        else showToast(R.string.errorDeleteComments)
+                    }
+                }
                 show()
                 getButton(Dialog.BUTTON_NEUTRAL).visibility = View.VISIBLE
             }

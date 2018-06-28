@@ -65,12 +65,15 @@ object NetworkManager {
         api.getCommentsForEvent(event.eventId, callback)
 
     }
+
     fun pushComment(eventId: String, comment: Comment, callback: (String?, Int?) -> (Unit)) {
         api.pushComment(CommentMapper().mapToEntity(eventId, comment), callback)
     }
+
     fun deleteComment(comment: Comment, callback: (Boolean, Int?) -> (Unit)) {
         api.deleteComment(comment.commentId, callback)
     }
+
     // EJEMPLO DE COMO SE USA:
     // BORRA EL COMMENT DEL SERVER
 //    NetworkManager.deleteComment(comment) { success, errorMessage ->
