@@ -15,7 +15,7 @@ import com.hellfish.evemento.R.string.title_fragment_comments_list
 import com.hellfish.evemento.api.Comment
 import kotlinx.android.synthetic.main.fragment_comment_list.*
 
-class CommentFragment : NavigatorFragment() {
+class CommentListFragment : NavigatorFragment() {
 
     override val titleId = title_fragment_comments_list
 
