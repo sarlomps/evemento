@@ -21,7 +21,7 @@ class EventViewModel : ViewModel() {
         private set
     private var tasks: List<String> = listOf()
     private var polls: MutableLiveData<MutableList<PollObject>> = MutableLiveData()
-    var comments: MutableLiveData<List<Comment>> = MutableLiveData()
+    var comments: MutableLiveData<MutableList<Comment>> = MutableLiveData()
         private set
 
     fun getPolls(): MutableLiveData<MutableList<PollObject>> {
@@ -40,7 +40,7 @@ class EventViewModel : ViewModel() {
 
     fun select(event: Event?) {
         selectedEvent.value = event
-        comments.value = listOf()
+        comments.value = mutableListOf()
         loadDataFrom(event)     /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
     }
 
@@ -67,7 +67,7 @@ class EventViewModel : ViewModel() {
     fun loadComments(onError: (Int?) -> (Unit)) {
         selectedEvent.value?.let {
             NetworkManager.getComments(it) { newComments, errorMessage ->
-                newComments?.let { comments.value = it; return@getComments }
+                newComments?.let { comments.value = it.toMutableList(); return@getComments }
                 onError(errorMessage)
             }
             return
@@ -112,12 +112,19 @@ class EventViewModel : ViewModel() {
         return transports
     }
 
+    fun <T> editList(list: MutableList<T>?, newT: T, comparator: (T, T) -> Boolean) =
+        list?.map { oldT -> if (comparator(oldT, newT)) { newT } else { oldT } }?.toMutableList()
+
     fun add(comment: Comment) {
         comments.value = comments.value?.plus(comment)?.toMutableList()
     }
 
     fun remove(comment: Comment) {
         comments.value = comments.value?.minus(comment)?.toMutableList()
+    }
+
+    fun edit(newComment: Comment) {
+        comments.value = editList(comments.value, newComment) { c1, c2 -> c1.commentId == c2.commentId}
     }
 
     fun add(element: String) {
@@ -129,14 +136,11 @@ class EventViewModel : ViewModel() {
     }
 
     fun edit(newPoll: PollObject) {
-        polls.value = polls.value?.map { poll -> if (newPoll.question == poll.question) { newPoll } else { poll } }?.toMutableList()
+        polls.value = editList(polls.value, newPoll) { p1, p2 -> p1.question == p2.question }
     }
 
     fun edit(newTransport: TransportItem) {
-        rides.value = rides.value?.map { transport ->
-            if (newTransport.sameTransport(transport)) { newTransport }
-            else { transport }
-        }?.toMutableList()
+        rides.value = editList(rides.value, newTransport) { t1, t2 -> t1.sameTransport(t2) }
     }
 
     fun add(transportItem: TransportItem) {
