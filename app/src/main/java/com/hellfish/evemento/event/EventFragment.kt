@@ -113,6 +113,11 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         }
     }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        loadImage(imageUrl.text.toString())
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean("editing", editing)
