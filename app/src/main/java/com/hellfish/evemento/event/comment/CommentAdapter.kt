@@ -9,9 +9,10 @@ import android.view.View
 import com.hellfish.evemento.R
 import com.hellfish.evemento.RecyclerAdapter
 import com.hellfish.evemento.api.Comment
+import com.hellfish.evemento.event.guest.UserColor
 import kotlinx.android.synthetic.main.comment_content.view.*
 
-class CommentAdapter(comments: MutableList<Comment>, val editListener: (Comment) -> View.OnClickListener) : RecyclerAdapter<CardView, Comment>(comments) {
+class CommentAdapter(comments: MutableList<Comment>, val editListener: (Comment) -> View.OnClickListener) : RecyclerAdapter<CardView, Comment>(comments), UserColor {
 
     override fun layout(item : Int): Int {
         return R.layout.comment_content
@@ -26,13 +27,6 @@ class CommentAdapter(comments: MutableList<Comment>, val editListener: (Comment)
         view.commentMessage.text = item.message
 
         view.setOnClickListener(editListener(item))
-    }
-
-    private fun userColor(userId: String, name: String): Int {
-        val red = (userId + name).hashCode() % 256
-        val green = userId.hashCode() % 256
-        val blue = name.hashCode() % 256
-        return Color.argb(255, red, green, blue)
     }
 
 }
