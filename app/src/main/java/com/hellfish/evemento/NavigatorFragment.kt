@@ -1,8 +1,14 @@
 package com.hellfish.evemento
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
+import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.hellfish.evemento.R.string.app_name
 
@@ -26,5 +32,28 @@ open class NavigatorFragment : Fragment() {
     }
 
     protected fun showToast(stringId: Int) = Toast.makeText(activity, getString(stringId), Toast.LENGTH_LONG).show()
+
+
+    protected fun createAlertDialog(title: Int,
+                                    input: EditText,
+                                  positiveButtonDefinition: Pair<Int, ((DialogInterface, Int) -> Unit)>? = null,
+                                  negativeButtonDefinition: Pair<Int, ((DialogInterface, Int) -> Unit)>? = null,
+                                  neutralButtonDefinition: Pair<Int, ((DialogInterface, Int) -> Unit)>? = null): AlertDialog {
+        val inputContainer = FrameLayout(activity!!)
+        input.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+            marginStart = resources.getDimension(R.dimen.alertDialogPadding).toInt()
+            marginEnd = resources.getDimension(R.dimen.alertDialogPadding).toInt()
+        }
+        inputContainer.addView(input)
+
+        return AlertDialog.Builder(activity!!)
+                .setTitle(getString(title))
+                .setView(inputContainer).apply{
+                    positiveButtonDefinition?.let { setPositiveButton(getString(it.first), it.second) }
+                    negativeButtonDefinition?.let { setNegativeButton(getString(it.first), it.second) }
+                    neutralButtonDefinition?.let { setNeutralButton(getString(it.first), it.second) }
+                }.create()
+
+    }
 
 }
