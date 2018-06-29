@@ -24,6 +24,9 @@ interface  FirebaseApiInterface {
                            @Body user: UserPartialResponse)
             : Call<UserResponse>
 
+    @GET("/users.json")
+    fun getAllUsers(): Call<Map<String, UserResponse>>
+
     //
     // POLLS
     //
@@ -62,11 +65,30 @@ interface  FirebaseApiInterface {
     @Headers("Content-Type: application/json")
     @PUT("/comments/{commentId}.json")
     fun updateComment(@Path("commentId") commentId: String,
-                    @Body comment: CommentResponse)
+                      @Body comment: CommentResponse)
             : Call<CommentResponse>
 
     @DELETE("/comments/{commentId}.json")
     fun deleteComment(@Path("commentId") commentId: String)
+            : Call<DeleteResponse>
+
+    //
+    // GUESTS
+    //
+
+    //https://deep-hook-204120.firebaseio.com/comments.json?orderBy=%22eventId%22&equalTo=%22-LFkNSwG9kj9Ytw_5mXa%22
+    @GET("/guests.json")
+    fun getGuests(@Query("orderBy") orderBy: String,
+                    @Query("equalTo") equalTo: String)
+            : Call<Map<String, GuestResponse>>
+
+    @Headers("Content-Type: application/json")
+    @POST("/guests.json")
+    fun pushGuest(@Body guest: GuestResponse)
+            : Call<PushResponse>
+
+    @DELETE("/guests/{guestId}.json")
+    fun deleteGuest(@Path("guestId") userId: String)
             : Call<DeleteResponse>
 
 

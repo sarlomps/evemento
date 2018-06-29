@@ -6,16 +6,16 @@ import android.support.v7.widget.*
 import android.view.View
 import com.hellfish.evemento.R
 import com.hellfish.evemento.RecyclerAdapter
-import com.hellfish.evemento.api.User
+import com.hellfish.evemento.api.Guest
 import kotlinx.android.synthetic.main.guest_content.view.*
 
-class GuestAdapter(guests: MutableList<User>, val editListener: (User) -> View.OnClickListener) : RecyclerAdapter<CardView, User>(guests), UserColor {
+class GuestAdapter(guests: MutableList<Guest>, val editListener: (Guest) -> View.OnClickListener) : RecyclerAdapter<CardView, Guest>(guests), UserColor {
 
     override fun layout(item : Int): Int {
         return R.layout.guest_content
     }
 
-    override fun doOnItemOnBindViewHolder(view: CardView, item: User, context: Context) {
+    override fun doOnItemOnBindViewHolder(view: CardView, item: Guest, context: Context) {
         DrawableCompat.setTint(view.guestCircle.drawable, userColor(item.userId, item.displayName))
         view.guestInitial.text = item.displayName.first().toUpperCase().toString()
 

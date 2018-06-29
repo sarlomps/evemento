@@ -3,8 +3,8 @@ package com.hellfish.evemento
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.hellfish.evemento.api.Comment
+import com.hellfish.evemento.api.Guest
 import com.hellfish.evemento.api.Poll
-import com.hellfish.evemento.api.User
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.transport.TransportItem
 import com.hellfish.evemento.event.transport.UserMiniDetail
@@ -17,7 +17,7 @@ class EventViewModel : ViewModel() {
 
     var selectedEvent: MutableLiveData<Event> = MutableLiveData()
         private set
-    var guests: MutableLiveData<MutableList<User>> = MutableLiveData()
+    var guests: MutableLiveData<MutableList<Guest>> = MutableLiveData()
         private set
     var rides: MutableLiveData<MutableList<TransportItem>> = MutableLiveData()
         private set
@@ -50,7 +50,7 @@ class EventViewModel : ViewModel() {
         selectedEvent.value?.let {
             NetworkManager.getPolls(it) { newPolls, errorMessage ->
                 newPolls?.let {
-//TODO: DESCOMENTAR CUANDO ESTE LISTO EL REFACTOR DE POLLS
+                    //TODO: DESCOMENTAR CUANDO ESTE LISTO EL REFACTOR DE POLLS
 //                    polls.value = it.toMutableList()
 //                    callback(polls.value, null)
                     return@getPolls
@@ -58,7 +58,7 @@ class EventViewModel : ViewModel() {
                 callback(null, errorMessage)
             }
 
-        return
+            return
         }
         callback(null, R.string.api_error_fetching_data)
     }
@@ -78,13 +78,20 @@ class EventViewModel : ViewModel() {
     }
 
     fun loadGuests(onError: (Int?) -> (Unit)) {
-        selectedEvent.value?.let {
-            guests.value = mutableListOf(
-                    User("w98n4ignsoeiugnesg9i8u4nv49n", "Juan", "", "hechicero@juan.com"),
-                    User("lkngmspw489njpwio4ugne948ng4", "Juan", "", "nosql@juan.com"),
-                    User("lskngp48ngap948ngp948nang498", "Juaasdasdasdn", "", "sarlomp@juan.com")
-            )
+        selectedEvent.value?.let { event ->
+            NetworkManager.getAllUsers { users, errorMessage ->
+                users?.let {
+                    NetworkManager.getGuests(event, users) { newGuests, errorMessage ->
+                        newGuests?.let { guests.value = it.toMutableList(); return@getGuests }
+                        onError(errorMessage)
+                    }
+                    return@getAllUsers
+                }
+                onError(errorMessage)
+            }
+            return
         }
+        onError(R.string.api_error_fetching_data)
     }
 
     fun loadTasks(callback: (List<TaskItem>?, Int?) -> (Unit)) {
@@ -124,7 +131,7 @@ class EventViewModel : ViewModel() {
     }
 
     fun <T> editList(list: MutableList<T>?, newT: T, comparator: (T, T) -> Boolean) =
-        list?.map { oldT -> if (comparator(oldT, newT)) { newT } else { oldT } }?.toMutableList()
+            list?.map { oldT -> if (comparator(oldT, newT)) { newT } else { oldT } }?.toMutableList()
 
     fun add(comment: Comment) {
         comments.value = comments.value?.plus(comment)?.toMutableList()
@@ -138,11 +145,11 @@ class EventViewModel : ViewModel() {
         comments.value = editList(comments.value, newComment) { c1, c2 -> c1.commentId == c2.commentId}
     }
 
-    fun add(guest: User) {
+    fun add(guest: Guest) {
         guests.value = guests.value?.plus(guest)?.toMutableList()
     }
 
-    fun remove(guest: User) {
+    fun remove(guest: Guest) {
         guests.value = guests.value?.minus(guest)?.toMutableList()
     }
 

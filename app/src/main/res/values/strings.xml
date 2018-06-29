@@ -35,9 +35,12 @@
     <string name="autocompleteError">There was an error loading places, please try again later</string>
     <string name="errorLoadingImage">There was an error loading the image, please check the url or try again later</string>
     <string name="errorLoadingComments">There was an error loading the comments, please try again later</string>
+    <string name="errorLoadingGuests">There was an error loading the guests, please try again later</string>
     <string name="errorAddComments">There was an error adding the comment, please try again later</string>
     <string name="errorDeleteComments">There was an error deleting the comment, please try again later</string>
     <string name="accept">Accept</string>
+    <string name="invite">Invite</string>
+    <string name="uninvite">Uninvite</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
     <string name="removeImage">Remove Image</string>
@@ -50,5 +53,6 @@
     <string name="hint_transport_build_available_location">Where is the start point?</string>
     <string name="transport_build_total_slots_validation">Transport should have available slots!</string>
     <string name="transport_build_location_validation">Transport should have starting point!</string>
+    <string name="invalidUserError">The guest must have an account!</string>
 
 </resources>

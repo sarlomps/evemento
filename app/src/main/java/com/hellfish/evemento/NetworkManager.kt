@@ -10,6 +10,9 @@ object NetworkManager {
     fun getUser(userId: String, callback: (User?, Int?) -> (Unit)) {
         api.getUser(userId, callback)
     }
+    fun getAllUsers(callback: (List<User>?, Int?) -> (Unit)) {
+        api.getAllUsers(callback)
+    }
     fun updateUser(userId: String, user:UserPartialResponse, callback: (User?, Int?) -> (Unit)) {
         api.createOrUpdateUser(userId, user, callback)
     }
@@ -77,6 +80,20 @@ object NetworkManager {
     fun deleteComment(comment: Comment, callback: (Boolean, Int?) -> (Unit)) {
         api.deleteComment(comment.commentId, callback)
     }
+
+    /// GUESTS
+    fun getGuests(event: Event, users: List<User>, callback: (List<Guest>?, Int?) -> (Unit)) {
+        api.getGuestsForEvent(event.eventId, users, callback)
+    }
+
+    fun pushGuest(eventId: String, guest: Guest, callback: (String?, Int?) -> (Unit)) {
+        api.pushGuest(GuestMapper().mapToEntity(eventId, guest), callback)
+    }
+
+    fun deleteGuest(guest: Guest, callback: (Boolean, Int?) -> (Unit)) {
+        api.deleteGuest(guest.guestId, callback)
+    }
+
 
     // EJEMPLO DE COMO SE USA:
     // BORRA EL COMMENT DEL SERVER

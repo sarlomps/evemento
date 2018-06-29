@@ -35,8 +35,16 @@ data class Poll(val pollId: String,
                 val eventId: String,
                 val items: Map<String,Map<String,Map<String,Boolean>>>) // {pregunta:{respuesta:{usuario:true}}}
 
+data class Guest(val guestId: String,
+                 val userId: String,
+                 val displayName: String,
+                 val imageUrl: String?,
+                 val email: String)
+
 /// Push new element response, name has new ID
 data class PushResponse(val name:String)
+data class GuestResponse(val eventId: String,
+                         val userId: String)
 data class PollResponse(val eventId:String,
                         val items: Map<String,Map<String,Map<String,Boolean>>>) // {pregunta:{respuesta:{usuario:true}}}
 data class CommentResponse(val eventId:String,
@@ -118,5 +126,17 @@ class CommentMapper {
             comment.userId,
             comment.name,
             comment .message)
+
+}
+
+class GuestMapper {
+    fun mapToDomain(guestId: String, user: User): Guest = Guest(
+            guestId,
+            user.userId,
+            user.displayName,
+            user.imageUrl,
+            user.email)
+
+    fun mapToEntity(eventId: String, guest: Guest): GuestResponse = GuestResponse(eventId, guest.userId)
 
 }
