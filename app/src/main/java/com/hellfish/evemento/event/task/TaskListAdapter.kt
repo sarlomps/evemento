@@ -13,8 +13,8 @@ class TaskListAdapter(private val taskItems: MutableList<TaskItem>) : RecyclerAd
     }
 
     override fun doOnItemOnBindViewHolder(view: CardView, item: TaskItem?, context: Context) {
-        view.task_item?.text = item?.description
-        view.task_item_owner?.text = item?.owner
+        view.task_item_description?.text = item?.description
+        view.task_item_responsible?.text = item?.responsible
     }
 
     override fun getItemCount(): Int {
