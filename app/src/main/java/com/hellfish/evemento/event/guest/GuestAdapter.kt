@@ -9,7 +9,7 @@ import com.hellfish.evemento.RecyclerAdapter
 import com.hellfish.evemento.api.Guest
 import kotlinx.android.synthetic.main.guest_content.view.*
 
-class GuestAdapter(guests: MutableList<Guest>, val editListener: (Guest) -> View.OnClickListener) : RecyclerAdapter<CardView, Guest>(guests), UserColor {
+class GuestAdapter(guests: MutableList<Guest>, private val deleteListener: (Guest) -> View.OnClickListener) : RecyclerAdapter<CardView, Guest>(guests), UserColor {
 
     override fun layout(item : Int): Int {
         return R.layout.guest_content
@@ -21,7 +21,7 @@ class GuestAdapter(guests: MutableList<Guest>, val editListener: (Guest) -> View
 
         view.guestName.text = item.displayName
         view.guestMail.text = String.format(" - %s", item.email)
-        view.setOnClickListener(editListener(item))
+        view.setOnClickListener(deleteListener(item))
     }
 
 }

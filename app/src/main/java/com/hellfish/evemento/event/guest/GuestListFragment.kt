@@ -31,7 +31,7 @@ class GuestListFragment : NavigatorFragment() {
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
         eventViewModel.loadGuests { _ -> showToast(R.string.errorLoadingGuests) }
         eventViewModel.guests.observe(this, Observer { guests ->
-            guests?.let { guestsRecyclerView.adapter = GuestAdapter(it.toMutableList(), editListener()) }
+            guests?.let { guestsRecyclerView.adapter = GuestAdapter(it.toMutableList(), deleteListener()) }
         })
     }
 
@@ -60,10 +60,16 @@ class GuestListFragment : NavigatorFragment() {
             getButton(Dialog.BUTTON_POSITIVE).let {
                 it.text = getString(R.string.invite)
                 it.setOnClickListener {
-                    NetworkManager.getAllUsers { users, errorMessage ->
-                        if (users != null) addNewGuest(users.find { it.email == dialogInput.text.toString() })
-                        else { showToast(errorMessage ?: R.string.network_unknown_error); cancel() }
-                    }
+                    val inputEmail = dialogInput.text.toString()
+                    if (inputEmail != SessionManager.getCurrentUser()?.email) {
+                        if (eventViewModel.guests.value!!.all { it.email != inputEmail}) {
+                            NetworkManager.getAllUsers { users, errorMessage ->
+                                if (users != null) addNewGuest(users.find { it.email == inputEmail })
+                                else { showToast(errorMessage ?: R.string.network_unknown_error); cancel() }
+                            }
+                        } else dialogInputLayout.error = getString(R.string.cannotInviteGuest)
+                    } else dialogInputLayout.error = getString(R.string.youAlreadyInvited)
+
                 }
             }
         }
@@ -80,10 +86,10 @@ class GuestListFragment : NavigatorFragment() {
                 clickDialog.cancel()
             }
         }
-        else dialogInputLayout.error = getString(R.string.invalidUserError)
+        else dialogInputLayout.error = getString(R.string.usertMustHaveAccount)
     }
 
-    private fun editListener() = { guest: Guest ->
+    private fun deleteListener() = { guest: Guest ->
         View.OnClickListener {
             if (eventViewModel.selected()?.user == SessionManager.getCurrentUser()!!.userId) {
                 dialogInput.isEnabled = false

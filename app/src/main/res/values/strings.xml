@@ -53,6 +53,8 @@
     <string name="hint_transport_build_available_location">Where is the start point?</string>
     <string name="transport_build_total_slots_validation">Transport should have available slots!</string>
     <string name="transport_build_location_validation">Transport should have starting point!</string>
-    <string name="invalidUserError">The guest must have an account!</string>
+    <string name="youAlreadyInvited">You are already invited!</string>
+    <string name="cannotInviteGuest">Cannot invite someone who is already a guest!</string>
+    <string name="usertMustHaveAccount">The guest must have an account!</string>
 
 </resources>
