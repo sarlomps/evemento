@@ -70,7 +70,7 @@ class TaskListFragment : NavigatorFragment() {
 
         itemDialog.setView(viewItemToModify)
 
-        itemDialog.setPositiveButton("Ok") { dialog, which ->
+        itemDialog.setPositiveButton("Ok") { dialog, _ ->
             // Do something when user press the positive button
             addItemIfCorrect(
                     viewItemToModify.add_item_description.text.toString(),
@@ -101,14 +101,14 @@ class TaskListFragment : NavigatorFragment() {
 
     private fun addPossibleResponsiblesTo(addTaskItemView: View){
         val owner = eventViewModel.selected()?.user
-        var eventGuests = eventViewModel.guests.value
+        val eventGuests = eventViewModel.guests.value
         val users: MutableList<String?> = mutableListOf("No one in charge")
 
         val currentUser = SessionManager.getCurrentUser()
         if(eventGuests != null) {
             users += if(owner != currentUser?.userId){
-                val guest = eventGuests?.filter { user -> user.userId == currentUser?.userId }
-                guest?.map { user -> user.displayName } as MutableList<String>
+                val guest = eventGuests.filter { user -> user.userId == currentUser?.userId }
+                guest.map { user -> user.displayName } as MutableList<String>
             }else{
                 eventGuests.map{ user -> user.displayName } as MutableList<String>
             }
@@ -119,7 +119,9 @@ class TaskListFragment : NavigatorFragment() {
                 android.R.layout.simple_spinner_dropdown_item,
                 users
         )
-        addTaskItemView.findViewById<Spinner>(R.id.add_item_responsible).adapter = adapter
+        val spinner = addTaskItemView.findViewById<Spinner>(R.id.add_item_responsible)
+        spinner.adapter = adapter
+
     }
 
 }

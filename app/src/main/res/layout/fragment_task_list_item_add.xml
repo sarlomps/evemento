@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:background="@android:drawable/btn_dropdown"
+            android:backgroundTint="#d11f08"
             android:spinnerMode="dropdown"
             android:hint="Responsible"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
