@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_event.view.*
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import android.content.Intent
+import android.os.Build
 import android.support.design.widget.TextInputEditText
 import android.support.design.widget.TextInputLayout
 import com.google.android.gms.location.places.ui.PlaceAutocomplete.RESULT_ERROR
@@ -30,7 +31,9 @@ import com.squareup.picasso.Callback
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Gravity
 import android.widget.EditText
+import android.widget.PopupMenu
 import com.hellfish.evemento.*
 import com.hellfish.evemento.event.comment.CommentListFragment
 import com.hellfish.evemento.event.guest.GuestListFragment
@@ -46,6 +49,8 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
 
     private lateinit var imageDialogInput: EditText
     private lateinit var imageDialog: AlertDialog
+
+    private lateinit var menu: PopupMenu
 
     private val autocompleteRequestCode = 42
 
@@ -93,6 +98,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setTextInputWatchers()
+        setMenuListener()
         setImageListener()
         setLocationListener()
         setDateTimeListeners()
@@ -176,6 +182,26 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         locationElement.addTextChangedListener(textInputValidator { validateTextInput(locationElementLayout, locationElement, getString(R.string.locationValidation)) })
     }
 
+    private fun setMenuListener() {
+        menu = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) PopupMenu(activity, eventMenuContainer, Gravity.NO_GRAVITY, R.attr.actionOverflowMenuStyle, 0)
+               else PopupMenu(activity, eventMenuContainer)
+        menu.inflate(R.menu.event_menu)
+        menu.setOnMenuItemClickListener {
+            when(it.itemId) {
+                R.id.deleteEvent -> withConfirmationDialog(R.string.deleteEventConfirmation) { deleteEvent() }
+                else -> Unit
+            }
+            true
+        }
+        eventMenu.setOnClickListener {
+            menu.show()
+        }
+    }
+
+    private fun deleteEvent() {
+        showToast(R.string.delete)
+    }
+
     private fun textInputValidator(validation: () -> Unit) = object: TextWatcher {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { validation() }
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -195,6 +221,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
 
     private fun loadImage(url: String?) {
         imageUrl.text = url
+        eventMenuContainer.bringToFront()
         if (url != "") Picasso.get().load(url).fit().into(eventImage, object: Callback {
             override fun onError(e: java.lang.Exception?) { showToast(R.string.errorLoadingImage); toolbarScrim.visibility = View.GONE }
             override fun onSuccess() { toolbarScrim.visibility = View.VISIBLE }
