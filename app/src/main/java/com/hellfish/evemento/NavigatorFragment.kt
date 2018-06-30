@@ -56,4 +56,13 @@ open class NavigatorFragment : Fragment() {
 
     }
 
+    protected fun withConfirmationDialog(title: Int, action: () -> Unit) {
+        AlertDialog.Builder(activity!!)
+                .setTitle(getString(title))
+                .setPositiveButton(getString(R.string.yes)) { _, _ -> action() }
+                .setNegativeButton(getString(R.string.cancel)) { _, _ -> Unit }
+                .create()
+                .show()
+    }
+
 }

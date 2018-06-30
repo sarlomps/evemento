@@ -81,9 +81,11 @@ class CommentListFragment : NavigatorFragment() {
                         }
                     }
                     setButton(Dialog.BUTTON_NEUTRAL, getString(R.string.delete)) { _, _ ->
-                        NetworkManager.deleteComment(comment) { success, _ ->
-                            if(success) eventViewModel.remove(comment)
-                            else showToast(R.string.errorDeleteComments)
+                        withConfirmationDialog(R.string.deleteCommentConfirmation) {
+                            NetworkManager.deleteComment(comment) { success, _ ->
+                                if(success) eventViewModel.remove(comment)
+                                else showToast(R.string.errorDeleteComments)
+                            }
                         }
                     }
                     show()
