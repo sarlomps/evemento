@@ -125,7 +125,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     }
 
     override fun setupToolbar() {
-        navigatorListener.setCustomToolbar(eventToolbar)
+        navigatorListener.setCustomToolbar(eventToolbar, homeEnabled = false)
         eventAppbar.setExpanded(true)
     }
 
