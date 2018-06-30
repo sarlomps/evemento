@@ -38,6 +38,7 @@
     <string name="errorLoadingGuests">There was an error loading the guests, please try again later</string>
     <string name="errorAddComments">There was an error adding the comment, please try again later</string>
     <string name="errorDeleteComments">There was an error deleting the comment, please try again later</string>
+    <string name="errorDeleteEvent">There was an error deleting the event, please try again later</string>
     <string name="accept">Accept</string>
     <string name="yes">Yes</string>
     <string name="invite">Invite</string>

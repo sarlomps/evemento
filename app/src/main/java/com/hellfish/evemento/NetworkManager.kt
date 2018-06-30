@@ -28,6 +28,10 @@ object NetworkManager {
     fun pushEvent(event:Event, callback: (String?, Int?) -> (Unit)) {
         api.pushEvent(EventMapper().mapToEntity(event), callback)
     }
+
+    fun deleteEvent(eventId: String, callback: (Boolean, Int?) -> (Unit)) {
+        api.deleteEvent(eventId, callback)
+    }
     // EJEMPLO DE COMO SE USA:
     // PUSHEA AL SERVER Y RETORNA EL NUEVO ID DEL EVENTO QUE LE OTORGO FIREBASE
 //    NetworkManager.pushEvent(event) { name, errorMessage ->

@@ -112,4 +112,9 @@ interface  FirebaseApiInterface {
                     @Body event: EventResponse)
             : Call<EventResponse>
 
+    @Headers("Content-Type: application/json")
+    @DELETE("/events/{eventId}.json")
+    fun deleteEvent(@Path("eventId") eventId: String)
+            : Call<DeleteResponse>
+
 }

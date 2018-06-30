@@ -84,6 +84,26 @@ class RestAPI {
         })
     }
 
+    private fun deleteEventCall(eventId: String): Call<DeleteResponse> {
+        return firebaseApi.deleteEvent(eventId)
+    }
+    fun deleteEvent(eventId: String, callback: (Boolean, Int?) -> Unit) {
+        val call = deleteEventCall(eventId)
+        call.enqueue(object : Callback<DeleteResponse> {
+            override fun onResponse(call: Call<DeleteResponse>?, response: Response<DeleteResponse>?) {
+                if (response != null && response.isSuccessful) {
+                    callback(true, null)
+                    return
+                }
+                callback(false, R.string.api_error_deleting_data)
+            }
+
+            override fun onFailure(call: Call<DeleteResponse>?, t: Throwable?) {
+                callback(false, R.string.api_error_deleting_data)
+            }
+        })
+    }
+
 
     private fun getCreateOrUpdateUserCall(userId: String, user:UserPartialResponse): Call<UserResponse> {
         return firebaseApi.createOrUpdateUser(userId, user)

@@ -199,7 +199,10 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     }
 
     private fun deleteEvent() {
-        showToast(R.string.delete)
+        NetworkManager.deleteEvent(eventViewModel.selected()!!.eventId) { success, errorMessage ->
+            if (success) { eventViewModel.select(null); fragmentManager?.popBackStack() }
+            else showToast(R.string.errorDeleteComments)
+        }
     }
 
     private fun textInputValidator(validation: () -> Unit) = object: TextWatcher {
