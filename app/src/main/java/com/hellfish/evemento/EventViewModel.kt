@@ -43,6 +43,9 @@ class EventViewModel : ViewModel() {
     fun select(event: Event?) {
         selectedEvent.value = event
         comments.value = mutableListOf()
+        guests.value = mutableListOf()
+        rides.value = mutableListOf()
+        polls.value = mutableListOf()
         loadDataFrom(event)     /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
     }
 
