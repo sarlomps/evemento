@@ -1,6 +1,5 @@
 package com.hellfish.evemento.event.poll
 
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -25,11 +24,13 @@ class PollFragment : NavigatorFragment() {
         super.onCreate(savedInstanceState)
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
 
-        eventViewModel.getPolls().observe(this, Observer { polls ->
-            recyclerView.apply {
-                polls?.let { polls -> adapter = PollAdapter(polls, { poll -> eventViewModel.edit(poll) }) }
-            }
-        })
+        eventViewModel.loadPolls { polls, _ ->
+            polls?.let { polls -> recyclerView.adapter = PollAdapter(polls.toMutableList(), { poll -> eventViewModel.edit(poll) }) }
+            //showToast(R.string.errorLoadingComments)
+        }
+//        eventViewModel.polls.observe(this, Observer { polls ->
+//            polls?.let { polls -> recyclerView.adapter = PollAdapter(polls, { poll -> eventViewModel.edit(poll) }) }
+//        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -38,7 +39,7 @@ class PollFragment : NavigatorFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val polls = mutableListOf<PollObject>()
+        val polls = mutableListOf<Poll>()
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)

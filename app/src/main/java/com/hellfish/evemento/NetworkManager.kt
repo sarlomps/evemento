@@ -1,6 +1,7 @@
 package com.hellfish.evemento
 import com.hellfish.evemento.api.*
 import com.hellfish.evemento.event.Event
+import com.hellfish.evemento.event.poll.Poll
 
 object NetworkManager {
     

@@ -1,17 +1,23 @@
 package com.hellfish.evemento.event.poll
 
-sealed class PollObject(open val question: String, open val answers: List<Answer>) {
+typealias EvementoUser = String
 
-    fun totalVotes() : Int = answers.sumBy { it.votes }
+sealed class Poll(open val pollId: String, open val eventId: String, open val question: String, open val answers: List<Answer>) {
 
-    class Votable(override val question: String,
-                  override val answers: List<Answer.Open>) : PollObject(question, answers) {
-        fun choose(answer: Answer.Open) : NoVotable {
-            val updatedAnswers = answers.map { anAnswer -> if (answer == anAnswer) { anAnswer.vote() } else { anAnswer.close() } }
-            return NoVotable(question, updatedAnswers)
+    fun totalVotes() : Int = answers.sumBy { it.votesAmount }
+
+    class Votable(override val eventId: String,
+                  override val pollId: String,
+                  override val question: String,
+                  override val answers: List<Answer.Open>) : Poll(eventId, pollId, question, answers) {
+        fun choose(answer: Answer.Open, user: EvementoUser) : NoVotable {
+            val updatedAnswers = answers.map { anAnswer -> if (answer == anAnswer) { anAnswer.vote(user) } else { anAnswer.close() } }
+            return NoVotable(eventId, pollId, question, updatedAnswers)
         }
     }
 
-    class NoVotable(override val question: String,
-                    override val answers: List<Answer.Closed>) : PollObject(question, answers)
+    class NoVotable(override val eventId: String,
+                    override val pollId: String,
+                    override val question: String,
+                    override val answers: List<Answer.Closed>) : Poll(eventId, pollId, question, answers)
 }

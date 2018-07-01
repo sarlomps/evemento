@@ -2,6 +2,7 @@ package com.hellfish.evemento.api
 
 import com.hellfish.evemento.R
 import com.hellfish.evemento.event.Event
+import com.hellfish.evemento.event.poll.Poll
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
