@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Evemento</string>
     <string name="title_fragment_poll_list">Polls</string>
+    <string name="title_fragment_new_poll">Add Poll</string>
     <string name="title_fragment_task_list">Tasks</string>
     <string name="title_fragment_comments_list">Comments</string>
     <string name="title_fragment_guests_list">Guests</string>

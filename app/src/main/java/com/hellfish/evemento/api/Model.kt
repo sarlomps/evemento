@@ -119,19 +119,23 @@ class EventMapper : Mapper<EventResponse, Event> {
 class PollMapper : Mapper<PollResponse, Poll> {
     override fun mapToDomain(pollId: String, entity: PollResponse): Poll =
         if(!entity.hasUserAlreadyVoted(SessionManager.getCurrentUser()!!.userId)) {
-            val answers = entity.answers.map { (answer, votes) -> Answer.Open(answer, votes.keys.toList()) }
+            val answers = mapAnswers(entity.answers, { answer, votes -> Answer.Open(answer, votes) })
             Poll.Votable(pollId=pollId, eventId=entity.eventId, question=entity.question, answers=answers)
         }
         else {
-            val answers = entity.answers.map { (answer, votes) -> Answer.Closed(answer, votes.keys.toList()) }
+            val answers = mapAnswers(entity.answers, { answer, votes -> Answer.Closed(answer, votes) })
             Poll.NoVotable(pollId=pollId, eventId=entity.eventId, question=entity.question, answers=answers)
         }
 
     override fun mapToEntity(referenceId: String, domain: Poll): PollResponse = mapToEntity(domain)
+
     fun mapToEntity(poll: Poll): PollResponse = PollResponse(
             eventId=poll.eventId,
             question=poll.question,
-            answers=poll.answers.map { Pair(it.text, it.votes.map { Pair(it, true) }.toMap()) }.toMap())
+            answers=poll.answers.map { Pair(it.text, it.votes.map { Pair(it, true) }.plus(Pair("placeholder", true)).toMap()) }.toMap())
+
+    private fun<AnswerType> mapAnswers(entityAnswers: Map<AnswerResponse,Map<UserIdResponse,Boolean>>, constructor: (String, List<String>) -> AnswerType) =
+            entityAnswers.map { (answer, votes) -> constructor(answer, votes.keys.toList().filter { userId -> userId != "placeholder" }) }
 }
 
 class CommentMapper : Mapper<CommentResponse, Comment> {

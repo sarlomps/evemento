@@ -41,6 +41,7 @@ class PollFragment : NavigatorFragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         setNewPollAdapter(mutableListOf())
+        pollListFab.setOnClickListener { navigatorListener.replaceFragment(NewPollFragment()) }
     }
 
     private fun setNewPollAdapter(polls: Iterable<Poll>) {
