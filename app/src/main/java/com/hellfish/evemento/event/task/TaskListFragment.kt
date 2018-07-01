@@ -7,17 +7,18 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.Spinner
 import com.hellfish.evemento.EventViewModel
 import com.hellfish.evemento.R
 import com.hellfish.evemento.R.string.title_fragment_task_list
 import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.SessionManager
-import kotlinx.android.synthetic.main.fragment_poll_list.*
 import kotlinx.android.synthetic.main.fragment_task_list.*
 import kotlinx.android.synthetic.main.fragment_task_list_item_add.view.*
 
@@ -72,16 +73,14 @@ class TaskListFragment : NavigatorFragment() {
                 R.layout.fragment_task_list_item_add,
                 null
         )
-
         addPossibleResponsiblesTo(viewItemToModify)
-
         itemDialog.setView(viewItemToModify)
 
         itemDialog.setPositiveButton("Ok") { dialog, _ ->
             addItemIfCorrect(
                     viewItemToModify.add_item_description.text.toString(),
-                    dialog,
-                    viewItemToModify.add_item_responsible.selectedItem.toString()
+                    viewItemToModify.add_item_responsible.selectedItem.toString(),
+                    dialog
             )
         }
 
@@ -89,11 +88,10 @@ class TaskListFragment : NavigatorFragment() {
             dialog.cancel()
         }
 
-        val dialog = itemDialog.create()
-        dialog.show()
+        itemDialog.show()
     }
 
-    private fun addItemIfCorrect(description: String, dialog: DialogInterface, responsible: String) {
+    private fun addItemIfCorrect(description: String, responsible: String, dialog: DialogInterface) {
         if (description == "") {
             dialog.dismiss()
         } else {
@@ -117,7 +115,9 @@ class TaskListFragment : NavigatorFragment() {
                 val guest = eventGuests.filter { user -> user.userId == currentUser?.userId }
                 guest.map { user -> user.displayName } as MutableList<String>
             }else{
-                eventGuests.map{ user -> user.displayName } as MutableList<String>
+                val guest = eventGuests.map{ user -> user.displayName } as MutableList<String>
+                guest.add(currentUser!!.displayName)
+                guest
             }
         }
 
@@ -134,8 +134,7 @@ class TaskListFragment : NavigatorFragment() {
     private fun editTaskItem() = { item: TaskItem ->
         View.OnClickListener {
             if(eventViewModel.selected()?.user == SessionManager.getCurrentUser()!!.userId){
-//                editDeleteDialog(item)
-                itemResponsibility(item)
+                editDeleteDialog(item)
             }else{
                 itemResponsibility(item)
             }
@@ -145,9 +144,7 @@ class TaskListFragment : NavigatorFragment() {
     private fun editDeleteDialog(item: TaskItem){
         val editDeleteDialog = AlertDialog.Builder(context)
         editDeleteDialog.setPositiveButton("Edit") { _, _ ->
-            //Edit item
-            //view?.findViewById<FloatingActionButton>(R.id.task_list_add)?.callOnClick()
-//            refreshView()
+            editItem(item)
         }
 
         editDeleteDialog.setNegativeButton("Delete") { _, _ ->
@@ -156,6 +153,26 @@ class TaskListFragment : NavigatorFragment() {
         }
 
         editDeleteDialog.show()
+    }
+
+    private fun editItem(item: TaskItem){
+        val editItemDialog = AlertDialog.Builder(context)
+        editItemDialog.setTitle("Modify Item")
+
+        var editTextView = EditText(context)
+        editTextView.text = SpannableStringBuilder(item.description)
+        editItemDialog.setView(editTextView)
+
+        editItemDialog.setPositiveButton("Ok"){ _, _ ->
+            item.description = editTextView.text.toString()
+            refreshView()
+        }
+
+        editItemDialog.setNegativeButton("Cancel"){ dialog, _ ->
+            dialog.dismiss()
+        }
+
+        editItemDialog.show()
     }
 
     private fun itemResponsibility(item: TaskItem){
