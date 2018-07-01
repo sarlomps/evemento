@@ -35,7 +35,7 @@ class NewPollFragment : NavigatorFragment() {
                                                       Answer.Open(editPollAnswer2.text.toString(), listOf())),
                                        eventId=eventViewModel.selectedEvent.value!!.eventId,
                                        pollId="")
-            NetworkManager.pushPoll(newPoll, { pollId,_ -> Log.d("POLLID", pollId); pollId?.let { eventViewModel.add(newPoll.setId(it)) } })
+            NetworkManager.pushPoll(newPoll, { pollId,_ -> pollId?.let { eventViewModel.add(newPoll.setId(it)) } })
         }
     }
 }
