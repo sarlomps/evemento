@@ -16,10 +16,12 @@ import com.hellfish.evemento.R
 import kotlinx.android.synthetic.main.fragment_transport_builder.*
 import android.support.v7.app.AlertDialog
 import com.google.android.gms.maps.model.LatLng
+import com.hellfish.evemento.SessionManager
+import com.hellfish.evemento.api.User
 
 
 class TransportBuilderFragment : NavigatorFragment() {
-    private lateinit var loggedInUser: UserMiniDetail
+    private lateinit var loggedInUser: User
     private lateinit var eventViewModel: EventViewModel
     private lateinit var coordinates: LatLng
 
@@ -35,7 +37,7 @@ class TransportBuilderFragment : NavigatorFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loggedInUser = UserMiniDetail("juanchiLoggeado", "sarlanga")
+        loggedInUser = SessionManager.getCurrentUser()!!
         setLocationListener()
         setSavedListener()
 
@@ -82,7 +84,7 @@ class TransportBuilderFragment : NavigatorFragment() {
     private fun transport(): TransportItem {
         var locationName = transport_builder_location.text.toString()
         var totalSlots = transport_builder_slots.text.toString().toInt()
-        return TransportItem(loggedInUser, ArrayList(), Location(locationName, Coordinates(this.coordinates)), totalSlots)
+        return TransportItem("",loggedInUser, ArrayList(), Location(locationName, Coordinates(this.coordinates)), totalSlots)
     }
 
     private fun validateTransport(): Boolean {

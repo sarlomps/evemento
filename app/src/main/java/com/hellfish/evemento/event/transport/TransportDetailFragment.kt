@@ -12,14 +12,16 @@ import android.widget.TextView
 import com.hellfish.evemento.EventViewModel
 import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.R
+import com.hellfish.evemento.SessionManager
+import com.hellfish.evemento.api.User
 import com.hellfish.evemento.extensions.withDrawable
 import kotlinx.android.synthetic.main.fragment_transport_detail.*
 import kotlinx.android.synthetic.main.fragment_transport_detail.view.*
 
 class TransportDetailFragment() : NavigatorFragment() {
 
-    lateinit var driver: UserMiniDetail
-    private lateinit var loggedInUser: UserMiniDetail
+    lateinit var driver: User
+    private lateinit var loggedInUser: User
     private lateinit var transport: TransportItem
     private lateinit var eventViewModel: EventViewModel
 
@@ -45,23 +47,23 @@ class TransportDetailFragment() : NavigatorFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val argDriver = arguments?.getParcelable<UserMiniDetail>("driver")
-        this.loggedInUser = UserMiniDetail("juanchiLoggeado", "sarlanga")
+        val argDriver = arguments?.getParcelable<User>("driver")
+        this.loggedInUser = SessionManager.getCurrentUser()!!
 
         if (argDriver != null) {
             driver = argDriver
-            view.txtDriverName.text = driver.nickname
+            view.txtDriverName.text = driver.displayName
             if (::transport.isInitialized) toogleFabIfNecessary(transport)
         }
     }
 
 
-    private fun addPassanger(view: View, passanger: UserMiniDetail) {
+    private fun addPassanger(view: View, passanger: User) {
         val passagerView = createPassangerView(view.context, passanger)
         view.llTransportDetail.addView(passagerView)
     }
 
-    private fun createPassangerView(context: Context, passanger: UserMiniDetail): TextView {
+    private fun createPassangerView(context: Context, passanger: User): TextView {
         return TextView(context).apply {
             layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -70,7 +72,7 @@ class TransportDetailFragment() : NavigatorFragment() {
             } else {
                 setTextAppearance(context, R.style.Base_TextAppearance_AppCompat_Medium)
             }
-            text = passanger.nickname
+            text = passanger.displayName
         }
     }
 

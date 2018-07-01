@@ -4,10 +4,9 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.hellfish.evemento.api.Comment
 import com.hellfish.evemento.api.Guest
-import com.hellfish.evemento.api.GuestMapper
+import com.hellfish.evemento.api.User
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.transport.TransportItem
-import com.hellfish.evemento.event.transport.UserMiniDetail
 import com.hellfish.evemento.event.poll.Poll
 import com.hellfish.evemento.event.task.TaskItem
 import com.hellfish.evemento.event.transport.Coordinates
@@ -112,23 +111,23 @@ class EventViewModel : ViewModel() {
 
     private fun mockedRides(): MutableList<TransportItem> {
         val transports = ArrayList<TransportItem>()
-        val driver1 = UserMiniDetail("Gus", "Sarlanga")
+        val driver1 = User("gusId","Gus", "Sarlanga", "")
         val gusPlace: Location = Location("casa de gus", Coordinates(-34.588938999999996,-58.5906728))
-        val driver2 = UserMiniDetail("Gas", "Sarlanga")
+        val driver2 = User("gasId","Gas", "Sarlanga", "")
         val gasPlace: Location = Location("casa de gas", Coordinates(-34.6017308,-58.586593900000004))
-        val pass_1_1 = UserMiniDetail("juanR", "Sarlanga")
-        val pass_1_2 = UserMiniDetail("juanDs", "Sarlanga")
-        val pass_2_1 = UserMiniDetail("NicoB", "Sarlanga")
-        val pass_2_2 = UserMiniDetail("NicoS", "Sarlanga")
-        val passangers1 = ArrayList<UserMiniDetail>()
-        val passangers2 = ArrayList<UserMiniDetail>()
+        val pass_1_1 = User("juanRId","juanR", "Sarlanga", "")
+        val pass_1_2 = User("juanDsId","juanDs", "Sarlanga", "")
+        val pass_2_1 = User("juanBId","NicoB", "Sarlanga", "")
+        val pass_2_2 = User("NicoS","NicoS", "Sarlanga", "")
+        val passangers1 = ArrayList<User>()
+        val passangers2 = ArrayList<User>()
         passangers1.add(pass_1_1)
         passangers1.add(pass_1_2)
         passangers2.add(pass_2_1)
         passangers2.add(pass_2_2)
 
-        transports.add(TransportItem(driver1, passangers1, gusPlace ,4))
-        transports.add(TransportItem(driver2, passangers2, gasPlace,3))
+        transports.add(TransportItem("TransportID1", driver1, passangers1, gusPlace ,4))
+        transports.add(TransportItem("TransportID2",driver2, passangers2, gasPlace,3))
         return transports
     }
 

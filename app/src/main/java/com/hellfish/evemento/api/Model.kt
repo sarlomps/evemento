@@ -1,10 +1,12 @@
 package com.hellfish.evemento.api
 
+import android.os.Parcelable
 import com.google.firebase.auth.FirebaseUser
 import com.hellfish.evemento.SessionManager
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.poll.Answer
 import com.hellfish.evemento.event.poll.Poll
+import kotlinx.android.parcel.Parcelize
 import org.joda.time.DateTime
 
 typealias UserIdResponse = String
@@ -26,10 +28,13 @@ data class UserPartialResponse(val displayName: String?,
                                val imageUrl: String?,
                                val email: String?)
 
+@Parcelize
 data class User(val userId: String,
                 val displayName: String,
                 val imageUrl: String?,
-                val email: String)
+                val email: String) : Parcelable {
+    fun sameUser(user: User): Boolean = userId.equals(user.userId)
+}
 
 
 data class Comment(val commentId:String,
