@@ -11,6 +11,7 @@ data class TransportItem(val driver: UserMiniDetail, val passangers: ArrayList<U
     fun availableSlots(): Int = maxOf(totalSlots - passangers.size, 0)
     fun isFull(): Boolean = totalSlots.equals(passangers.size)
     fun isAlreadyInTransport(passanger: UserMiniDetail): Boolean = passangers.any { passanger.sameUser(it)} || passanger.sameUser(driver)
+    fun latLong(): LatLng = startpoint.latLng()
 }
 
 @Parcelize
@@ -19,7 +20,11 @@ data class UserMiniDetail(val nickname: String, val avatar: String) : Parcelable
 }
 
 @Parcelize
-data class Location(val name: String, val avatar: Coordinates) : Parcelable {}
+data class Location(val name: String, val coordinates: Coordinates): Parcelable {
+    fun latLng(): LatLng {
+        return LatLng(coordinates.latitude, coordinates.longitude)
+    }
+}
 
 @Parcelize
 data class Coordinates(val latitude: Double, val longitude: Double) : Parcelable {
