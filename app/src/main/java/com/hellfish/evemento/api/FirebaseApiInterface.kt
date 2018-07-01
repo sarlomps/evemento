@@ -43,6 +43,12 @@ interface  FirebaseApiInterface {
     fun pushPoll(@Body poll: PollResponse)
             : Call<PushResponse>
 
+    @Headers("Content-Type: application/json")
+    @PUT("/polls/{pollId}.json")
+    fun updatePoll(@Path("pollId") pollId: String,
+                      @Body comment: PollResponse)
+            : Call<PollResponse>
+
     @DELETE("/polls/{pollId}.json")
     fun deletePoll(@Path("pollId") pollId: String)
             : Call<DeleteResponse>

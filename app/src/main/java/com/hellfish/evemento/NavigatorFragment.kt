@@ -33,6 +33,8 @@ open class NavigatorFragment : Fragment() {
 
     protected fun showToast(stringId: Int) = Toast.makeText(activity, getString(stringId), Toast.LENGTH_LONG).show()
 
+    protected fun showToast(string: String) = Toast.makeText(activity, string, Toast.LENGTH_LONG).show()
+
 
     protected fun createAlertDialog(title: Int,
                                     input: View,

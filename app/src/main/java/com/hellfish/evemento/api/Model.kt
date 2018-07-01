@@ -118,20 +118,20 @@ class EventMapper : Mapper<EventResponse, Event> {
 
 class PollMapper : Mapper<PollResponse, Poll> {
     override fun mapToDomain(pollId: String, entity: PollResponse): Poll =
-        if(entity.hasUserAlreadyVoted(SessionManager.getCurrentUser()!!.userId)) {
+        if(!entity.hasUserAlreadyVoted(SessionManager.getCurrentUser()!!.userId)) {
             val answers = entity.answers.map { (answer, votes) -> Answer.Open(answer, votes.keys.toList()) }
-            Poll.Votable(pollId, entity.eventId, entity.question, answers)
+            Poll.Votable(pollId=pollId, eventId=entity.eventId, question=entity.question, answers=answers)
         }
         else {
             val answers = entity.answers.map { (answer, votes) -> Answer.Closed(answer, votes.keys.toList()) }
-            Poll.NoVotable(pollId, entity.eventId, entity.question, answers)
+            Poll.NoVotable(pollId=pollId, eventId=entity.eventId, question=entity.question, answers=answers)
         }
 
     override fun mapToEntity(referenceId: String, domain: Poll): PollResponse = mapToEntity(domain)
     fun mapToEntity(poll: Poll): PollResponse = PollResponse(
-            poll.eventId,
-            poll.question,
-            mapOf())
+            eventId=poll.eventId,
+            question=poll.question,
+            answers=poll.answers.map { Pair(it.text, it.votes.map { Pair(it, true) }.toMap()) }.toMap())
 }
 
 class CommentMapper : Mapper<CommentResponse, Comment> {

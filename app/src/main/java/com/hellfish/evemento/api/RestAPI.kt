@@ -1,5 +1,6 @@
 package com.hellfish.evemento.api
 
+import android.util.Log
 import com.hellfish.evemento.R
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.poll.Poll
@@ -145,6 +146,10 @@ class RestAPI {
 
     fun pushPoll(poll: PollResponse, callback: (String?, Int?) -> Unit) {
         firebaseApi.pushPoll(poll).enqueue(pushCallback(callback))
+    }
+
+    fun updatePoll(pollId: String, poll: PollResponse, callback: (Poll?, Int?) -> Unit) {
+        firebaseApi.updatePoll(pollId, poll).enqueue(updateCallback(callback, PollMapper(), pollId))
     }
 
     fun deletePoll(pollId: String, callback: (Boolean, Int?) -> Unit) {

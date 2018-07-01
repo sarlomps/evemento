@@ -40,16 +40,16 @@ class EventViewModel : ViewModel() {
         loadDataFrom(event)     /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
     }
 
-    fun loadPolls(callback: (Either<List<Poll>, Int>) -> (Unit)) {
+    fun loadPolls(onError: (Int) -> (Unit)) {
         selectedEvent.value?.let {
             NetworkManager.getPolls(it) { newPolls, errorMessage ->
-                if (newPolls == null) {
-                    errorMessage?.let { callback(Either.Error(it)) }
-                } else
-                    callback(Either.Success(newPolls.toMutableList()))
+                if (newPolls == null) { errorMessage?.let { onError(it) } } else {
+                    val thereAreNewPolls = polls.value?.map{it.pollId} != newPolls.map {it.pollId}
+                    if(thereAreNewPolls) { polls.value = newPolls.toMutableList() }
+                }
             }
         }
-        if(selectedEvent.value == null) { callback(Either.Error(R.string.api_error_fetching_data)) }
+        if(selectedEvent.value == null) { onError(R.string.api_error_fetching_data) }
     }
 
     fun loadRides(callback: (List<TransportItem>?, Int?) -> (Unit)) {

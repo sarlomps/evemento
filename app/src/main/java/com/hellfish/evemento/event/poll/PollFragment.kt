@@ -9,9 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.hellfish.evemento.EventViewModel
 import com.hellfish.evemento.NavigatorFragment
+import com.hellfish.evemento.NetworkManager
 import com.hellfish.evemento.R
 import com.hellfish.evemento.R.string.title_fragment_poll_list
 import com.hellfish.evemento.lib.Either
+import android.arch.lifecycle.Observer
 
 import kotlinx.android.synthetic.main.fragment_poll_list.*
 
@@ -26,10 +28,9 @@ class PollFragment : NavigatorFragment() {
         super.onCreate(savedInstanceState)
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
 
-        eventViewModel.loadPolls {
-                it.onSuccess { polls -> setNewPollAdapter(polls.toMutableList())  }
-                  .onError { showToast(it) }
-        }
+        eventViewModel.loadPolls { showToast(it) }
+
+        eventViewModel.polls.observe(this, Observer { it?.let { setNewPollAdapter(it) } })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -42,7 +43,10 @@ class PollFragment : NavigatorFragment() {
         setNewPollAdapter(mutableListOf())
     }
 
-    private fun setNewPollAdapter(polls: MutableList<Poll>) {
-        recyclerView.adapter = PollAdapter(polls, { poll -> eventViewModel.edit(poll) })
+    private fun setNewPollAdapter(polls: Iterable<Poll>) {
+        recyclerView.adapter = PollAdapter(polls.toMutableList(), { poll ->
+            eventViewModel.edit(poll)
+            NetworkManager.updatePoll(poll, { _,_ -> showToast("TuVieja") })
+        })
     }
 }
