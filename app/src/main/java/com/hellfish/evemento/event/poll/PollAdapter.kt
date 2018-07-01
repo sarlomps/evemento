@@ -4,9 +4,10 @@ import android.content.Context
 import android.support.v7.widget.*
 import com.hellfish.evemento.R
 import com.hellfish.evemento.RecyclerAdapter
+import com.hellfish.evemento.SessionManager
 import kotlinx.android.synthetic.main.poll_content.view.*
 
-class PollAdapter(polls: MutableList<PollObject>, private val f: (PollObject) -> Unit) : RecyclerAdapter<CardView, PollObject>(polls) {
+class PollAdapter(polls: MutableList<Poll>, private val f: (Poll) -> Unit) : RecyclerAdapter<CardView, Poll>(polls) {
     companion object {
         const val openPollView = 0
         const val closedPollView = 1
@@ -16,14 +17,14 @@ class PollAdapter(polls: MutableList<PollObject>, private val f: (PollObject) ->
         return R.layout.poll_content
     }
 
-    override fun getItemView(item: PollObject): Int {
+    override fun getItemView(item: Poll): Int {
         return when (item) {
-            is PollObject.Votable -> openPollView
-            is PollObject.NoVotable -> closedPollView
+            is Poll.Votable -> openPollView
+            is Poll.NoVotable -> closedPollView
         }
     }
 
-    override fun doOnItemOnBindViewHolder(view: CardView, item: PollObject, context: Context) {
+    override fun doOnItemOnBindViewHolder(view: CardView, item: Poll, context: Context) {
         view.question.text = item.question
 
         view.answers.apply {
@@ -32,10 +33,10 @@ class PollAdapter(polls: MutableList<PollObject>, private val f: (PollObject) ->
         }
     }
 
-    private fun answersAdapter(poll : PollObject) : RecyclerAdapter<*, *> {
+    private fun answersAdapter(poll : Poll) : RecyclerAdapter<*, *> {
         return when(poll) {
-            is PollObject.Votable -> OpenAnswersAdapter({ answer -> f(poll.choose(answer)) }, poll.answers)
-            is PollObject.NoVotable -> ClosedAnswersAdapter(poll.answers, poll.totalVotes())
+            is Poll.Votable -> OpenAnswersAdapter({ answer -> f(poll.choose(answer, SessionManager.getCurrentUser()!!.userId)) }, poll.answers)
+            is Poll.NoVotable -> ClosedAnswersAdapter(poll.answers, poll.totalVotes())
         }
     }
 }

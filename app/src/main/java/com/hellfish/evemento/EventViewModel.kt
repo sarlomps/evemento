@@ -4,12 +4,10 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.hellfish.evemento.api.Comment
 import com.hellfish.evemento.api.Guest
-import com.hellfish.evemento.api.Poll
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.transport.TransportItem
 import com.hellfish.evemento.event.transport.UserMiniDetail
-import com.hellfish.evemento.event.poll.Answer
-import com.hellfish.evemento.event.poll.PollObject
+import com.hellfish.evemento.event.poll.Poll
 import com.hellfish.evemento.event.task.TaskItem
 import com.hellfish.evemento.event.transport.Coordinates
 import com.hellfish.evemento.event.transport.Location
@@ -24,19 +22,9 @@ class EventViewModel : ViewModel() {
     var rides: MutableLiveData<MutableList<TransportItem>> = MutableLiveData()
         private set
     private var tasks: List<String> = listOf()
-    private var polls: MutableLiveData<MutableList<PollObject>> = MutableLiveData()
+    var polls: MutableLiveData<MutableList<Poll>> = MutableLiveData()
     var comments: MutableLiveData<MutableList<Comment>> = MutableLiveData()
         private set
-
-    fun getPolls(): MutableLiveData<MutableList<PollObject>> {
-        if (polls.value?.isEmpty() ?: true) {
-            polls.value = mutableListOf(
-                    PollObject.NoVotable("Asdasdesd", listOf(Answer.Closed("Sí", 2), Answer.Closed("No", 1))),
-                    PollObject.Votable("Asdasdesdo", listOf(Answer.Open("Sí", 2), Answer.Open("No", 1)))
-            )
-        }
-        return polls
-    }
 
     fun updateView() = select(selectedEvent.value)
 
@@ -45,6 +33,9 @@ class EventViewModel : ViewModel() {
     fun select(event: Event?) {
         selectedEvent.value = event
         comments.value = mutableListOf()
+        guests.value = mutableListOf()
+        rides.value = mutableListOf()
+        polls.value = mutableListOf()
         loadDataFrom(event)     /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
     }
 
@@ -52,14 +43,11 @@ class EventViewModel : ViewModel() {
         selectedEvent.value?.let {
             NetworkManager.getPolls(it) { newPolls, errorMessage ->
                 newPolls?.let {
-                    //TODO: DESCOMENTAR CUANDO ESTE LISTO EL REFACTOR DE POLLS
-//                    polls.value = it.toMutableList()
-//                    callback(polls.value, null)
+                    callback(it, errorMessage)
                     return@getPolls
                 }
                 callback(null, errorMessage)
             }
-
             return
         }
         callback(null, R.string.api_error_fetching_data)
@@ -106,10 +94,6 @@ class EventViewModel : ViewModel() {
     private fun loadDataFrom(event: Event?) {
         rides.value = mockedRides()
         tasks = listOf() //TODO load it from Firebase
-        polls.value = mutableListOf(
-                PollObject.NoVotable("Asdasdesd", listOf(Answer.Closed("Sí", 2), Answer.Closed("No", 1))),
-                PollObject.Votable("Asdasdesdo", listOf(Answer.Open("Sí", 2), Answer.Open("No", 1)))
-        )
     }
 
     private fun mockedRides(): MutableList<TransportItem> {
@@ -157,11 +141,11 @@ class EventViewModel : ViewModel() {
         guests.value = guests.value?.minus(guest)?.toMutableList()
     }
 
-    fun add(poll: PollObject) {
+    fun add(poll: Poll) {
         polls.value = polls.value?.plus(poll)?.toMutableList()
     }
 
-    fun edit(newPoll: PollObject) {
+    fun edit(newPoll: Poll) {
         polls.value = editList(polls.value, newPoll) { p1, p2 -> p1.question == p2.question }
     }
 

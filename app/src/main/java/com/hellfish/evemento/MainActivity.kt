@@ -92,11 +92,11 @@ class MainActivity : AppCompatActivity(), Navigator {
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun setCustomToolbar(customToolbar: Toolbar?, title: String?) {
+    override fun setCustomToolbar(customToolbar: Toolbar?, title: String?, homeEnabled: Boolean) {
         defaultToolbar.visibility= (customToolbar == null).toVisibility()
         setSupportActionBar(customToolbar ?: defaultToolbar)
         supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
+            setDisplayHomeAsUpEnabled(homeEnabled)
             setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp)
         }
         supportActionBar?.title = title
