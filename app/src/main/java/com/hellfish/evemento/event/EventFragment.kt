@@ -109,9 +109,11 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         if (eventViewModel.selected() != null) {
             if (eventViewModel.selected()?.user == SessionManager.getCurrentUser()?.userId) {
                 eventFab.visibility = View.VISIBLE
+                eventMenu.visibility = View.VISIBLE
                 editing = savedInstanceState?.getBoolean("editing") ?: false
             } else {
                 eventFab.visibility = View.GONE
+                eventMenu.visibility = View.GONE
                 editing = false
             }
             decideViewMode()
