@@ -100,11 +100,13 @@ class GuestListFragment : NavigatorFragment() {
                     getButton(Dialog.BUTTON_POSITIVE).let {
                         it.text = getString(R.string.uninvite)
                         it.setOnClickListener {
-                            NetworkManager.deleteGuest(guest) { success, errorMessage ->
-                                if (success) eventViewModel.remove(guest)
-                                else showToast(errorMessage ?: R.string.network_unknown_error)
+                            withConfirmationDialog(R.string.deleteGuestConfirmation) {
+                                NetworkManager.deleteGuest(guest) { success, errorMessage ->
+                                    if (success) eventViewModel.remove(guest)
+                                    else showToast(errorMessage ?: R.string.network_unknown_error)
+                                }
+                                cancel()
                             }
-                            cancel()
                         }
                     }
                 }

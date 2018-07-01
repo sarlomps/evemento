@@ -43,7 +43,7 @@ class ClosedAnswersAdapter(answers: List<Answer.Closed>, private val totalAmount
 
     override fun doOnItemOnBindViewHolder(view: RelativeLayout, item: Answer.Closed, context: Context) {
         val textView = view.closedAnswerTextView
-        textView.text = "${item.text} - ${item.votes.toFloat() / totalAmount.toFloat() * 100}%"
+        textView.text = "${item.text} - ${item.votesAmount.toFloat() / totalAmount.toFloat() * 100}%"
         view.answerBackground.apply {
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {

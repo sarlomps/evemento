@@ -4,13 +4,14 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.hellfish.evemento.api.Comment
 import com.hellfish.evemento.api.Guest
-import com.hellfish.evemento.api.Poll
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.transport.TransportItem
 import com.hellfish.evemento.event.transport.UserMiniDetail
-import com.hellfish.evemento.event.poll.Answer
-import com.hellfish.evemento.event.poll.PollObject
+import com.hellfish.evemento.event.poll.Poll
 import com.hellfish.evemento.event.task.TaskItem
+import com.hellfish.evemento.event.transport.Coordinates
+import com.hellfish.evemento.event.transport.Location
+import com.hellfish.evemento.lib.Either
 
 
 class EventViewModel : ViewModel() {
@@ -22,19 +23,9 @@ class EventViewModel : ViewModel() {
     var rides: MutableLiveData<MutableList<TransportItem>> = MutableLiveData()
         private set
     var tasks: MutableLiveData<MutableList<TaskItem>> = MutableLiveData()
-    private var polls: MutableLiveData<MutableList<PollObject>> = MutableLiveData()
+    var polls: MutableLiveData<MutableList<Poll>> = MutableLiveData()
     var comments: MutableLiveData<MutableList<Comment>> = MutableLiveData()
         private set
-
-    fun getPolls(): MutableLiveData<MutableList<PollObject>> {
-        if (polls.value?.isEmpty() ?: true) {
-            polls.value = mutableListOf(
-                    PollObject.NoVotable("Asdasdesd", listOf(Answer.Closed("Sí", 2), Answer.Closed("No", 1))),
-                    PollObject.Votable("Asdasdesdo", listOf(Answer.Open("Sí", 2), Answer.Open("No", 1)))
-            )
-        }
-        return polls
-    }
 
     fun updateView() = select(selectedEvent.value)
 
@@ -43,25 +34,24 @@ class EventViewModel : ViewModel() {
     fun select(event: Event?) {
         selectedEvent.value = event
         comments.value = mutableListOf()
+        guests.value = mutableListOf()
+        rides.value = mutableListOf()
+        polls.value = mutableListOf()
         loadDataFrom(event)     /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
     }
 
-    fun loadPolls(callback: (List<Poll>?, Int?) -> (Unit)) {
+    fun loadPolls(callback: (Either<List<Poll>, Int>) -> (Unit)) {
         selectedEvent.value?.let {
             NetworkManager.getPolls(it) { newPolls, errorMessage ->
-                newPolls?.let {
-                    //TODO: DESCOMENTAR CUANDO ESTE LISTO EL REFACTOR DE POLLS
-//                    polls.value = it.toMutableList()
-//                    callback(polls.value, null)
-                    return@getPolls
-                }
-                callback(null, errorMessage)
+                if (newPolls == null) {
+                    errorMessage?.let { callback(Either.Error(it)) }
+                } else
+                    callback(Either.Success(newPolls.toMutableList()))
             }
-
-            return
         }
-        callback(null, R.string.api_error_fetching_data)
+        if(selectedEvent.value == null) { callback(Either.Error(R.string.api_error_fetching_data)) }
     }
+
     fun loadRides(callback: (List<TransportItem>?, Int?) -> (Unit)) {
 //TODO: IMPLEMENT
     }
@@ -104,16 +94,14 @@ class EventViewModel : ViewModel() {
     private fun loadDataFrom(event: Event?) {
         rides.value = mockedRides()
         tasks.value = mutableListOf() //TODO load it from Firebase
-        polls.value = mutableListOf(
-                PollObject.NoVotable("Asdasdesd", listOf(Answer.Closed("Sí", 2), Answer.Closed("No", 1))),
-                PollObject.Votable("Asdasdesdo", listOf(Answer.Open("Sí", 2), Answer.Open("No", 1)))
-        )
     }
 
     private fun mockedRides(): MutableList<TransportItem> {
         val transports = ArrayList<TransportItem>()
         val driver1 = UserMiniDetail("Gus", "Sarlanga")
+        val gusPlace: Location = Location("casa de gus", Coordinates(-34.588938999999996,-58.5906728))
         val driver2 = UserMiniDetail("Gas", "Sarlanga")
+        val gasPlace: Location = Location("casa de gas", Coordinates(-34.6017308,-58.586593900000004))
         val pass_1_1 = UserMiniDetail("juanR", "Sarlanga")
         val pass_1_2 = UserMiniDetail("juanDs", "Sarlanga")
         val pass_2_1 = UserMiniDetail("NicoB", "Sarlanga")
@@ -125,8 +113,8 @@ class EventViewModel : ViewModel() {
         passangers2.add(pass_2_1)
         passangers2.add(pass_2_2)
 
-        transports.add(TransportItem(driver1, passangers1, "casa de gus" ,4))
-        transports.add(TransportItem(driver2, passangers2, "casa de gas",3))
+        transports.add(TransportItem(driver1, passangers1, gusPlace ,4))
+        transports.add(TransportItem(driver2, passangers2, gasPlace,3))
         return transports
     }
 
@@ -153,11 +141,11 @@ class EventViewModel : ViewModel() {
         guests.value = guests.value?.minus(guest)?.toMutableList()
     }
 
-    fun add(poll: PollObject) {
+    fun add(poll: Poll) {
         polls.value = polls.value?.plus(poll)?.toMutableList()
     }
 
-    fun edit(newPoll: PollObject) {
+    fun edit(newPoll: Poll) {
         polls.value = editList(polls.value, newPoll) { p1, p2 -> p1.question == p2.question }
     }
 
