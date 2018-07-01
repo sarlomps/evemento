@@ -10,11 +10,11 @@ import com.hellfish.evemento.EventViewModel
 import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.NetworkManager
 import com.hellfish.evemento.R
-import com.hellfish.evemento.R.string.createPollSuccessfully
-import com.hellfish.evemento.R.string.title_fragment_new_poll
+import com.hellfish.evemento.R.string.*
 import com.hellfish.evemento.extensions.getChildren
 
 import kotlinx.android.synthetic.main.fragment_new_poll.*
+import kotlinx.android.synthetic.main.poll_content.*
 
 class NewPollFragment : NavigatorFragment() {
 
@@ -33,6 +33,7 @@ class NewPollFragment : NavigatorFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         newPollFab.setOnClickListener { _ ->
+            if(!validatePollFields()) { return@setOnClickListener }
             val newPoll = Poll.Votable(question=editPollQuestion.text.toString(),
                                        answers=answers(),
                                        eventId=eventViewModel.selectedEvent.value!!.eventId,
@@ -58,4 +59,21 @@ class NewPollFragment : NavigatorFragment() {
         newEditTextView.hint = "An answer"
         newPollAnswersLinearLayout.addView(newEditTextView)
     }
+
+    private fun validatePollFields() : Boolean {
+        val answers = newPollAnswersLinearLayout.getChildren<EditText>()
+        val pollFields = answers.plus(editPollQuestion)
+        answers.forEach { answer ->
+            answer.validateText(errorDuplicatePollAnswer, { answerText ->
+                answers.takeWhile { it != answer }.all { it.text.toString() != answerText }
+            })
+        }
+        pollFields.forEach { it.validateText(errorEmptyPollField, { it.isNotEmpty() }) }
+        return pollFields.all { it.error?.isEmpty() ?: true }
+    }
+}
+
+
+fun EditText.validateText(errorMessage : Int, validation : (String) -> (Boolean)) {
+    if(!validation(this.text.toString())) { this.error = resources.getString(errorMessage) }
 }
