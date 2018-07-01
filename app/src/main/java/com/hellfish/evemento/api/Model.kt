@@ -154,14 +154,15 @@ class CommentMapper : Mapper<CommentResponse, Comment> {
 
 }
 
-class GuestMapper {
-    fun mapToDomain(guestId: String, user: User): Guest = Guest(
-            guestId,
-            user.userId,
-            user.displayName,
-            user.imageUrl,
-            user.email)
+class GuestMapper : Mapper<GuestResponse, Guest> {
 
-    fun mapToEntity(eventId: String, guest: Guest): GuestResponse = GuestResponse(eventId, guest.userId)
+    override fun mapToDomain(guestId: String, entity: GuestResponse): Guest = Guest(
+            guestId,
+            entity.userId,
+            "",
+            "",
+            "")
+
+    override fun mapToEntity(eventId: String, guest: Guest): GuestResponse = GuestResponse(eventId, guest.userId)
 
 }

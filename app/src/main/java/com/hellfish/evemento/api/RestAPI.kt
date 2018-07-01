@@ -94,6 +94,7 @@ class RestAPI {
         var error: Int? = null
         deleteAllComments(eventId) { _, errorMessage -> error = errorMessage }
         deleteAllPolls(eventId) { _, errorMessage -> error = errorMessage }
+        deleteAllGuests(eventId) { _, errorMessage -> error = errorMessage }
 
         if (error == null) {
             firebaseApi.deleteEvent(eventId).enqueue(deleteCallback(callback))
@@ -115,6 +116,12 @@ class RestAPI {
         }
     }
 
+    private fun deleteAllGuests(eventId: String, callback: (Boolean, Int?) -> (Unit)) {
+        getGuestsForEvent(eventId) { guests, error ->
+            if (guests != null) guests.forEach { deleteGuest(it.guestId, callback) }
+            else callback(false, error)
+        }
+    }
 
     //Users
     fun createOrUpdateUser(userId: String, user:UserResponse, callback: (User?, Int?) -> (Unit)) {
@@ -197,27 +204,8 @@ class RestAPI {
     }
 
     //Guest
-    fun getGuestsForEvent(eventId: String, users: List<User>, callback: (List<Guest>?, Int?) -> (Unit)) {
-        firebaseApi.getGuests("\"eventId\"", "\"$eventId\"").enqueue(object : Callback<Map<String, GuestResponse>> {
-            override fun onResponse(call: Call<Map<String, GuestResponse>>?, response: Response<Map<String, GuestResponse>>?) {
-                if (response != null && response.isSuccessful) {
-                    response.body()?.let {
-                        val guests = it.map { entry ->
-                            val user = users.find { it.userId == entry.value.userId }
-                            if (user != null) GuestMapper().mapToDomain(entry.key, user)
-                            else null
-                        }
-                        try { callback(guests.requireNoNulls(), null); return }
-                        catch (e: IllegalArgumentException) { callback(null, R.string.api_error_fetching_data) }
-                    }
-                }
-                callback(null, R.string.api_error_fetching_data)
-            }
-
-            override fun onFailure(call: Call<Map<String, GuestResponse>>?, t: Throwable?) {
-                callback(null, R.string.api_error_fetching_data)
-            }
-        })
+    fun getGuestsForEvent(eventId: String, callback: (List<Guest>?, Int?) -> (Unit)) {
+        firebaseApi.getGuests("\"eventId\"", "\"$eventId\"").enqueue(getXForYCallback(callback, GuestMapper()))
     }
 
     fun pushGuest(guest: GuestResponse, callback: (String?, Int?) -> Unit) {

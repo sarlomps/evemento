@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.hellfish.evemento.api.Comment
 import com.hellfish.evemento.api.Guest
+import com.hellfish.evemento.api.GuestMapper
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.transport.TransportItem
 import com.hellfish.evemento.event.transport.UserMiniDetail
@@ -70,8 +71,22 @@ class EventViewModel : ViewModel() {
         selectedEvent.value?.let { event ->
             NetworkManager.getAllUsers { users, errorMessage ->
                 users?.let {
-                    NetworkManager.getGuests(event, users) { newGuests, errorMessage ->
-                        newGuests?.let { guests.value = it.toMutableList(); return@getGuests }
+                    NetworkManager.getGuests(event) { newGuests, errorMessage ->
+                        newGuests?.let {
+                            try {
+                                val fullGuests = it.map { guest ->
+                                    val user = users.find { it.userId == guest.userId }
+                                    if (user != null)
+                                        guest.copy(
+                                                displayName = user.displayName,
+                                                imageUrl = user.imageUrl,
+                                                email = user.email)
+                                    else null
+                                }
+                                guests.value = fullGuests.requireNoNulls().toMutableList()
+                            } catch (e: IllegalArgumentException) { onError(R.string.api_error_fetching_data) }
+                            return@getGuests
+                        }
                         onError(errorMessage)
                     }
                     return@getAllUsers

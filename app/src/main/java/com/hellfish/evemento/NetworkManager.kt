@@ -71,8 +71,8 @@ object NetworkManager {
     }
 
     /// GUESTS
-    fun getGuests(event: Event, users: List<User>, callback: (List<Guest>?, Int?) -> (Unit)) {
-        api.getGuestsForEvent(event.eventId, users, callback)
+    fun getGuests(event: Event, callback: (List<Guest>?, Int?) -> (Unit)) {
+        api.getGuestsForEvent(event.eventId, callback)
     }
 
     fun pushGuest(eventId: String, guest: Guest, callback: (String?, Int?) -> (Unit)) {
