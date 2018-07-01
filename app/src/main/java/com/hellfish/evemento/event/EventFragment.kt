@@ -44,6 +44,7 @@ import org.joda.time.DateTime
 class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
 
 
+    private lateinit var eventListViewModel: EventListViewModel
     private lateinit var eventViewModel: EventViewModel
     private var editing: Boolean = false
 
@@ -66,6 +67,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         dateFormatter = DateTimeFormat.forPattern(getString(R.string.DateFormat))
         timeFormatter = DateTimeFormat.forPattern(getString(R.string.TimeFormat))
 
+        eventListViewModel = ViewModelProviders.of(activity!!).get(EventListViewModel::class.java)
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
         eventViewModel.selectedEvent.observe(this, Observer { event ->
             if (!editing) {
@@ -155,7 +157,12 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
             showToast(errorMessage ?: R.string.network_unknown_error)
         }
         else NetworkManager.pushEvent(event) { newEventId, errorMessage ->
-            newEventId?.let { eventViewModel.select(event.copy(eventId = newEventId)); return@pushEvent }
+            newEventId?.let {
+                val newEvent = event.copy(eventId = newEventId)
+                eventViewModel.select(newEvent)
+                eventListViewModel.addEvent(newEvent)
+                return@pushEvent
+            }
             showToast(errorMessage ?: R.string.network_unknown_error)
         }
     }
@@ -200,7 +207,13 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
 
     private fun deleteEvent() {
         NetworkManager.deleteEvent(eventViewModel.selected()!!.eventId) { success, errorMessage ->
-            if (success) { eventViewModel.select(null); fragmentManager?.popBackStack() }
+            if (success) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) eventListViewModel.removeEvent(eventViewModel.selected()!!)
+                else eventListViewModel.fetchEventsForCurrentUser { error -> error?.let { showToast(error) } }
+
+                eventViewModel.select(null)
+                fragmentManager?.popBackStack()
+            }
             else showToast(R.string.errorDeleteComments)
         }
     }
