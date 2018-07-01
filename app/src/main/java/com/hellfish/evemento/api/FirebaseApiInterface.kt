@@ -63,6 +63,12 @@ interface  FirebaseApiInterface {
                     @Query("equalTo") equalTo: String)
             : Call<Map<String, CommentResponse>>
 
+    @DELETE("/comments.json")
+    fun deleteComments(@Query("orderBy") orderBy: String,
+                       @Query("equalTo") equalTo: String)
+            : Call<DeleteResponse>
+
+
     @Headers("Content-Type: application/json")
     @POST("/comments.json")
     fun pushComment(@Body comment: CommentResponse)

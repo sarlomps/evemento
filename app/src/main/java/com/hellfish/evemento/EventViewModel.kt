@@ -11,7 +11,6 @@ import com.hellfish.evemento.event.poll.Poll
 import com.hellfish.evemento.event.task.TaskItem
 import com.hellfish.evemento.event.transport.Coordinates
 import com.hellfish.evemento.event.transport.Location
-import com.hellfish.evemento.lib.Either
 
 
 class EventViewModel : ViewModel() {

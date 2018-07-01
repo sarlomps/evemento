@@ -208,13 +208,11 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     private fun deleteEvent() {
         NetworkManager.deleteEvent(eventViewModel.selected()!!.eventId) { success, errorMessage ->
             if (success) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) eventListViewModel.removeEvent(eventViewModel.selected()!!)
-                else eventListViewModel.fetchEventsForCurrentUser { error -> error?.let { showToast(error) } }
-
+                eventListViewModel.removeEvent(eventViewModel.selected()!!){ error -> error?.let { showToast(error) } }
                 eventViewModel.select(null)
                 fragmentManager?.popBackStack()
             }
-            else showToast(R.string.errorDeleteComments)
+            else showToast(errorMessage ?: R.string.errorDeleteEvent)
         }
     }
 

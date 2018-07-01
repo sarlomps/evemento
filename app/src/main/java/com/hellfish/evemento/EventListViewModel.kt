@@ -15,10 +15,12 @@ class EventListViewModel : ViewModel() {
 
     fun addEvent(event: Event) { events.value?.add(event) }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun removeEvent(event: Event) { events.value?.removeIf { e -> e.eventId == event.eventId } }
+    fun removeEvent(event: Event, onError: (Int?) -> Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) events.value?.removeIf { e -> e.eventId == event.eventId }
+        else fetchEventsForCurrentUser(onError)
+    }
 
-    fun fetchEventsForCurrentUser(errorCallback: (Int?) -> (Unit)) {
+    fun fetchEventsForCurrentUser(errorCallback: (Int?) -> Unit) {
         NetworkManager.getEventsForUser(SessionManager.getCurrentUser()!!.userId) { userEvents, errorMessage ->
             userEvents?.let {
                 Log.d("getEventsForUser", it.toString())

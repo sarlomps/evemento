@@ -46,20 +46,20 @@ class RestAPI {
         }
     }
     private fun <E, D>updateCallback(callback: (D?, Int?) -> Unit, mapper: Mapper<E, D>, id: String): Callback<E> = object : Callback<E> {
-            override fun onResponse(call: Call<E>?, response: Response<E>?) {
-                if (response != null && response.isSuccessful) {
-                    response.body()?.let {
-                        callback(mapper.mapToDomain(id, it), null)
-                        return
-                    }
+        override fun onResponse(call: Call<E>?, response: Response<E>?) {
+            if (response != null && response.isSuccessful) {
+                response.body()?.let {
+                    callback(mapper.mapToDomain(id, it), null)
+                    return
                 }
-                callback(null, R.string.api_error_pushing_data)
             }
-
-            override fun onFailure(call: Call<E>?, t: Throwable?) {
-                callback(null, R.string.api_error_pushing_data)
-            }
+            callback(null, R.string.api_error_pushing_data)
         }
+
+        override fun onFailure(call: Call<E>?, t: Throwable?) {
+            callback(null, R.string.api_error_pushing_data)
+        }
+    }
     private fun <E, D>getXForYCallback(callback: (List<D>?, Int?) -> (Unit), mapper: Mapper<E, D>) = object : Callback<Map<String, E>> {
         override fun onResponse(call: Call<Map<String, E>>?, response: Response<Map<String, E>>?) {
             if (response != null && response.isSuccessful) {
@@ -91,8 +91,30 @@ class RestAPI {
     }
 
     fun deleteEvent(eventId: String, callback: (Boolean, Int?) -> Unit) {
-        firebaseApi.deleteEvent(eventId).enqueue(deleteCallback(callback))
+        var error: Int? = null
+        deleteAllComments(eventId) { _, errorMessage -> error = errorMessage }
+        deleteAllPolls(eventId) { _, errorMessage -> error = errorMessage }
+
+        if (error == null) {
+            firebaseApi.deleteEvent(eventId).enqueue(deleteCallback(callback))
+        }
+        else callback(false, error)
     }
+
+    private fun deleteAllComments(eventId: String, callback: (Boolean, Int?) -> (Unit)) {
+        getCommentsForEvent(eventId) { comments, error ->
+            if (comments != null) comments.forEach { deleteComment(it.commentId, callback) }
+            else callback(false, error)
+        }
+    }
+
+    private fun deleteAllPolls(eventId: String, callback: (Boolean, Int?) -> (Unit)) {
+        getPollsForEvent(eventId) { polls, error ->
+            if ( polls != null) polls.forEach { deletePoll(it.pollId, callback) }
+            else callback(false, error)
+        }
+    }
+
 
     //Users
     fun createOrUpdateUser(userId: String, user:UserResponse, callback: (User?, Int?) -> (Unit)) {
