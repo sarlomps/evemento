@@ -26,11 +26,7 @@ class PollFragment : NavigatorFragment() {
 
         eventViewModel.loadPolls { polls, _ ->
             polls?.let { polls -> recyclerView.adapter = PollAdapter(polls.toMutableList(), { poll -> eventViewModel.edit(poll) }) }
-            //showToast(R.string.errorLoadingComments)
         }
-//        eventViewModel.polls.observe(this, Observer { polls ->
-//            polls?.let { polls -> recyclerView.adapter = PollAdapter(polls, { poll -> eventViewModel.edit(poll) }) }
-//        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
