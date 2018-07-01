@@ -46,7 +46,7 @@ class PollFragment : NavigatorFragment() {
     private fun setNewPollAdapter(polls: Iterable<Poll>) {
         recyclerView.adapter = PollAdapter(polls.toMutableList(), { poll ->
             eventViewModel.edit(poll)
-            NetworkManager.updatePoll(poll, { _,_ -> showToast("TuVieja") })
+            NetworkManager.updatePoll(poll, { _,_ -> })
         })
     }
 }
