@@ -10,6 +10,7 @@ import com.hellfish.evemento.EventViewModel
 import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.NetworkManager
 import com.hellfish.evemento.R
+import com.hellfish.evemento.R.string.createPollSuccessfully
 import com.hellfish.evemento.R.string.title_fragment_new_poll
 import com.hellfish.evemento.extensions.getChildren
 
@@ -36,8 +37,11 @@ class NewPollFragment : NavigatorFragment() {
                                        answers=answers(),
                                        eventId=eventViewModel.selectedEvent.value!!.eventId,
                                        pollId="")
-            NetworkManager.pushPoll(newPoll, { pollId,_ -> pollId?.let { eventViewModel.add(newPoll.setId(it)) } })
-            activity!!.onBackPressed()
+            NetworkManager.pushPoll(newPoll, { pollId,_ ->
+                pollId?.let { eventViewModel.add(newPoll.setId(it)) }
+                showToast(createPollSuccessfully)
+                activity!!.onBackPressed()
+            })
         }
         addAnswer()
         addAnswer()
