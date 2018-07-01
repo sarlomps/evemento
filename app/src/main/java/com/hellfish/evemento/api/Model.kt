@@ -53,9 +53,14 @@ data class CommentResponse(val eventId:String,
                            val message: String)
 data class DeleteResponse(val nothing: String?)
 
-class UserMapper {
+interface Mapper<E, D> {
+    fun mapToDomain(id: String, entity: E): D
+    fun mapToEntity(referenceId: String = "", domain: D): E
+}
 
-    fun mapToDomain(userId: String, entity: UserResponse): User {
+class UserMapper : Mapper<UserResponse, User> {
+
+    override fun mapToDomain(userId: String, entity: UserResponse): User {
 
         return User(
                 userId,
@@ -74,15 +79,15 @@ class UserMapper {
             user.imageUrl,
             user.email)
 
+    override fun mapToEntity(referenceId: String, domain: User): UserResponse = mapToEntity(domain)
     fun mapToEntity(user: User): UserResponse = UserResponse(
             user.displayName,
             user.imageUrl,
             user.email)
 }
 
-class EventMapper {
-
-    fun mapToDomain(eventId: String, entity: EventResponse): Event = Event(
+class EventMapper : Mapper<EventResponse, Event> {
+    override fun mapToDomain(eventId: String, entity: EventResponse): Event = Event(
             eventId,
             entity.title,
             entity.imageUrl,
@@ -91,6 +96,8 @@ class EventMapper {
             DateTime.parse(entity.endDate),
             entity.location,
             entity.user)
+
+    override fun mapToEntity(referenceId: String, domain: Event): EventResponse = mapToEntity(domain)
 
     fun mapToEntity(event: Event): EventResponse = EventResponse(
             event.title,
@@ -103,25 +110,27 @@ class EventMapper {
 
 }
 
-class PollMapper {
-    fun mapToDomain(pollId: String, entity: PollResponse): Poll = Poll(
+class PollMapper : Mapper<PollResponse, Poll> {
+    override fun mapToDomain(pollId: String, entity: PollResponse): Poll = Poll(
             pollId,
             entity.eventId,
             entity.items)
 
+    override fun mapToEntity(referenceId: String, domain: Poll): PollResponse = mapToEntity(domain)
     fun mapToEntity(poll: Poll): PollResponse = PollResponse(
             poll.eventId,
             poll.items)
 }
 
-class CommentMapper {
-    fun mapToDomain(commentId: String, entity: CommentResponse): Comment = Comment(
+class CommentMapper : Mapper<CommentResponse, Comment> {
+
+    override fun mapToDomain(commentId: String, entity: CommentResponse): Comment = Comment(
             commentId,
             entity.userId,
             entity.name,
             entity.message)
 
-    fun mapToEntity(eventId: String, comment: Comment): CommentResponse = CommentResponse(
+    override fun mapToEntity(eventId: String, comment: Comment): CommentResponse = CommentResponse(
             eventId,
             comment.userId,
             comment.name,
