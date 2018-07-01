@@ -1,6 +1,5 @@
 package com.hellfish.evemento.api
 
-import android.util.Log
 import com.hellfish.evemento.R
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.poll.Poll
@@ -80,6 +79,28 @@ class RestAPI {
     //https://deep-hook-204120.firebaseio.com/events.json?orderBy=%22user%22&equalTo=%22AwrjKTnQ5CTfmfLEMxvmEmkM6Tz2%22
     fun getEventsForUser(user: String, callback: (List<Event>?, Int?) -> (Unit)) {
         firebaseApi.getEvents("\"user\"", "\"$user\"").enqueue(getXForYCallback(callback, EventMapper()))
+    }
+
+    fun getInvitations(user: String, callback: (List<String>?, Int?) -> (Unit)) {
+        firebaseApi.getGuests("\"userId\"", "\"$user\"").enqueue(object : Callback<Map<String, GuestResponse>> {
+            override fun onResponse(call: Call<Map<String, GuestResponse>>?, response: Response<Map<String, GuestResponse>>?) {
+                if (response != null && response.isSuccessful) {
+                    response.body()?.let {
+                        callback(it.values.map { it.eventId }, null)
+                        return
+                    }
+                }
+                callback(null, R.string.api_error_fetching_data)
+            }
+
+            override fun onFailure(call: Call<Map<String, GuestResponse>>?, t: Throwable?) {
+                callback(null, R.string.api_error_fetching_data)
+            }
+        })
+    }
+
+    fun getEvent(eventId:String, callback: (Event?, Int?) -> Unit) {
+        firebaseApi.getEvent(eventId).enqueue(updateCallback(callback, EventMapper(), eventId))
     }
 
     fun pushEvent(event:EventResponse, callback: (String?, Int?) -> Unit) {

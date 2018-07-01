@@ -113,6 +113,12 @@ interface  FirebaseApiInterface {
                   @Query("equalTo") equalTo: String)
             : Call<Map<String, EventResponse>>
 
+
+    @GET("/events/{eventId}.json")
+    fun getEvent(@Path("eventId") eventId: String)
+            : Call<EventResponse>
+
+
     @Headers("Content-Type: application/json")
     @POST("/events.json")
     fun pushEvent(@Body event: EventResponse)

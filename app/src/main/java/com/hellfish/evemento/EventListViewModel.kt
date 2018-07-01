@@ -3,7 +3,6 @@ package com.hellfish.evemento
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.os.Build
-import android.support.annotation.RequiresApi
 import android.util.Log
 import com.hellfish.evemento.event.Event
 
@@ -13,7 +12,10 @@ class EventListViewModel : ViewModel() {
 
     fun refresh() { events.value = events.value }
 
-    fun addEvent(event: Event) { events.value?.add(event) }
+    fun addEvent(event: Event) {
+        events.value?.add(event)
+        refresh()
+    }
 
     fun removeEvent(event: Event, onError: (Int?) -> Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) events.value?.removeIf { e -> e.eventId == event.eventId }
@@ -25,10 +27,24 @@ class EventListViewModel : ViewModel() {
             userEvents?.let {
                 Log.d("getEventsForUser", it.toString())
                 events.value = it.toMutableList()
-                errorCallback(null)
+                fetchInvitations(errorCallback)
                 return@getEventsForUser
             }
             errorCallback(errorMessage ?: R.string.api_error_fetching_data)
+        }
+    }
+
+    private fun fetchInvitations(errorCallback: (Int?) -> Unit) {
+        NetworkManager.getInvitations(SessionManager.getCurrentUser()!!.userId) { invitations, errorMessage ->
+            if (invitations != null) {
+                invitations.forEach {
+                    NetworkManager.getEvent(it) { event, errorMessage ->
+                        if (event != null) addEvent(event)
+                        else errorCallback(errorMessage ?: R.string.api_error_fetching_data)
+                    }
+                }
+            }
+            else errorCallback(errorMessage ?: R.string.api_error_fetching_data)
         }
     }
 

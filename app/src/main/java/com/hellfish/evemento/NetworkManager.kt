@@ -26,6 +26,14 @@ object NetworkManager {
         api.getEventsForUser(user, callback)
     }
 
+    fun getInvitations(user: String, callback: (List<String>?, Int?) -> (Unit)) {
+        api.getInvitations(user, callback)
+    }
+
+    fun getEvent(event: String, callback: (Event?, Int?) -> (Unit)) {
+        api.getEvent(event, callback)
+    }
+
     fun pushEvent(event:Event, callback: (String?, Int?) -> (Unit)) {
         api.pushEvent(EventMapper().mapToEntity(event), callback)
     }
