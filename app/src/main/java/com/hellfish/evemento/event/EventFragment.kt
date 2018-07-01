@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_event.view.*
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.support.design.widget.TextInputEditText
 import android.support.design.widget.TextInputLayout
@@ -54,11 +55,11 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     private lateinit var menu: PopupMenu
 
     private val autocompleteRequestCode = 42
+    private val imagePickerRequestCode = 44
 
     lateinit var dateTimeFormatter: DateTimeFormatter
     override lateinit var dateFormatter: DateTimeFormatter
     override lateinit var timeFormatter: DateTimeFormatter
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -231,8 +232,9 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     }
 
     private fun setImageListener() = eventImage.setOnClickListener {
-        imageDialogInput.setText(imageUrl.text)
-        imageDialog.show()
+        val photoPickerIntent = Intent(Intent.ACTION_PICK)
+        photoPickerIntent.type = "image/*"
+        startActivityForResult(photoPickerIntent, imagePickerRequestCode)
     }
 
     private fun loadImage(url: String?) {
@@ -272,10 +274,19 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         when {
             requestCode == autocompleteRequestCode && resultCode == RESULT_OK -> locationElement.setText(PlaceAutocomplete.getPlace(activity, data).name)
             requestCode == autocompleteRequestCode && resultCode == RESULT_ERROR-> showToast(R.string.autocompleteError)
+            requestCode ==  imagePickerRequestCode && resultCode == RESULT_OK -> gotImage(data)
+            requestCode ==  imagePickerRequestCode && resultCode == RESULT_ERROR-> showToast(R.string.imagepickerError)
+
             else -> Unit
         }
     }
 
+    private fun gotImage(data:Intent?) {
+        data?.let {
+            val imageUri: Uri = it.data
+            eventImage.setImageURI(imageUri)
+        }
+    }
     private fun setDateTimeListeners() {
         val (startDatePicker, endDatePicker) = createLinkedDatePickerDialogs(context, startDateElement, endDateElement, startTimeElement, endTimeElement)
         val (startTimePicker, endTimePicker) = createLinkedTimePickerDialogs(context, startDateElement, endDateElement, startTimeElement, endTimeElement)
