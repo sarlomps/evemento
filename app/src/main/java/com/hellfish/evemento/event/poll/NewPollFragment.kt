@@ -37,6 +37,7 @@ class NewPollFragment : NavigatorFragment() {
                                        eventId=eventViewModel.selectedEvent.value!!.eventId,
                                        pollId="")
             NetworkManager.pushPoll(newPoll, { pollId,_ -> pollId?.let { eventViewModel.add(newPoll.setId(it)) } })
+            activity!!.onBackPressed()
         }
         addAnswer()
         addAnswer()
