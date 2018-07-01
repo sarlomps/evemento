@@ -1,6 +1,7 @@
 package com.hellfish.evemento.event.task
 
 import android.app.AlertDialog
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.DialogInterface
 import android.os.Bundle
@@ -16,6 +17,7 @@ import com.hellfish.evemento.R
 import com.hellfish.evemento.R.string.title_fragment_task_list
 import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.SessionManager
+import kotlinx.android.synthetic.main.fragment_poll_list.*
 import kotlinx.android.synthetic.main.fragment_task_list.*
 import kotlinx.android.synthetic.main.fragment_task_list_item_add.view.*
 
@@ -29,6 +31,12 @@ class TaskListFragment : NavigatorFragment() {
         super.onCreate(savedInstanceState)
 
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
+        //TODO: Load Tasks
+        eventViewModel.tasks.observe(
+                this,
+                Observer { items -> items?.let{task_recycler_view.adapter = TaskListAdapter(taskItems, editTaskItem()) }
+                }
+        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -53,7 +61,6 @@ class TaskListFragment : NavigatorFragment() {
 
         task_recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = TaskListAdapter(taskItems)
         }
     }
 
@@ -71,7 +78,6 @@ class TaskListFragment : NavigatorFragment() {
         itemDialog.setView(viewItemToModify)
 
         itemDialog.setPositiveButton("Ok") { dialog, _ ->
-            // Do something when user press the positive button
             addItemIfCorrect(
                     viewItemToModify.add_item_description.text.toString(),
                     dialog,
@@ -96,6 +102,7 @@ class TaskListFragment : NavigatorFragment() {
                     responsible
             )
             taskItems.add(item)
+            refreshView()
         }
     }
 
@@ -122,6 +129,57 @@ class TaskListFragment : NavigatorFragment() {
         val spinner = addTaskItemView.findViewById<Spinner>(R.id.add_item_responsible)
         spinner.adapter = adapter
 
+    }
+
+    private fun editTaskItem() = { item: TaskItem ->
+        View.OnClickListener {
+            if(eventViewModel.selected()?.user == SessionManager.getCurrentUser()!!.userId){
+//                editDeleteDialog(item)
+                itemResponsibility(item)
+            }else{
+                itemResponsibility(item)
+            }
+        }
+    }
+
+    private fun editDeleteDialog(item: TaskItem){
+        val editDeleteDialog = AlertDialog.Builder(context)
+        editDeleteDialog.setPositiveButton("Edit") { _, _ ->
+            //Edit item
+            //view?.findViewById<FloatingActionButton>(R.id.task_list_add)?.callOnClick()
+//            refreshView()
+        }
+
+        editDeleteDialog.setNegativeButton("Delete") { _, _ ->
+            taskItems.remove(item)
+            refreshView()
+        }
+
+        editDeleteDialog.show()
+    }
+
+    private fun itemResponsibility(item: TaskItem){
+        val takeOwnershipQuestionDialog = AlertDialog.Builder(context)
+        if(item.responsible == "No one in charge"){
+            takeOwnershipQuestionDialog.setTitle("Do you want to be in charge?")
+            takeOwnershipQuestionDialog.setNegativeButton("No"){ dialog, _ ->
+                dialog.dismiss()
+            }
+            takeOwnershipQuestionDialog.setPositiveButton("Yes"){ _, _ ->
+                item.responsible = SessionManager.getCurrentUser()!!.displayName
+                refreshView()
+            }
+        }else{
+            takeOwnershipQuestionDialog.setTitle("Someone is already in charge")
+            takeOwnershipQuestionDialog.setPositiveButton("Ok"){ dialog, _ ->
+                dialog.dismiss()
+            }
+        }
+        takeOwnershipQuestionDialog.show()
+    }
+
+    private fun refreshView(){
+        task_recycler_view.adapter.notifyDataSetChanged()
     }
 
 }

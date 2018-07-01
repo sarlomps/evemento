@@ -21,7 +21,7 @@ class EventViewModel : ViewModel() {
         private set
     var rides: MutableLiveData<MutableList<TransportItem>> = MutableLiveData()
         private set
-    private var tasks: List<String> = listOf()
+    var tasks: MutableLiveData<MutableList<TaskItem>> = MutableLiveData()
     private var polls: MutableLiveData<MutableList<PollObject>> = MutableLiveData()
     var comments: MutableLiveData<MutableList<Comment>> = MutableLiveData()
         private set
@@ -103,7 +103,7 @@ class EventViewModel : ViewModel() {
     /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
     private fun loadDataFrom(event: Event?) {
         rides.value = mockedRides()
-        tasks = listOf() //TODO load it from Firebase
+        tasks.value = mutableListOf() //TODO load it from Firebase
         polls.value = mutableListOf(
                 PollObject.NoVotable("Asdasdesd", listOf(Answer.Closed("Sí", 2), Answer.Closed("No", 1))),
                 PollObject.Votable("Asdasdesdo", listOf(Answer.Open("Sí", 2), Answer.Open("No", 1)))
