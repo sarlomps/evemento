@@ -14,6 +14,7 @@ import com.hellfish.evemento.R
 import com.hellfish.evemento.R.string.title_fragment_poll_list
 import com.hellfish.evemento.lib.Either
 import android.arch.lifecycle.Observer
+import kotlinx.android.synthetic.main.fragment_new_poll.*
 
 import kotlinx.android.synthetic.main.fragment_poll_list.*
 
@@ -42,6 +43,7 @@ class PollFragment : NavigatorFragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         setNewPollAdapter(mutableListOf())
         pollListFab.setOnClickListener { navigatorListener.replaceFragment(NewPollFragment()) }
+
     }
 
     private fun setNewPollAdapter(polls: Iterable<Poll>) {

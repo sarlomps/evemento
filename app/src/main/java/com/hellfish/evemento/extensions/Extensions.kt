@@ -7,6 +7,7 @@ import android.support.v4.content.res.ResourcesCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 
 fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutRes,this,attachToRoot)
@@ -23,3 +24,11 @@ fun showSnackbar(id : Int, view:View, length:Int = Snackbar.LENGTH_LONG) {
 
 fun FloatingActionButton.withDrawable(drawableId: Int): FloatingActionButton =
         apply { setImageDrawable(ResourcesCompat.getDrawable(resources, drawableId, null)) }
+
+fun<ViewType> LinearLayout.getChildren() : List<ViewType> {
+    val children = mutableListOf<ViewType>()
+    for (i in 0 until childCount) {
+        children.add(getChildAt(i) as ViewType)
+    }
+    return children.toList()
+}
