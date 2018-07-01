@@ -11,6 +11,8 @@ import com.hellfish.evemento.event.transport.UserMiniDetail
 import com.hellfish.evemento.event.poll.Answer
 import com.hellfish.evemento.event.poll.PollObject
 import com.hellfish.evemento.event.task.TaskItem
+import com.hellfish.evemento.event.transport.Coordinates
+import com.hellfish.evemento.event.transport.Location
 
 
 class EventViewModel : ViewModel() {
@@ -113,7 +115,9 @@ class EventViewModel : ViewModel() {
     private fun mockedRides(): MutableList<TransportItem> {
         val transports = ArrayList<TransportItem>()
         val driver1 = UserMiniDetail("Gus", "Sarlanga")
+        val gusPlace: Location = Location("casa de gus", Coordinates(-34.588938999999996,-58.5906728))
         val driver2 = UserMiniDetail("Gas", "Sarlanga")
+        val gasPlace: Location = Location("casa de gas", Coordinates(-34.6017308,-58.586593900000004))
         val pass_1_1 = UserMiniDetail("juanR", "Sarlanga")
         val pass_1_2 = UserMiniDetail("juanDs", "Sarlanga")
         val pass_2_1 = UserMiniDetail("NicoB", "Sarlanga")
@@ -125,8 +129,8 @@ class EventViewModel : ViewModel() {
         passangers2.add(pass_2_1)
         passangers2.add(pass_2_2)
 
-        transports.add(TransportItem(driver1, passangers1, "casa de gus" ,4))
-        transports.add(TransportItem(driver2, passangers2, "casa de gas",3))
+        transports.add(TransportItem(driver1, passangers1, gusPlace ,4))
+        transports.add(TransportItem(driver2, passangers2, gasPlace,3))
         return transports
     }
 
