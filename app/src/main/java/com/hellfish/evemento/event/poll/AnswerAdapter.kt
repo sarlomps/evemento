@@ -14,7 +14,6 @@ import com.hellfish.evemento.extensions.animateWidth
 import kotlin.math.roundToInt
 import android.support.v4.content.ContextCompat
 
-
 class OpenAnswersAdapter(private val callback: (Answer.Open) -> Unit, answers: List<Answer.Open>) : RecyclerAdapter<TextView, Answer.Open>(answers) {
     override fun layout(item : Int) : Int {
         return R.layout.poll_open_answer
@@ -43,13 +42,18 @@ class ClosedAnswersAdapter(answers: List<Answer.Closed>, private val totalAmount
 
     override fun doOnItemOnBindViewHolder(view: RelativeLayout, item: Answer.Closed, context: Context) {
         val textView = view.closedAnswerTextView
+
         textView.text = "${item.text} - ${item.votesAmount.toFloat() / totalAmount.toFloat() * 100}%"
+        view.answerBackground.apply {
+            val finalWidth = (textView.layoutParams.width.toFloat() * item.percentageFrom(totalAmount)).roundToInt()
+            animateWidth(finalWidth)
+        }
         view.answerBackground.apply {
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    viewTreeObserver.removeOnGlobalLayoutListener(this);
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
                     val finalWidth = (textView.width.toFloat() * item.percentageFrom(totalAmount)).roundToInt()
-                    if(finalWidth != layoutParams.width) { animateWidth(finalWidth) }
+                    animateWidth(finalWidth)
                 }
             })
         }
