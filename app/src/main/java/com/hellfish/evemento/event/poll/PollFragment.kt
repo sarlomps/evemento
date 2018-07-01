@@ -30,8 +30,6 @@ class PollFragment : NavigatorFragment() {
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
 
         eventViewModel.loadPolls { showToast(it) }
-
-        eventViewModel.polls.observe(this, Observer { it?.let { setNewPollAdapter(it) } })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -40,16 +38,21 @@ class PollFragment : NavigatorFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        eventViewModel.polls.observe(this, Observer { it?.let { setNewPollAdapter(it) } })
+
         recyclerView.layoutManager = LinearLayoutManager(context)
         setNewPollAdapter(mutableListOf())
         pollListFab.setOnClickListener { navigatorListener.replaceFragment(NewPollFragment()) }
-
     }
 
     private fun setNewPollAdapter(polls: Iterable<Poll>) {
-        recyclerView.adapter = PollAdapter(polls.toMutableList(), { poll ->
-            eventViewModel.edit(poll)
-            NetworkManager.updatePoll(poll, { _,_ -> })
-        })
+        if(recyclerView.adapter is PollAdapter) {
+            (recyclerView.adapter as PollAdapter).updatePolls(polls.toMutableList())
+        } else {
+            recyclerView.adapter = PollAdapter(polls.toMutableList(), { poll ->
+                eventViewModel.edit(poll)
+                NetworkManager.updatePoll(poll, { _,_ -> })
+            })
+        }
     }
 }

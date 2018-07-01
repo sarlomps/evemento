@@ -7,7 +7,7 @@ import com.hellfish.evemento.RecyclerAdapter
 import com.hellfish.evemento.SessionManager
 import kotlinx.android.synthetic.main.poll_content.view.*
 
-class PollAdapter(private var polls: MutableList<Poll>, private val f: (Poll) -> Unit) : RecyclerAdapter<CardView, Poll>(polls) {
+class PollAdapter(public var polls: MutableList<Poll>, private val f: (Poll) -> Unit) : RecyclerAdapter<CardView, Poll>(polls) {
     companion object {
         const val openPollView = 0
         const val closedPollView = 1
@@ -30,6 +30,18 @@ class PollAdapter(private var polls: MutableList<Poll>, private val f: (Poll) ->
         view.answers.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = answersAdapter(item)
+        }
+    }
+
+    fun updatePolls(newPolls: MutableList<Poll>) {
+        if(polls.size == newPolls.size) {
+            polls.zip(newPolls).forEachIndexed { i, (oldPoll, newPoll) ->
+                if (oldPoll.totalVotes() != newPoll.totalVotes()) { polls[i] = newPoll; notifyItemChanged(i) }
+            }
+        } else {
+            polls.clear()
+            polls.addAll(newPolls)
+            notifyDataSetChanged()
         }
     }
 
