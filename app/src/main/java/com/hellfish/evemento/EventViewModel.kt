@@ -11,6 +11,7 @@ import com.hellfish.evemento.event.poll.Poll
 import com.hellfish.evemento.event.task.TaskItem
 import com.hellfish.evemento.event.transport.Coordinates
 import com.hellfish.evemento.event.transport.Location
+import com.hellfish.evemento.lib.Either
 
 
 class EventViewModel : ViewModel() {
@@ -39,19 +40,18 @@ class EventViewModel : ViewModel() {
         loadDataFrom(event)     /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
     }
 
-    fun loadPolls(callback: (List<Poll>?, Int?) -> (Unit)) {
+    fun loadPolls(callback: (Either<List<Poll>, Int>) -> (Unit)) {
         selectedEvent.value?.let {
             NetworkManager.getPolls(it) { newPolls, errorMessage ->
-                newPolls?.let {
-                    callback(it, errorMessage)
-                    return@getPolls
-                }
-                callback(null, errorMessage)
+                if (newPolls == null) {
+                    errorMessage?.let { callback(Either.Error(it)) }
+                } else
+                    callback(Either.Success(newPolls.toMutableList()))
             }
-            return
         }
-        callback(null, R.string.api_error_fetching_data)
+        if(selectedEvent.value == null) { callback(Either.Error(R.string.api_error_fetching_data)) }
     }
+
     fun loadRides(callback: (List<TransportItem>?, Int?) -> (Unit)) {
 //TODO: IMPLEMENT
     }
