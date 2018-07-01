@@ -42,8 +42,11 @@ object NetworkManager {
     fun getPolls(event:Event, callback: (List<Poll>?, Int?) -> (Unit)) {
         api.getPollsForEvent(event.eventId, callback)
     }
-    fun pushPolls(poll: Poll, callback: (String?, Int?) -> (Unit)) {
+    fun pushPoll(poll: Poll, callback: (String?, Int?) -> (Unit)) {
         api.pushPoll(PollMapper().mapToEntity(poll), callback)
+    }
+    fun updatePoll(poll: Poll, callback: (Poll?, Int?) -> Unit) {
+        api.updatePoll(poll.pollId, PollMapper().mapToEntity(poll), callback)
     }
     fun deletePoll(poll: Poll, callback: (Boolean, Int?) -> (Unit)) {
         api.deletePoll(poll.pollId, callback)
