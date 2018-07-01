@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_transport.*
 import kotlinx.android.synthetic.main.fragment_transport_list.*
 import android.support.v4.content.ContextCompat
 import android.support.annotation.DrawableRes
+import com.google.android.gms.maps.CameraUpdate
 
 
 
@@ -70,16 +71,29 @@ class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
 
     private fun loadTransportsOnMap() {
         transports.forEach {
-            mMap.addMarker(MarkerOptions()
+            val marker = MarkerOptions()
                     .position(it.latLong())
                     .title(it.startpoint.name)
-                    .icon(bitmapDescriptorFromVector(context!!,R.drawable.ic_map_car_white_30dp))
-            )
+                    .icon(bitmapDescriptorFromVector(context!!, R.drawable.ic_map_car_white_30dp))
+
+            mMap.addMarker(marker)
 
         }
         val currentLocation = transports.firstOrNull()?.latLong() ?: getLastLocation()
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15f))
+
+        mMap.setOnMarkerClickListener { marker ->
+            val transportClicked = transports.find { it.latLong().equals(marker.position) }
+            if (transportClicked != null) {
+                val transportDetailFragment = TransportDetailFragment()
+                val args = Bundle()
+                args.putParcelable("driver", transportClicked.driver)
+                transportDetailFragment.arguments = args
+                navigatorListener.replaceFragment(transportDetailFragment)
+            }
+            return@setOnMarkerClickListener false
+        }
     }
 
     private fun getLastLocation() = LatLng(2.0, 2.0)
@@ -98,15 +112,15 @@ class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
         loadTransportsOnMap()
     }
 
-private fun bitmapDescriptorFromVector(context: Context, @DrawableRes vectorDrawableResourceId: Int): BitmapDescriptor {
-    val background = ContextCompat.getDrawable(context, R.drawable.ic_place_primary_blue_48dp)
-    background!!.setBounds(0, 0, background.intrinsicWidth, background.intrinsicHeight)
-    val vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId)
-    vectorDrawable!!.setBounds(25, 3, vectorDrawable.intrinsicWidth + 20, vectorDrawable.intrinsicHeight)
-    val bitmap = Bitmap.createBitmap(background.intrinsicWidth, background.intrinsicHeight, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    background.draw(canvas)
-    vectorDrawable.draw(canvas)
-    return BitmapDescriptorFactory.fromBitmap(bitmap)
-}
+    private fun bitmapDescriptorFromVector(context: Context, @DrawableRes vectorDrawableResourceId: Int): BitmapDescriptor {
+        val background = ContextCompat.getDrawable(context, R.drawable.ic_place_primary_blue_48dp)
+        background!!.setBounds(0, 0, background.intrinsicWidth, background.intrinsicHeight)
+        val vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId)
+        vectorDrawable!!.setBounds(25, 3, vectorDrawable.intrinsicWidth + 20, vectorDrawable.intrinsicHeight)
+        val bitmap = Bitmap.createBitmap(background.intrinsicWidth, background.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        background.draw(canvas)
+        vectorDrawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
 }
