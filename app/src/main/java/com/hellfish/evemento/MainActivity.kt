@@ -113,15 +113,17 @@ class MainActivity : AppCompatActivity(), Navigator, CircleColor {
         supportActionBar?.title = title
     }
 
-    override fun replaceFragment(fragment: Fragment, addToBackStack: Boolean) {
+    override fun replaceFragment(fragment: Fragment) {
         onBackPressedListener = null
-        val transaction = supportFragmentManager
+        supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.main_container, fragment)
+                .addToBackStack(null)
+                .commit()
+    }
 
-        if (addToBackStack) transaction.addToBackStack(null)
-
-        transaction.commit()
+    override fun popBackstack() {
+        supportFragmentManager.popBackStack()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

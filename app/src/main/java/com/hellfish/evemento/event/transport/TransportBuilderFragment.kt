@@ -42,7 +42,7 @@ class TransportBuilderFragment : NavigatorFragment() {
                                 transport_builder_fab?.run {
                                     setOnClickListener(null)
                                     transportViewModel.selectDriver(transport.driver)
-                                    activity?.onBackPressed()
+                                    navigatorListener.popBackstack()
                                 }
                             } else showToast(errorMessage)
                         }
@@ -81,7 +81,7 @@ class TransportBuilderFragment : NavigatorFragment() {
         transport_builder_fab.setOnClickListener {
             if (validateTransport()) {
                 eventViewModel.add(transport(""))
-                navigatorListener.replaceFragment(TransportListFragment(), false)
+                navigatorListener.popBackstack()
             }
         }
     }

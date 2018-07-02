@@ -8,7 +8,8 @@ interface Navigator {
     var onBackPressedListener: OnBackPressedListener?
 
     fun setCustomToolbar(customToolbar: Toolbar? = null, title: String? = null, homeEnabled: Boolean = true)
-    fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = true)
+    fun replaceFragment(fragment: Fragment)
+    fun popBackstack()
 
 }
 
