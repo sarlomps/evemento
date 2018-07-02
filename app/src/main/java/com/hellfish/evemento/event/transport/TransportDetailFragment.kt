@@ -99,13 +99,16 @@ class TransportDetailFragment() : NavigatorFragment(), UserColor {
             transport_detail_fab.hide()
         else {
             transport_detail_fab.show()
+            transport_detail_fab.isEnabled = true
             if (!transport.isAlreadyInTransport(loggedInUser))
                 transport_detail_fab.withDrawable(R.drawable.ic_person_add_white_24dp).setOnClickListener {
+                    it.isEnabled = false
                     transport.passangers.add(loggedInUser)
                     eventViewModel.edit(transport) { _, errorMessage -> if (errorMessage!=null) showToast(errorMessage)}
                 }
             else
                 transport_detail_fab.withDrawable(R.drawable.ic_remove_white_24dp).setOnClickListener {
+                    it.isEnabled = false
                     transport.passangers.remove(loggedInUser)
                     eventViewModel.edit(transport) { _, errorMessage -> if (errorMessage!=null) showToast(errorMessage)}
                 }
