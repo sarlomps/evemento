@@ -27,7 +27,7 @@ class TransportAdapter(val transportList: List<TransportItem>, private val navig
         view.setOnClickListener { navigatorListener.replaceFragment(transportDetailFragment)}
     }
 
-    fun drawDriverCircle(view: CardView, item: User, context: Context) {
+    private fun drawDriverCircle(view: CardView, item: User, context: Context) {
         DrawableCompat.setTint(view.driverCircle.drawable, userColor(item.userId, item.displayName))
         view.driverInitial.text = item.displayName.first().toUpperCase().toString()
     }
