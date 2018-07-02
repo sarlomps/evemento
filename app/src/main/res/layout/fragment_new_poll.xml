@@ -29,10 +29,10 @@
 
         <Button
             android:id="@+id/newPollAddAnswerButton"
-            android:text="Add Answer"
-            android:layout_width="wrap_content"
+            android:layout_width="47dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"/>
+            android:layout_gravity="end"
+            android:background="@drawable/ic_add_box_grey_24dp" />
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
