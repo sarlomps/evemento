@@ -135,4 +135,33 @@ interface  FirebaseApiInterface {
     fun deleteEvent(@Path("eventId") eventId: String)
             : Call<DeleteResponse>
 
+    //
+    // TRANSPORTS
+    //
+
+    @GET("/transports.json")
+    fun getTransports(@Query("orderBy") orderBy: String,
+                    @Query("equalTo") equalTo: String)
+            : Call<Map<String, TransportResponse>>
+
+    @DELETE("/transports.json")
+    fun deleteTransports(@Query("orderBy") orderBy: String,
+                       @Query("equalTo") equalTo: String)
+            : Call<DeleteResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST("/transports.json")
+    fun pushTransport(@Body transport: TransportResponse)
+            : Call<PushResponse>
+
+    @Headers("Content-Type: application/json")
+    @PUT("/transports/{transportId}.json")
+    fun updateTransport(@Path("transportId") transportId: String,
+                      @Body transport: TransportResponse)
+            : Call<TransportResponse>
+
+    @DELETE("/transports/{transportId}.json")
+    fun deleteTransport(@Path("transportId") transportId: String)
+            : Call<DeleteResponse>
+
 }

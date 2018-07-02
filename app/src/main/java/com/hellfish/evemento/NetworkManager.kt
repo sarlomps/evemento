@@ -2,6 +2,7 @@ package com.hellfish.evemento
 import com.hellfish.evemento.api.*
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.poll.Poll
+import com.hellfish.evemento.event.transport.TransportItem
 
 object NetworkManager {
     
@@ -63,7 +64,6 @@ object NetworkManager {
     /// COMMENTS
     fun getComments(event:Event, callback: (List<Comment>?, Int?) -> (Unit)) {
         api.getCommentsForEvent(event.eventId, callback)
-
     }
 
     fun pushComment(eventId: String, comment: Comment, callback: (String?, Int?) -> (Unit)) {
@@ -89,6 +89,30 @@ object NetworkManager {
 
     fun deleteGuest(guest: Guest, callback: (Boolean, Int?) -> (Unit)) {
         api.deleteGuest(guest.guestId, callback)
+    }
+
+    /// Transport
+    fun getTransports(event:Event, callback: (List<TransportItem>?, Int?) -> (Unit)) {
+        api.getTransportsForEvent(event.eventId, callback)
+    }
+
+    fun pushTransport(eventId: String, transport: TransportItem, callback: (String?, Int?) -> (Unit)) {
+        api.pushTransport(TransportMapper().mapToEntity(eventId, transport), callback)
+    }
+
+    fun updateTransport(eventId: String, transport: TransportItem, callback: (TransportItem?, Int?) -> (Unit)) {
+        api.updateTransport(transport.transportId, TransportMapper().mapToEntity(eventId, transport)) { updated, error ->
+            if(updated != null)
+                NetworkManager.getUser(updated.driver.userId) { fullDriver, getUserError ->
+                    fullDriver?.let { callback(updated.copy(driver = fullDriver), null); return@getUser }
+                    callback(null, getUserError)
+                }
+            else callback(null, error)
+        }
+    }
+
+    fun deleteTransport(transport: TransportItem, callback: (Boolean, Int?) -> (Unit)) {
+        api.deleteTransport(transport.transportId, callback)
     }
 
 }

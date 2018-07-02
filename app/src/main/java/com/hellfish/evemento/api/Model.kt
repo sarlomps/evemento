@@ -6,7 +6,10 @@ import com.hellfish.evemento.SessionManager
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.poll.Answer
 import com.hellfish.evemento.event.poll.Poll
+import com.hellfish.evemento.event.transport.Coordinates
 import kotlinx.android.parcel.Parcelize
+import com.hellfish.evemento.event.transport.Location
+import com.hellfish.evemento.event.transport.TransportItem
 import org.joda.time.DateTime
 
 typealias UserIdResponse = String
@@ -63,6 +66,16 @@ data class CommentResponse(val eventId:String,
                            val name: String,
                            val message: String)
 data class DeleteResponse(val nothing: String?)
+
+data class TransportResponse(val eventId: String,
+                             val transportId: String,
+                             val driver: String,
+                             val passengers: ArrayList<String>,
+                             val locationName: String,
+                             val latitude: String,
+                             val longitude: String,
+                             val totalSlots: String)
+
 
 interface Mapper<E, D> {
     fun mapToDomain(id: String, entity: E): D
@@ -169,5 +182,28 @@ class GuestMapper : Mapper<GuestResponse, Guest> {
             "")
 
     override fun mapToEntity(eventId: String, guest: Guest): GuestResponse = GuestResponse(eventId, guest.userId)
+
+}
+
+class TransportMapper : Mapper<TransportResponse, TransportItem> {
+
+    override fun mapToDomain(transportId: String, entity: TransportResponse): TransportItem = TransportItem(
+            entity.transportId,
+            User(entity.driver, "", "", ""),
+            ArrayList(),
+            Location(entity.locationName, Coordinates(entity.latitude.toDouble(), entity.longitude.toDouble())),
+            entity.totalSlots.toInt()
+    )
+
+    override fun mapToEntity(eventId: String, transport: TransportItem): TransportResponse = TransportResponse(
+            eventId,
+            transport.transportId,
+            transport.driver.userId,
+            transport.passangers.map { it.userId }.toCollection(ArrayList()),
+            transport.startpoint.name,
+            transport.startpoint.latLng().latitude.toString(),
+            transport.startpoint.latLng().latitude.toString(),
+            transport.totalSlots.toString()
+    )
 
 }

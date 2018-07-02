@@ -10,13 +10,11 @@ import android.view.ViewGroup
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.location.places.ui.PlaceAutocomplete
-import com.hellfish.evemento.EventViewModel
-import com.hellfish.evemento.NavigatorFragment
-import com.hellfish.evemento.R
 import kotlinx.android.synthetic.main.fragment_transport_builder.*
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import com.google.android.gms.maps.model.LatLng
-import com.hellfish.evemento.SessionManager
+import com.hellfish.evemento.*
 import com.hellfish.evemento.api.User
 
 
@@ -49,8 +47,14 @@ class TransportBuilderFragment : NavigatorFragment() {
             this.coordinates = argTransport.latLong()
             transport_builder_fab.setOnClickListener {
                 if (validateTransport()) {
-                    eventViewModel.edit(transport())
-                    navigatorListener.replaceFragment(TransportListFragment())
+                    NetworkManager.updateTransport(eventViewModel.selected()!!.eventId, transport()) { transport, errorMessage ->
+                        transport?.let {
+                            eventViewModel.edit(transport)
+                            navigatorListener.replaceFragment(TransportListFragment())
+                            return@updateTransport
+                        }
+                        showToast(errorMessage ?: R.string.api_error_fetching_data)
+                    }
                 }
             }
             delete_transport.visibility = ViewGroup.VISIBLE

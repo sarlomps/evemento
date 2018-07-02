@@ -3,6 +3,7 @@ package com.hellfish.evemento.api
 import com.hellfish.evemento.R
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.poll.Poll
+import com.hellfish.evemento.event.transport.TransportItem
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -116,6 +117,7 @@ class RestAPI {
         deleteAllComments(eventId) { _, errorMessage -> error = errorMessage }
         deleteAllPolls(eventId) { _, errorMessage -> error = errorMessage }
         deleteAllGuests(eventId) { _, errorMessage -> error = errorMessage }
+        deleteAllTransports(eventId) { _, errorMessage -> error = errorMessage }
 
         if (error == null) {
             firebaseApi.deleteEvent(eventId).enqueue(deleteCallback(callback))
@@ -140,6 +142,13 @@ class RestAPI {
     private fun deleteAllGuests(eventId: String, callback: (Boolean, Int?) -> (Unit)) {
         getGuestsForEvent(eventId) { guests, error ->
             if (guests != null) guests.forEach { deleteGuest(it.guestId, callback) }
+            else callback(false, error)
+        }
+    }
+
+    private fun deleteAllTransports(eventId: String, callback: (Boolean, Int?) -> (Unit)) {
+        getTransportsForEvent(eventId) { transports, error ->
+            if (transports != null) transports.forEach { deleteGuest(it.transportId, callback) }
             else callback(false, error)
         }
     }
@@ -235,6 +244,24 @@ class RestAPI {
 
     fun deleteGuest(guestId: String, callback: (Boolean, Int?) -> Unit) {
         firebaseApi.deleteGuest(guestId).enqueue(deleteCallback(callback))
+    }
+
+    //Comments
+    //https://deep-hook-204120.firebaseio.com/polls.json?orderBy=%22eventId%22&equalTo=%22-LFkNSwG9kj9Ytw_5mXa%22
+    fun getTransportsForEvent(eventId: String, callback: (List<TransportItem>?, Int?) -> (Unit)) {
+        firebaseApi.getTransports("\"eventId\"", "\"$eventId\"").enqueue(getXForYCallback(callback, TransportMapper()))
+    }
+
+    fun pushTransport(transport: TransportResponse, callback: (String?, Int?) -> Unit) {
+        firebaseApi.pushTransport(transport).enqueue(pushCallback(callback))
+    }
+
+    fun updateTransport(transportId: String, transport: TransportResponse, callback: (TransportItem?, Int?) -> Unit) {
+        firebaseApi.updateTransport(transportId, transport).enqueue(updateCallback(callback, TransportMapper(), transportId))
+    }
+
+    fun deleteTransport(transportId: String, callback: (Boolean, Int?) -> Unit) {
+        firebaseApi.deleteTransport(transportId).enqueue(deleteCallback(callback))
     }
 
 }
