@@ -72,9 +72,16 @@ class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
             mMap.addMarker(marker)
 
         }
-        val currentLocation = transports.firstOrNull()?.latLong() ?: getLastLocation()
+        eventViewModel.selected()!!.location.let {
+            val marker = MarkerOptions()
+                    .position(it.latLng())
+                    .title(it.name)
+            mMap.addMarker(marker)
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15f))
+            val currentLocation = it.latLng()
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15f))
+
+        }
 
         mMap.setOnMarkerClickListener { marker ->
             //TODO si hay varios markers en la misma localizacion va a ir al que encuentre el find que puede no ser el correcto
