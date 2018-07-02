@@ -2,8 +2,12 @@ package com.hellfish.evemento.event.poll
 
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.design.widget.TextInputLayout
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.TextViewCompat
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,63 +55,84 @@ class NewPollFragment : NavigatorFragment() {
         }
         addAnswer(withDeleteButton=false)
         addAnswer(withDeleteButton=false)
-        val maxAmountOfAnswers = 7
+        val maxAmountOfAnswers = 5
         newPollAddAnswerButton.setOnClickListener { _ ->
             addAnswer(withDeleteButton=true)
             if(newPollAnswersLinearLayout.getChildren<View>().size >= maxAmountOfAnswers) {
                 newPollAddAnswerButton.visibility = View.GONE
             }
         }
+        editPollQuestion.cleanErrorsOnTextChange(editPollQuestionLayout)
     }
 
     private fun answers() =
-            newPollAnswersLinearLayout.getChildren<LinearLayout>().map { it.getChildren<View>().find { it is EditText } as EditText }
+            newPollAnswersLinearLayout.getChildren<TextInputLayout>().map { toEditText(it) }
                     .map { editText -> Answer.Open(editText.text.toString(), listOf()) }
 
     private fun addAnswer(withDeleteButton : Boolean) {
-        val newEditAnswer = LinearLayout(context)
+        val textInputLayout = TextInputLayout(context)
         val newEditTextView = EditText(context).apply {
             TextViewCompat.setTextAppearance(this, android.R.style.TextAppearance_Material_Subhead)
+            id = View.generateViewId()
             layoutParams = TableRow.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.85f).apply {
-                textSize = 22f
+                textSize = 20f
                 setPadding(5, 0, 0, 20)
                 hint = "An answer"
                 setSingleLine(true)
                 height=120
                 setTextColor(ContextCompat.getColor(context, android.R.color.black))
             }
+            cleanErrorsOnTextChange(textInputLayout)
         }
 
         val deleteAnswerButton = Button(context).apply {
-            layoutParams = TableRow.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.1f)
+            layoutParams = TableRow.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.15f)
             background = ContextCompat.getDrawable(context!!, R.drawable.ic_close_grey_24dp)
             setOnClickListener {
-                newPollAnswersLinearLayout.removeView(newEditAnswer)
+                newPollAnswersLinearLayout.removeView(textInputLayout)
                 newPollAddAnswerButton.visibility = View.VISIBLE
             }
         }
-        newEditAnswer.apply {
-            addView(newEditTextView)
-            if(withDeleteButton) { addView(deleteAnswerButton) }
+        textInputLayout.apply {
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            addView(LinearLayout(context).apply {
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                orientation = LinearLayout.HORIZONTAL
+                addView(newEditTextView)
+                if(withDeleteButton) { addView(deleteAnswerButton) }
+            })
         }
 
-        newPollAnswersLinearLayout.addView(newEditAnswer)
+        newPollAnswersLinearLayout.addView(textInputLayout)
     }
 
     private fun validatePollFields() : Boolean {
-        val answers : List<EditText> = newPollAnswersLinearLayout.getChildren<LinearLayout>().map { it.getChildren<View>().find { it is EditText }!! as EditText }
-        val pollFields = answers.plus(editPollQuestion)
-        answers.forEach { answer ->
-            answer.validateText(errorDuplicatePollAnswer, { answerText ->
-                answers.takeWhile { it != answer }.all { it.text.toString() != answerText }
+        val answerLayouts = newPollAnswersLinearLayout.getChildren<TextInputLayout>()
+        val answers : List<EditText> = answerLayouts.map { toEditText(it) }
+        answerLayouts.forEach { answerLayout ->
+            toEditText(answerLayout).validateText(answerLayout, errorDuplicatePollAnswer, { answerText ->
+                answers.takeWhile { Log.d("IT.ID", it.id.toString());Log.d("ANANSWER.ID", toEditText(answerLayout).id.toString());it.id != toEditText(answerLayout).id }.all { it.text.toString() != answerText }
             })
         }
-        pollFields.forEach { it.validateText(errorEmptyPollField, { it.isNotEmpty() }) }
-        return pollFields.all { it.error?.isEmpty() ?: true }
+        editPollQuestion.validateText(editPollQuestionLayout, errorEmptyPollField, { it.isNotEmpty() })
+        answerLayouts.forEach { toEditText(it).validateText(it, errorEmptyPollField, { it.isNotEmpty() }) }
+        return answerLayouts.plus(editPollQuestionLayout).all { it.error == null }
     }
 }
 
+fun toEditText(textInputLayout : TextInputLayout) = (textInputLayout.getChildAt(1) as LinearLayout).getChildren<EditText>().first()
 
-fun EditText.validateText(errorMessage : Int, validation : (String) -> (Boolean)) {
-    if(!validation(this.text.toString())) { this.error = resources.getString(errorMessage) }
+fun EditText.validateText(textInputLayout : TextInputLayout, errorMessage : Int, validation : (String) -> (Boolean)) {
+    if(!validation(this.text.toString())) { textInputLayout.error = resources.getString(errorMessage) }
+}
+
+fun EditText.cleanErrorsOnTextChange(textInputLayout : TextInputLayout) {
+    addTextChangedListener(object :TextWatcher {
+        override fun afterTextChanged(s: Editable?) {}
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { textInputLayout.error = null }
+
+    })
 }

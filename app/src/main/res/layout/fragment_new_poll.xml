@@ -28,20 +28,27 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/editPollQuestion"
-                style="@style/Widget.AppCompat.EditText"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/editPollQuestionLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
+                app:errorEnabled="true"
                 android:hint="Question"
-                android:inputType="text"
-                android:singleLine="true"
-                android:paddingLeft="5dp"
-                android:layout_marginBottom="15dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                android:textColor="@color/colorPrimary"
-                android:textSize="22sp" />
+                >
+                <EditText
+                    android:id="@+id/editPollQuestion"
+                    style="@style/Widget.AppCompat.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:paddingLeft="5dp"
+                    android:layout_marginBottom="15dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="22sp" />
+            </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:id="@+id/newPollAnswersLinearLayout"
