@@ -34,9 +34,4 @@ class TaskListAdapter(private val taskItems: MutableList<TaskItem>, val editTask
             }
         }
     }
-
-    override fun getItemCount(): Int {
-        return taskItems.size
-    }
-
 }
