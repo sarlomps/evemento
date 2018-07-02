@@ -18,8 +18,9 @@ class EventListAdapter(val events: MutableList<Event>, private val fragment: Eve
 
     override fun doOnItemOnBindViewHolder(view: CardView, item: Event, context: Context) {
         if (item.imageUrl != "") {
-            Picasso.get().load(item.imageUrl).placeholder(R.color.colorPrimaryDark).into(view.eventCardImage)
             view.eventCardScrim.visibility = View.VISIBLE
+            view.eventCardImage.layoutParams.height = view.resources.getDimension(R.dimen.eventCardImageLarge).toInt()
+            Picasso.get().load(item.imageUrl).placeholder(R.color.colorPrimaryDark).into(view.eventCardImage)
         } else {
             view.eventCardScrim.visibility = View.GONE
             view.eventCardImage.layoutParams.height = view.resources.getDimension(R.dimen.eventCardImageShort).toInt()
