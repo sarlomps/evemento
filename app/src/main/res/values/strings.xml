@@ -46,8 +46,9 @@
     <string name="uninvite">Uninvite</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
+    <string name="selectImage">Select Image</string>
     <string name="removeImage">Remove Image</string>
-    <string name="imageDialogTitle">Add image url</string>
+    <string name="imageDialogTitle">Edit image</string>
     <string name="commentDialogTitle">Comment:</string>
     <string name="guestDialogTitle">Mail Guest:</string>
     <string name="titleValidation">Events should have title!</string>
@@ -65,6 +66,10 @@
     <string name="createPollSuccessfully">Poll created successfully!</string>
     <string name="errorDuplicatePollAnswer">All answers must be different</string>
     <string name="errorEmptyPollField">This field can\'t be empty!</string>
-    <string name="imagepickerError">There was an error picking image.</string>
+    <string name="imagePickerError">There was an error picking image.</string>
+    <string name="uploadingImage">Uploading image...</string>
+    <string name="imageUploaded">Image uploaded successfully.</string>
+    <string name="empty" />
+    <string name="pleaseWait">Please wait...</string>
 
 </resources>

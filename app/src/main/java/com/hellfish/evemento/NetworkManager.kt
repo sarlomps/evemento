@@ -1,11 +1,18 @@
 package com.hellfish.evemento
+import android.media.Image
 import com.hellfish.evemento.api.*
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.poll.Poll
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.File
+
 
 object NetworkManager {
     
     private val api: RestAPI = RestAPI()
+    private val imageApi: ImageAPI = ImageAPI()
 
     /// USERS
     fun getUser(userId: String, callback: (User?, Int?) -> (Unit)) {
@@ -89,6 +96,15 @@ object NetworkManager {
 
     fun deleteGuest(guest: Guest, callback: (Boolean, Int?) -> (Unit)) {
         api.deleteGuest(guest.guestId, callback)
+    }
+
+    /// IMAGES
+    fun uploadImage(image: File, callback: (String?, Int?) -> (Unit)) {
+        imageApi.uploadImage(image, callback)
+    }
+
+    fun cancelImageUpload() {
+        imageApi.cancelCurrentCall()
     }
 
 }

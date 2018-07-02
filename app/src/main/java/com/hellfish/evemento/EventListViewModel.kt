@@ -10,13 +10,21 @@ class EventListViewModel : ViewModel() {
     var events: MutableLiveData<MutableList<Event>> = MutableLiveData()
         private set
 
-    fun refresh() { events.value = events.value }
+    fun refresh() { events.value = events.value?.sortedBy { it.startDate }?.toMutableList() }
 
     fun addEvent(event: Event) {
         events.value?.add(event)
         refresh()
     }
-
+    fun updateEvent(event: Event, onError: (Int?) -> Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
+            events.value?.removeIf { e -> e.eventId == event.eventId }
+            events.value?.add(event)
+            refresh()
+        }
+        else fetchEventsForCurrentUser(onError)
+    }
     fun removeEvent(event: Event, onError: (Int?) -> Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) events.value?.removeIf { e -> e.eventId == event.eventId }
         else fetchEventsForCurrentUser(onError)
@@ -26,7 +34,7 @@ class EventListViewModel : ViewModel() {
         NetworkManager.getEventsForUser(SessionManager.getCurrentUser()!!.userId) { userEvents, errorMessage ->
             userEvents?.let {
                 Log.d("getEventsForUser", it.toString())
-                events.value = it.toMutableList()
+                events.value = it.sortedBy { it.startDate }.toMutableList()
                 fetchInvitations(errorCallback)
                 return@getEventsForUser
             }

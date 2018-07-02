@@ -1,6 +1,7 @@
 package com.hellfish.evemento.event
 
 import android.app.Activity.RESULT_OK
+import android.app.ProgressDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -23,6 +24,7 @@ import org.joda.time.format.DateTimeFormatter
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.provider.MediaStore
 import android.support.design.widget.TextInputEditText
 import android.support.design.widget.TextInputLayout
 import com.google.android.gms.location.places.ui.PlaceAutocomplete.RESULT_ERROR
@@ -33,13 +35,13 @@ import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
-import android.widget.EditText
 import android.widget.PopupMenu
 import com.hellfish.evemento.*
 import com.hellfish.evemento.event.comment.CommentListFragment
 import com.hellfish.evemento.event.guest.GuestListFragment
 import kotlinx.android.synthetic.main.fragment_event.*
 import org.joda.time.DateTime
+import java.io.File
 
 
 class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
@@ -49,8 +51,8 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     private lateinit var eventViewModel: EventViewModel
     private var editing: Boolean = false
 
-    private lateinit var imageDialogInput: EditText
     private lateinit var imageDialog: AlertDialog
+    private var progressDialog: ProgressDialog? = null
 
     private lateinit var menu: PopupMenu
 
@@ -93,7 +95,6 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        imageDialogInput = EditText(activity)
         imageDialog = createImageDialog()
         return EventLayout(context)
     }
@@ -147,7 +148,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
 
     fun decideViewMode() {
         if (editing) setViewMode(
-                { toggleViewMode(); eventViewModel.updateView()},
+                { NetworkManager.cancelImageUpload(); toggleViewMode(); eventViewModel.updateView()},
                 R.drawable.ic_check_white_24dp,
                 { validatingEvent { validatedEvent -> upsertEvent(validatedEvent.copy(eventId = eventViewModel.selected()?.eventId!!))} }
         )
@@ -156,7 +157,10 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
 
     private fun upsertEvent(event: Event) {
         if (event.eventId != "") NetworkManager.updateEvent(event) { updatedEvent, errorMessage ->
-            updatedEvent?.let { eventViewModel.select(updatedEvent); return@updateEvent }
+            updatedEvent?.let {
+                eventViewModel.select(updatedEvent)
+                eventListViewModel.updateEvent(updatedEvent){ error -> error?.let { showToast(error) } }
+                return@updateEvent }
             showToast(errorMessage ?: R.string.network_unknown_error)
         }
         else NetworkManager.pushEvent(event) { newEventId, errorMessage ->
@@ -232,9 +236,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     }
 
     private fun setImageListener() = eventImage.setOnClickListener {
-        val photoPickerIntent = Intent(Intent.ACTION_PICK)
-        photoPickerIntent.type = "image/*"
-        startActivityForResult(photoPickerIntent, imagePickerRequestCode)
+        imageDialog.show()
     }
 
     private fun loadImage(url: String?) {
@@ -251,10 +253,12 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     }
 
     private fun createImageDialog(): AlertDialog {
-        return createAlertDialog(R.string.imageDialogTitle,
-                imageDialogInput,
-                Pair(R.string.accept, { _, _ -> loadImage(imageDialogInput.text.toString()) }),
-                Pair(R.string.cancel, { _, _ -> Unit }),
+        return twoOptionsAndCancelDialog(R.string.imageDialogTitle,
+                Pair(R.string.selectImage, { _, _ ->
+                    val photoPickerIntent = Intent(Intent.ACTION_PICK)
+                    photoPickerIntent.type = "image/*"
+                    startActivityForResult(photoPickerIntent, imagePickerRequestCode)
+                }),
                 Pair(R.string.removeImage, { _, _ -> loadImage("") }))
     }
 
@@ -274,18 +278,42 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         when {
             requestCode == autocompleteRequestCode && resultCode == RESULT_OK -> locationElement.setText(PlaceAutocomplete.getPlace(activity, data).name)
             requestCode == autocompleteRequestCode && resultCode == RESULT_ERROR-> showToast(R.string.autocompleteError)
-            requestCode ==  imagePickerRequestCode && resultCode == RESULT_OK -> gotImage(data)
-            requestCode ==  imagePickerRequestCode && resultCode == RESULT_ERROR-> showToast(R.string.imagepickerError)
+            requestCode ==  imagePickerRequestCode && resultCode == RESULT_OK -> userPickedImage(data)
+            requestCode ==  imagePickerRequestCode && resultCode == RESULT_ERROR-> showToast(R.string.imagePickerError)
 
             else -> Unit
         }
     }
 
-    private fun gotImage(data:Intent?) {
+    private fun userPickedImage(data:Intent?) {
         data?.let {
             val imageUri: Uri = it.data
             eventImage.setImageURI(imageUri)
+
+            val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
+            val cursor = activity!!.contentResolver.query(imageUri, filePathColumn, null, null, null)
+            cursor.moveToFirst()
+            val columnIndex = cursor.getColumnIndex(filePathColumn[0])
+            val filePath = cursor.getString(columnIndex)
+            cursor.close()
+            val imageFile = File(filePath)
+            progressDialog = progressDialog(getString(R.string.uploadingImage), getString(R.string.pleaseWait))
+            progressDialog?.show()
+            NetworkManager.uploadImage(imageFile) { newImageUrl, errorMessage ->
+                progressDialog?.dismiss()
+                progressDialog = null
+                errorMessage?.let {
+                    showToast(errorMessage)
+                    return@uploadImage
+                }
+                newImageUrl?.let {
+                    showToast(R.string.imageUploaded)
+                    imageUrl.text = it
+                }
+            }
+            return
         }
+        showToast(R.string.imagePickerError)
     }
     private fun setDateTimeListeners() {
         val (startDatePicker, endDatePicker) = createLinkedDatePickerDialogs(context, startDateElement, endDateElement, startTimeElement, endTimeElement)
