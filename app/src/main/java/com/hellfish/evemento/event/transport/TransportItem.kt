@@ -14,15 +14,13 @@ data class TransportItem(val transportId: String, val driver: User, val passange
     fun latLong(): LatLng = startpoint.latLng()
 }
 
-@Parcelize
-data class Location(val name: String, val coordinates: Coordinates): Parcelable {
+data class Location(val name: String, val coordinates: Coordinates) {
     fun latLng(): LatLng {
         return LatLng(coordinates.latitude, coordinates.longitude)
     }
 }
 
-@Parcelize
-data class Coordinates(val latitude: Double, val longitude: Double) : Parcelable {
+data class Coordinates(val latitude: Double, val longitude: Double) {
     constructor(latLng: LatLng) : this(latLng.latitude, latLng.longitude)
 }
 

@@ -90,7 +90,9 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
                     endTimeElement.text = timeFormatter.print(it.endDate)
                 }
 
-                locationElement.setText(event?.location)
+                locationElement.setText(event?.location?.name)
+                latitudeElement.text = event?.location?.coordinates?.latitude.toString()
+                longitudeElement.text = event?.location?.coordinates?.longitude.toString()
             }
         })
     }
@@ -275,7 +277,12 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when {
-            requestCode == autocompleteRequestCode && resultCode == RESULT_OK -> locationElement.setText(PlaceAutocomplete.getPlace(activity, data).name)
+            requestCode == autocompleteRequestCode && resultCode == RESULT_OK -> {
+                val place = PlaceAutocomplete.getPlace(activity, data)
+                locationElement.setText(place.name)
+                latitudeElement.text = place.latLng.latitude.toString()
+                longitudeElement.text = place.latLng.longitude.toString()
+            }
             requestCode == autocompleteRequestCode && resultCode == RESULT_ERROR-> showToast(R.string.autocompleteError)
             requestCode ==  imagePickerRequestCode && resultCode == RESULT_OK -> userPickedImage(data)
             requestCode ==  imagePickerRequestCode && resultCode == RESULT_ERROR-> showToast(R.string.imagePickerError)

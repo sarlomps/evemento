@@ -26,6 +26,14 @@
             />
 
     </android.support.design.widget.TextInputLayout>
+    <TextView style="@style/EventElementComponent"
+        android:id="@+id/latitudeElement"
+        android:visibility="gone"
+        />
+    <TextView style="@style/EventElementComponent"
+        android:id="@+id/longitudeElement"
+        android:visibility="gone"
+        />
 
     <TextView style="@style/EventElementComponent"
         android:id="@+id/timeElement"

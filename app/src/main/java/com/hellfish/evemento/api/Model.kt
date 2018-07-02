@@ -1,6 +1,5 @@
 package com.hellfish.evemento.api
 
-import android.os.Parcelable
 import com.google.firebase.auth.FirebaseUser
 import com.hellfish.evemento.SessionManager
 import com.hellfish.evemento.event.Event
@@ -8,7 +7,6 @@ import com.hellfish.evemento.event.poll.Answer
 import com.hellfish.evemento.event.poll.Poll
 import com.hellfish.evemento.event.task.TaskItem
 import com.hellfish.evemento.event.transport.Coordinates
-import kotlinx.android.parcel.Parcelize
 import com.hellfish.evemento.event.transport.Location
 import com.hellfish.evemento.event.transport.TransportItem
 import org.joda.time.DateTime
@@ -22,6 +20,8 @@ data class EventResponse(val title: String,
                          val startDate: String,
                          val endDate: String,
                          val location: String,
+                         val latitude: String,
+                         val longitude: String,
                          val user: String)
 
 data class UserResponse(val displayName: String,
@@ -127,7 +127,7 @@ class EventMapper : Mapper<EventResponse, Event> {
             entity.description,
             DateTime.parse(entity.startDate),
             DateTime.parse(entity.endDate),
-            entity.location,
+            Location(entity.location, Coordinates(entity.latitude.toDouble(), entity.longitude.toDouble())),
             entity.user)
 
     override fun mapToEntity(referenceId: String, domain: Event): EventResponse = mapToEntity(domain)
@@ -138,7 +138,9 @@ class EventMapper : Mapper<EventResponse, Event> {
             event.description,
             event.startDate.toString(),
             event.endDate.toString(),
-            event.location,
+            event.location.name,
+            event.location.coordinates.latitude.toString(),
+            event.location.coordinates.longitude.toString(),
             event.user)
 
 }

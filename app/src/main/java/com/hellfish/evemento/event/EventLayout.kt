@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.TextView
 import com.hellfish.evemento.R
 import com.hellfish.evemento.SessionManager
+import com.hellfish.evemento.event.transport.Coordinates
+import com.hellfish.evemento.event.transport.Location
 import com.hellfish.evemento.extensions.toVisibility
 import kotlinx.android.synthetic.main.event_element_time.view.*
 import kotlinx.android.synthetic.main.event_elements.view.*
@@ -23,7 +25,7 @@ class EventLayout(context: Context?) : CoordinatorLayout(context) {
             startDate = dateTimeFormatter.parseDateTime("${startDateElement.text} ${startTimeElement.text}"),
             endDate = dateTimeFormatter.parseDateTime("${endDateElement.text} ${endTimeElement.text}"),
             description = descriptionElement.text.toString(),
-            location = locationElement.text.toString(),
+            location = Location(locationElement.text.toString(), Coordinates(latitudeElement.text.toString().toDouble(), longitudeElement.text.toString().toDouble())),
             user = SessionManager.getCurrentUser()!!.userId,
             eventId = eventId
     )
