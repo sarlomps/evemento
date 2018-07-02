@@ -69,7 +69,6 @@ class GuestListFragment : NavigatorFragment() {
                             }
                         } else dialogInputLayout.error = getString(R.string.cannotInviteGuest)
                     } else dialogInputLayout.error = getString(R.string.youAlreadyInvited)
-
                 }
             }
         }

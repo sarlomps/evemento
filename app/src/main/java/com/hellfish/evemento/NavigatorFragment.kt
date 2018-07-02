@@ -4,6 +4,8 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.support.design.widget.TextInputEditText
+import android.support.design.widget.TextInputLayout
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.view.View
@@ -84,6 +86,11 @@ open class NavigatorFragment : Fragment() {
         dialog.setCancelable(false)
         dialog.isIndeterminate=true
         return dialog
+    }
+
+    protected fun validateTextInput(textInputLayout: TextInputLayout, textInputEditText: TextInputEditText, errorMessage: String) {
+        if (textInputEditText.text.toString() == "") textInputLayout.error = errorMessage
+        else textInputLayout.error = null
     }
 
 }

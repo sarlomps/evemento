@@ -230,11 +230,6 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
 
     }
 
-    private fun validateTextInput(textInputLayout: TextInputLayout, textInputEditText: TextInputEditText, errorMessage: String) {
-        if (textInputEditText.text.toString() == "") textInputLayout.error = errorMessage
-        else textInputLayout.error = null
-    }
-
     private fun setImageListener() = eventImage.setOnClickListener {
         imageDialog.show()
     }
