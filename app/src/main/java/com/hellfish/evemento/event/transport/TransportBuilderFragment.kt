@@ -46,6 +46,7 @@ class TransportBuilderFragment : NavigatorFragment() {
         if (argTransport != null) {
             transport_builder_slots.setText(argTransport.totalSlots.toString())
             transport_builder_location.setText(argTransport.startpoint.name)
+            this.coordinates = argTransport.latLong()
             transport_builder_fab.setOnClickListener {
                 if (validateTransport()) {
                     eventViewModel.edit(transport())
