@@ -5,26 +5,15 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.DialogTitle
 import android.support.v7.widget.LinearLayoutManager
-import android.text.SpannableStringBuilder
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Spinner
-import com.google.gson.internal.bind.MapTypeAdapterFactory
-import com.hellfish.evemento.EventViewModel
-import com.hellfish.evemento.R
+import com.hellfish.evemento.*
 import com.hellfish.evemento.R.string.title_fragment_task_list
-import com.hellfish.evemento.NavigatorFragment
-import com.hellfish.evemento.SessionManager
 import kotlinx.android.synthetic.main.fragment_task_list.*
-import kotlinx.android.synthetic.main.fragment_task_list_item_add.*
 import kotlinx.android.synthetic.main.fragment_task_list_item_add.view.*
-import kotlinx.android.synthetic.main.notification_template_lines_media.view.*
 
 class TaskListFragment : NavigatorFragment() {
 
@@ -38,8 +27,8 @@ class TaskListFragment : NavigatorFragment() {
         super.onCreate(savedInstanceState)
 
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
-        eventViewModel.loadGuests { _ -> showToast(R.string.errorLoadingGuests) }
-        //eventViewModel.loadComments { _ -> showToast(R.string.errorLoadingTasks) }
+        eventViewModel.loadGuests { _ -> showToast(R.string.errorLoadingTasks) }
+        eventViewModel.loadTasks { _ -> showToast(R.string.errorLoadingTasks) }
         eventViewModel.tasks.observe(this, Observer { tasks ->
             tasks?.let { taskRecyclerView.adapter = TaskListAdapter(tasks, editTaskItem()) }
         })
@@ -85,14 +74,16 @@ class TaskListFragment : NavigatorFragment() {
                 .setNegativeButton(getString(R.string.no)) { _, _ -> Unit }
                 .create()
 
-        eventViewModel.add(TaskItem("","Much wow, much fun!", getString(R.string.noOneInCharge)))
-
         taskRecyclerView.apply { layoutManager = LinearLayoutManager(context) }
     }
 
     private fun addItemIfCorrect() {
         validatingTask {
-            eventViewModel.add(TaskItem("", createDialogInput.addTaskDescription.text.toString(), createDialogInput.addTaskResponsible.selectedItem.toString()))
+            val newTask = TaskItem("", createDialogInput.addTaskDescription.text.toString(), createDialogInput.addTaskResponsible.selectedItem.toString())
+            NetworkManager.pushTask(eventViewModel.selected()!!.eventId, newTask) { id, errorMessage ->
+                id?.let { eventViewModel.add(newTask.copy(taskId = id)); return@pushTask }
+                showToast(errorMessage ?: R.string.api_error_pushing_data)
+            }
             createDialog.cancel()
         }
     }
@@ -130,16 +121,22 @@ class TaskListFragment : NavigatorFragment() {
             createDialogInput.addTaskDescriptionLayout.error = null
             getButton(Dialog.BUTTON_NEUTRAL).run {
                 visibility = View.VISIBLE
-                setOnClickListener { withConfirmationDialog(R.string.deleteTaskConfirmation) {
-                    eventViewModel.remove(task); createDialog.cancel() }
+                setOnClickListener {
+                    withConfirmationDialog(R.string.deleteTaskConfirmation) {
+                        NetworkManager.deleteTask(task) { success, errorMessage ->
+                            if (success) eventViewModel.remove(task)
+                            else showToast(errorMessage ?: R.string.api_error_deleting_data)
+                            createDialog.cancel()
+                        }
+                    }
                 }
             }
             getButton(Dialog.BUTTON_POSITIVE).run {
                 text = getString(R.string.accept)
                 setOnClickListener {
                     validatingTask {
-                        eventViewModel.edit(task.copy(description = createDialogInput.addTaskDescription.text.toString(),
-                                                      responsible = SessionManager.getCurrentUser()!!.displayName))
+                        editTask(task.copy(description = createDialogInput.addTaskDescription.text.toString(),
+                                           responsible = SessionManager.getCurrentUser()!!.displayName))
                         createDialog.cancel()
                     }
                 }
@@ -165,14 +162,21 @@ class TaskListFragment : NavigatorFragment() {
     private fun itemResponsibility(item: TaskItem){
         when(item.responsible) {
             getString(R.string.noOneInCharge) -> showOwnershipDialog(R.string.beInCharge, {
-                eventViewModel.edit(item.copy(responsible = SessionManager.getCurrentUser()!!.displayName))
+                editTask(item.copy(responsible = SessionManager.getCurrentUser()!!.displayName))
             })
 
             SessionManager.getCurrentUser()!!.displayName -> showOwnershipDialog(R.string.abandonTask, {
-                eventViewModel.edit(item.copy(responsible = getString(R.string.noOneInCharge)))
+                editTask(item.copy(responsible = getString(R.string.noOneInCharge)))
             })
 
             else -> showOwnershipDialog(R.string.alreadyInCharge, { takeOwnershipQuestionDialog.cancel() }, View.GONE, R.string.ok)
+        }
+    }
+
+    private fun editTask(task: TaskItem) {
+        NetworkManager.updateTask(eventViewModel.selected()!!.eventId, task) { updated, erroMessage ->
+            updated?.let { eventViewModel.edit(updated); return@updateTask }
+            showToast(erroMessage ?: R.string.network_unknown_error)
         }
     }
 

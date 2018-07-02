@@ -3,6 +3,7 @@ package com.hellfish.evemento.api
 import com.hellfish.evemento.R
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.poll.Poll
+import com.hellfish.evemento.event.task.TaskItem
 import com.hellfish.evemento.event.transport.TransportItem
 import retrofit2.Call
 import retrofit2.Callback
@@ -261,6 +262,23 @@ class RestAPI {
 
     fun deleteTransport(transportId: String, callback: (Boolean, Int?) -> Unit) {
         firebaseApi.deleteTransport(transportId).enqueue(deleteCallback(callback))
+    }
+
+    //Tasks
+    fun getTasksForEvent(eventId: String, callback: (List<TaskItem>?, Int?) -> (Unit)) {
+        firebaseApi.getTasks("\"eventId\"", "\"$eventId\"").enqueue(getXForYCallback(callback, TaskMapper()))
+    }
+
+    fun pushTask(comment: TaskResponse, callback: (String?, Int?) -> Unit) {
+        firebaseApi.pushTask(comment).enqueue(pushCallback(callback))
+    }
+
+    fun updateTask(commentId: String, comment: TaskResponse, callback: (TaskItem?, Int?) -> Unit) {
+        firebaseApi.updateTask(commentId, comment).enqueue(updateCallback(callback, TaskMapper(), commentId))
+    }
+
+    fun deleteTask(commentId: String, callback: (Boolean, Int?) -> Unit) {
+        firebaseApi.deleteTask(commentId).enqueue(deleteCallback(callback))
     }
 
 }

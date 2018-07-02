@@ -3,6 +3,7 @@ import android.media.Image
 import com.hellfish.evemento.api.*
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.poll.Poll
+import com.hellfish.evemento.event.task.TaskItem
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -130,5 +131,23 @@ object NetworkManager {
     fun deleteTransport(transport: TransportItem, callback: (Boolean, Int?) -> (Unit)) {
         api.deleteTransport(transport.transportId, callback)
     }
+
+    /// Tasks
+    fun getTasks(event:Event, callback: (List<TaskItem>?, Int?) -> (Unit)) {
+        api.getTasksForEvent(event.eventId, callback)
+    }
+
+    fun pushTask(eventId: String, task: TaskItem, callback: (String?, Int?) -> (Unit)) {
+        api.pushTask(TaskMapper().mapToEntity(eventId, task), callback)
+    }
+
+    fun updateTask(eventId: String, task: TaskItem, callback: (TaskItem?, Int?) -> (Unit)) {
+        api.updateTask(task.taskId, TaskMapper().mapToEntity(eventId, task), callback)
+    }
+
+    fun deleteTask(task: TaskItem, callback: (Boolean, Int?) -> (Unit)) {
+        api.deleteTask(task.taskId, callback)
+    }
+
 
 }

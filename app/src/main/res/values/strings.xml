@@ -38,6 +38,7 @@
     <string name="errorLoadingComments">There was an error loading the comments, please try again later</string>
     <string name="errorLoadingGuests">There was an error loading the guests, please try again later</string>
     <string name="errorLoadingRides">There was an error loading the rides, please try again later</string>
+    <string name="errorLoadingTasks">There was an error loading the tasks, please try again later</string>
     <string name="errorAddComments">There was an error adding the comment, please try again later</string>
     <string name="errorDeleteComments">There was an error deleting the comment, please try again later</string>
     <string name="errorDeleteEvent">There was an error deleting the event, please try again later</string>

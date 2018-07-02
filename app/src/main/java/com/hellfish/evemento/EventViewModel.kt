@@ -20,7 +20,9 @@ class EventViewModel : ViewModel() {
     var rides: MutableLiveData<MutableList<TransportItem>> = MutableLiveData()
         private set
     var tasks: MutableLiveData<MutableList<TaskItem>> = MutableLiveData()
+        private set
     var polls: MutableLiveData<MutableList<Poll>> = MutableLiveData()
+        private set
     var comments: MutableLiveData<MutableList<Comment>> = MutableLiveData()
         private set
 
@@ -34,7 +36,7 @@ class EventViewModel : ViewModel() {
         guests.value = mutableListOf()
         rides.value = mutableListOf()
         polls.value = mutableListOf()
-        loadDataFrom(event)     /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
+        tasks.value = mutableListOf()
     }
 
     fun loadPolls(onError: (Int) -> (Unit)) {
@@ -125,16 +127,17 @@ class EventViewModel : ViewModel() {
         onError(R.string.api_error_fetching_data)
     }
 
-    fun loadTasks(callback: (List<TaskItem>?, Int?) -> (Unit)) {
-//TODO: IMPLEMENT
+    fun loadTasks(onError: (Int?) -> Unit) {
+        selectedEvent.value?.let {
+            NetworkManager.getTasks(it) { newTasks, errorMessage ->
+                newTasks?.let { tasks.value = it.toMutableList(); return@getTasks }
+                onError(errorMessage)
+            }
+            return
+        }
+        onError(R.string.api_error_fetching_data)
     }
-    /**
-     *The idea is this methos is to called the mocked methods and then replace those methods to pull from server
-     */
-    /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
-    private fun loadDataFrom(event: Event?) {
-        tasks.value = mutableListOf() //TODO load it from Firebase
-    }
+
 
     fun <T> editList(list: MutableList<T>?, newT: T, comparator: (T, T) -> Boolean) =
             list?.map { oldT -> if (comparator(oldT, newT)) { newT } else { oldT } }?.toMutableList()
