@@ -2,21 +2,17 @@ package com.hellfish.evemento.event.transport
 
 import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng
+import com.hellfish.evemento.api.User
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class TransportItem(val driver: UserMiniDetail, val passangers: ArrayList<UserMiniDetail>, val startpoint: Location,val totalSlots: Int) : Parcelable {
+data class TransportItem(val transportId: String, val driver: User, val passangers: ArrayList<User>, val startpoint: Location,val totalSlots: Int) : Parcelable {
     fun sameTransport(transportItem: TransportItem): Boolean = driver.sameUser(transportItem.driver)
-    fun driverName(): String = driver.nickname
+    fun driverName(): String = driver.displayName
     fun availableSlots(): Int = maxOf(totalSlots - passangers.size, 0)
     fun isFull(): Boolean = totalSlots.equals(passangers.size)
-    fun isAlreadyInTransport(passanger: UserMiniDetail): Boolean = passangers.any { passanger.sameUser(it)} || passanger.sameUser(driver)
+    fun isAlreadyInTransport(passanger: User): Boolean = passangers.any { passanger.sameUser(it)} || passanger.sameUser(driver)
     fun latLong(): LatLng = startpoint.latLng()
-}
-
-@Parcelize
-data class UserMiniDetail(val nickname: String, val avatar: String) : Parcelable {
-    fun sameUser(user: UserMiniDetail): Boolean = nickname.equals(user.nickname)
 }
 
 @Parcelize

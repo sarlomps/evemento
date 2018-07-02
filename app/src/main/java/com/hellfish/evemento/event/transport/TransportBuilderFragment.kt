@@ -10,16 +10,17 @@ import android.view.ViewGroup
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.location.places.ui.PlaceAutocomplete
-import com.hellfish.evemento.EventViewModel
-import com.hellfish.evemento.NavigatorFragment
-import com.hellfish.evemento.R
 import kotlinx.android.synthetic.main.fragment_transport_builder.*
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import com.google.android.gms.maps.model.LatLng
+import com.hellfish.evemento.*
+import com.hellfish.evemento.api.User
+import com.hellfish.evemento.extensions.hideKeyboard
 
 
 class TransportBuilderFragment : NavigatorFragment() {
-    private lateinit var loggedInUser: UserMiniDetail
+    private lateinit var loggedInUser: User
     private lateinit var eventViewModel: EventViewModel
     private lateinit var coordinates: LatLng
 
@@ -35,7 +36,7 @@ class TransportBuilderFragment : NavigatorFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loggedInUser = UserMiniDetail("juanchiLoggeado", "sarlanga")
+        loggedInUser = SessionManager.getCurrentUser()!!
         setLocationListener()
         setSavedListener()
 
@@ -44,10 +45,17 @@ class TransportBuilderFragment : NavigatorFragment() {
         if (argTransport != null) {
             transport_builder_slots.setText(argTransport.totalSlots.toString())
             transport_builder_location.setText(argTransport.startpoint.name)
+            this.coordinates = argTransport.latLong()
             transport_builder_fab.setOnClickListener {
                 if (validateTransport()) {
-                    eventViewModel.edit(transport())
-                    navigatorListener.replaceFragment(TransportListFragment())
+                    eventViewModel.edit(transport(argTransport.transportId)) { _, errorMessage ->
+                        if (errorMessage == null)
+                            activity?.run {
+                                onBackPressed()
+                                hideKeyboard()
+                            }
+                        else showToast(errorMessage)
+                    }
                 }
             }
             delete_transport.visibility = ViewGroup.VISIBLE
@@ -73,16 +81,16 @@ class TransportBuilderFragment : NavigatorFragment() {
     private fun setSavedListener() {
         transport_builder_fab.setOnClickListener {
             if (validateTransport()) {
-                eventViewModel.add(transport())
+                eventViewModel.add(transport(""))
                 navigatorListener.replaceFragment(TransportListFragment())
             }
         }
     }
 
-    private fun transport(): TransportItem {
+    private fun transport(transportId: String): TransportItem {
         var locationName = transport_builder_location.text.toString()
         var totalSlots = transport_builder_slots.text.toString().toInt()
-        return TransportItem(loggedInUser, ArrayList(), Location(locationName, Coordinates(this.coordinates)), totalSlots)
+        return TransportItem(transportId,loggedInUser, ArrayList(), Location(locationName, Coordinates(this.coordinates)), totalSlots)
     }
 
     private fun validateTransport(): Boolean {

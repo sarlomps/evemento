@@ -8,6 +8,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
 
+import com.hellfish.evemento.event.transport.TransportItem
 
 object NetworkManager {
     
@@ -70,7 +71,6 @@ object NetworkManager {
     /// COMMENTS
     fun getComments(event:Event, callback: (List<Comment>?, Int?) -> (Unit)) {
         api.getCommentsForEvent(event.eventId, callback)
-
     }
 
     fun pushComment(eventId: String, comment: Comment, callback: (String?, Int?) -> (Unit)) {
@@ -105,6 +105,30 @@ object NetworkManager {
 
     fun cancelImageUpload() {
         imageApi.cancelCurrentCall()
+    }
+
+    /// Transport
+    fun getTransports(event:Event, callback: (List<TransportItem>?, Int?) -> (Unit)) {
+        api.getTransportsForEvent(event.eventId, callback)
+    }
+
+    fun pushTransport(eventId: String, transport: TransportItem, callback: (String?, Int?) -> (Unit)) {
+        api.pushTransport(TransportMapper().mapToEntity(eventId, transport), callback)
+    }
+
+    fun updateTransport(eventId: String, transport: TransportItem, callback: (TransportItem?, Int?) -> (Unit)) {
+        api.updateTransport(transport.transportId, TransportMapper().mapToEntity(eventId, transport)) { updated, error ->
+            if(updated != null)
+                NetworkManager.getUser(updated.driver.userId) { fullDriver, getUserError ->
+                    fullDriver?.let { callback(updated.copy(driver = fullDriver), null); return@getUser }
+                    callback(null, getUserError)
+                }
+            else callback(null, error)
+        }
+    }
+
+    fun deleteTransport(transport: TransportItem, callback: (Boolean, Int?) -> (Unit)) {
+        api.deleteTransport(transport.transportId, callback)
     }
 
 }

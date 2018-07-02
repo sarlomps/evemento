@@ -11,6 +11,8 @@ import android.widget.LinearLayout
 import com.hellfish.evemento.EventViewModel
 import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.R
+import com.hellfish.evemento.SessionManager
+import com.hellfish.evemento.api.User
 import com.hellfish.evemento.event.task.TaskListFragment
 import kotlinx.android.synthetic.main.fragment_transport_detail.*
 import kotlinx.android.synthetic.main.fragment_transport_list.*
@@ -19,7 +21,7 @@ import kotlinx.android.synthetic.main.fragment_transport_list.*
 class TransportListFragment : NavigatorFragment() {
 
     lateinit var eventViewModel: EventViewModel
-    private lateinit var loggedInUser: UserMiniDetail
+    private lateinit var loggedInUser: User
 
     var transports: List<TransportItem> = listOf()
 
@@ -42,7 +44,7 @@ class TransportListFragment : NavigatorFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        this.loggedInUser = UserMiniDetail("juanchiLoggeado", "sarlanga")
+        this.loggedInUser = SessionManager.getCurrentUser()!!
 
 
         carsRecyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayout.VERTICAL, false)

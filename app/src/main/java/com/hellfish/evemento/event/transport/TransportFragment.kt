@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,12 +22,10 @@ import com.hellfish.evemento.EventViewModel
 import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.R
 import kotlinx.android.synthetic.main.fragment_transport.*
-import kotlinx.android.synthetic.main.fragment_transport_list.*
 import android.support.v4.content.ContextCompat
 import android.support.annotation.DrawableRes
-import com.google.android.gms.maps.CameraUpdate
-
-
+import com.hellfish.evemento.SessionManager
+import com.hellfish.evemento.api.User
 
 
 class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
@@ -43,6 +40,7 @@ class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
+        eventViewModel.loadRides { _ -> showToast(R.string.errorLoadingRides) }
         eventViewModel.rides.observe(this, Observer { rides ->
             transports = rides ?: ArrayList()
             if (::mMap.isInitialized) loadTransportsOnMap()
@@ -52,12 +50,12 @@ class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_transport, container, false)
 
-    private lateinit var loggedInUser: UserMiniDetail
+    private lateinit var loggedInUser: User
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         cardView.setOnClickListener { navigatorListener.replaceFragment(TransportListFragment()) }
-        this.loggedInUser = UserMiniDetail("juanchiLoggeado", "sarlanga")
+        this.loggedInUser = SessionManager.getCurrentUser()!!
 
 
     }
@@ -84,6 +82,7 @@ class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15f))
 
         mMap.setOnMarkerClickListener { marker ->
+            //TODO si hay varios markers en la misma localizacion va a ir al que encuentre el find que puede no ser el correcto
             val transportClicked = transports.find { it.latLong().equals(marker.position) }
             if (transportClicked != null) {
                 val transportDetailFragment = TransportDetailFragment()

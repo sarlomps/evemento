@@ -37,6 +37,7 @@
     <string name="errorLoadingImage">There was an error loading the image, please check the url or try again later</string>
     <string name="errorLoadingComments">There was an error loading the comments, please try again later</string>
     <string name="errorLoadingGuests">There was an error loading the guests, please try again later</string>
+    <string name="errorLoadingRides">There was an error loading the rides, please try again later</string>
     <string name="errorAddComments">There was an error adding the comment, please try again later</string>
     <string name="errorDeleteComments">There was an error deleting the comment, please try again later</string>
     <string name="errorDeleteEvent">There was an error deleting the event, please try again later</string>
@@ -71,5 +72,7 @@
     <string name="imageUploaded">Image uploaded successfully.</string>
     <string name="empty" />
     <string name="pleaseWait">Please wait...</string>
+    <string name="availableSlots">Available slots: </string>
+    <string name="pollAnswerWithVotes">%1s - %2d de %3d</string>
 
 </resources>
