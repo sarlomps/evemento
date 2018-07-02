@@ -65,5 +65,7 @@
     <string name="createPollSuccessfully">Poll created successfully!</string>
     <string name="errorDuplicatePollAnswer">All answers must be different</string>
     <string name="errorEmptyPollField">This field can\'t be empty!</string>
+    <string name="availableSlots">Available slots: </string>
+    <string name="pollAnswerWithVotes">%1s - %2d de %3d</string>
 
 </resources>

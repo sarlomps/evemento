@@ -19,11 +19,6 @@ class OpenAnswersAdapter(private val callback: (Answer.Open) -> Unit, answers: L
         return R.layout.poll_open_answer
     }
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        setDivider(recyclerView)
-    }
-
     override fun doOnItemOnBindViewHolder(view: TextView, item: Answer.Open, context: Context) {
         view.text = item.text
         view.setOnClickListener { callback(item) ; notifyDataSetChanged() }
@@ -31,11 +26,6 @@ class OpenAnswersAdapter(private val callback: (Answer.Open) -> Unit, answers: L
 }
 
 class ClosedAnswersAdapter(answers: List<Answer.Closed>, private val totalAmount: Int) : RecyclerAdapter<RelativeLayout, Answer.Closed>(answers) {
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        setDivider(recyclerView)
-    }
-
     override fun layout(item : Int) : Int {
         return R.layout.poll_closed_answer
     }
@@ -43,7 +33,7 @@ class ClosedAnswersAdapter(answers: List<Answer.Closed>, private val totalAmount
     override fun doOnItemOnBindViewHolder(view: RelativeLayout, item: Answer.Closed, context: Context) {
         val textView = view.closedAnswerTextView
 
-        textView.text = "${item.text} - ${item.votesAmount.toFloat() / totalAmount.toFloat() * 100}%"
+        textView.text = textView.resources.getString(R.string.pollAnswerWithVotes, item.text, item.votesAmount, totalAmount)
         view.answerBackground.apply {
             val finalWidth = (textView.layoutParams.width.toFloat() * item.percentageFrom(totalAmount)).roundToInt()
             animateWidth(finalWidth)
@@ -58,12 +48,4 @@ class ClosedAnswersAdapter(answers: List<Answer.Closed>, private val totalAmount
             })
         }
     }
-}
-
-fun RecyclerAdapter<*, *>.setDivider(recyclerView: RecyclerView) {
-    val dividerItemDecoration = DividerItemDecoration(recyclerView.context, LinearLayout.VERTICAL)
-    recyclerView.context?.let { context ->
-        ContextCompat.getDrawable(context, R.drawable.poll_space_between_answers)?.let { dividerItemDecoration.setDrawable(it) }
-    }
-    recyclerView.addItemDecoration(dividerItemDecoration)
 }
