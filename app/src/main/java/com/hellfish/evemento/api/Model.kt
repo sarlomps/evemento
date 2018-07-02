@@ -206,7 +206,7 @@ class TransportMapper : Mapper<TransportResponse, TransportItem> {
             transport.passangers.map { it.userId }.toCollection(ArrayList()),
             transport.startpoint.name,
             transport.startpoint.latLng().latitude.toString(),
-            transport.startpoint.latLng().latitude.toString(),
+            transport.startpoint.latLng().longitude.toString(),
             transport.totalSlots.toString()
     )
 
