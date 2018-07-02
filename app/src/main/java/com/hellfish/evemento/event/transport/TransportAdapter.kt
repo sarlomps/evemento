@@ -24,8 +24,10 @@ class TransportAdapter(val transportList: List<TransportItem>, private val navig
             view.txtDriverName.text = item.driverName()
             view.txtAvailableSlots.text = item.availableSlots().toString()
             drawDriverCircle(view, item.driver)
-            transportViewModel.selectDriver(item.driver)
-            view.setOnClickListener { navigatorListener.replaceFragment(TransportDetailFragment()) }
+            view.setOnClickListener {
+                transportViewModel.selectDriver(item.driver)
+                navigatorListener.replaceFragment(TransportDetailFragment())
+            }
         }
     }
 
