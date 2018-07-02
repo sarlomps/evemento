@@ -2,6 +2,7 @@ package com.hellfish.evemento.extensions
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
 import android.support.annotation.LayoutRes
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar

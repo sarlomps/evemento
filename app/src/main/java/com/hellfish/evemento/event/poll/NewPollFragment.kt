@@ -3,6 +3,7 @@ package com.hellfish.evemento.event.poll
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.widget.TextViewCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,7 +51,13 @@ class NewPollFragment : NavigatorFragment() {
         }
         addAnswer(withDeleteButton=false)
         addAnswer(withDeleteButton=false)
-        newPollAddAnswerButton.setOnClickListener { _ -> addAnswer(withDeleteButton=true) }
+        val maxAmountOfAnswers = 7
+        newPollAddAnswerButton.setOnClickListener { _ ->
+            addAnswer(withDeleteButton=true)
+            if(newPollAnswersLinearLayout.getChildren<View>().size >= maxAmountOfAnswers) {
+                newPollAddAnswerButton.visibility = View.GONE
+            }
+        }
     }
 
     private fun answers() =
@@ -60,14 +67,24 @@ class NewPollFragment : NavigatorFragment() {
     private fun addAnswer(withDeleteButton : Boolean) {
         val newEditAnswer = LinearLayout(context)
         val newEditTextView = EditText(context).apply {
-            layoutParams = TableRow.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.85f)
-            setSingleLine(true)
-            hint = "An answer"
+            TextViewCompat.setTextAppearance(this, android.R.style.TextAppearance_Material_Subhead)
+            layoutParams = TableRow.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.85f).apply {
+                textSize = 22f
+                setPadding(5, 0, 0, 20)
+                hint = "An answer"
+                setSingleLine(true)
+                height=120
+                setTextColor(ContextCompat.getColor(context, android.R.color.black))
+            }
         }
+
         val deleteAnswerButton = Button(context).apply {
             layoutParams = TableRow.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.1f)
             background = ContextCompat.getDrawable(context!!, R.drawable.ic_close_grey_24dp)
-            setOnClickListener { newPollAnswersLinearLayout.removeView(newEditAnswer) }
+            setOnClickListener {
+                newPollAnswersLinearLayout.removeView(newEditAnswer)
+                newPollAddAnswerButton.visibility = View.VISIBLE
+            }
         }
         newEditAnswer.apply {
             addView(newEditTextView)

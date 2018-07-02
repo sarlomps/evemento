@@ -35,7 +35,8 @@
         <activity
             android:name=".MainActivity"
             android:label="Evemento"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustPan">
         </activity>
         <activity
             android:name=".SignInActivity">
