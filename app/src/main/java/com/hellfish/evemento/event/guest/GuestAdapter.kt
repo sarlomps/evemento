@@ -10,7 +10,7 @@ import com.hellfish.evemento.RecyclerAdapter
 import com.hellfish.evemento.api.Guest
 import kotlinx.android.synthetic.main.guest_content.view.*
 
-class GuestAdapter(guests: MutableList<Guest>, private val deleteListener: (Guest) -> View.OnClickListener) : RecyclerAdapter<CardView, Guest>(guests), UserColor {
+class GuestAdapter(guests: MutableList<Guest>, private val deleteListener: (Guest) -> View.OnClickListener) : RecyclerAdapter<CardView, Guest>(guests), CircleColor {
     override fun doOnEmptyOnBindViewHolder(): (view: TextView, context: Context?) -> Unit {
         return { view, _ ->
             view.text = "No guests yet..."
@@ -19,7 +19,7 @@ class GuestAdapter(guests: MutableList<Guest>, private val deleteListener: (Gues
 
     override fun doOnItemOnBindViewHolder(): (view: CardView, item: Guest, context: Context?) -> Unit {
         return { view, item, _ ->
-            DrawableCompat.setTint(view.guestCircle.drawable, userColor(item.userId, item.displayName))
+            DrawableCompat.setTint(view.guestCircle.drawable, circleColor(item.userId, item.displayName))
             view.guestInitial.text = item.displayName.first().toUpperCase().toString()
 
             view.guestName.text = item.displayName

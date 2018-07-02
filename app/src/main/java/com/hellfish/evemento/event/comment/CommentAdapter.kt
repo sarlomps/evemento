@@ -9,10 +9,10 @@ import android.widget.TextView
 import com.hellfish.evemento.R
 import com.hellfish.evemento.RecyclerAdapter
 import com.hellfish.evemento.api.Comment
-import com.hellfish.evemento.event.guest.UserColor
+import com.hellfish.evemento.event.guest.CircleColor
 import kotlinx.android.synthetic.main.comment_content.view.*
 
-class CommentAdapter(comments: MutableList<Comment>, val editListener: (Comment) -> View.OnClickListener) : RecyclerAdapter<CardView, Comment>(comments), UserColor {
+class CommentAdapter(comments: MutableList<Comment>, val editListener: (Comment) -> View.OnClickListener) : RecyclerAdapter<CardView, Comment>(comments), CircleColor {
     override fun doOnEmptyOnBindViewHolder(): (view: TextView, context: Context?) -> Unit {
         return { view, _ ->
             view.text = "No comments yet"
@@ -21,7 +21,7 @@ class CommentAdapter(comments: MutableList<Comment>, val editListener: (Comment)
 
     override fun doOnItemOnBindViewHolder(): (view: CardView, item: Comment, context: Context?) -> Unit {
         return { view, item, _ ->
-            DrawableCompat.setTint(view.commentCircle.drawable, userColor(item.userId, item.name))
+            DrawableCompat.setTint(view.commentCircle.drawable, circleColor(item.userId, item.name))
             view.commentInitial.text = item.name.first().toUpperCase().toString()
 
             view.commentUserName.text = item.name

@@ -30,7 +30,7 @@ class TaskListFragment : NavigatorFragment() {
         eventViewModel.loadGuests { _ -> showToast(R.string.errorLoadingTasks) }
         eventViewModel.loadTasks { _ -> showToast(R.string.errorLoadingTasks) }
         eventViewModel.tasks.observe(this, Observer { tasks ->
-            tasks?.let { taskRecyclerView.adapter = TaskListAdapter(tasks, editTaskItem()) }
+            tasks?.let { taskRecyclerView.adapter = TaskListAdapter(tasks, getString(R.string.noOneInCharge), editTaskItem()) }
         })
     }
 

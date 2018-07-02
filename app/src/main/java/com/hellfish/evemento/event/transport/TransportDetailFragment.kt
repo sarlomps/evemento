@@ -15,12 +15,12 @@ import com.hellfish.evemento.NavigatorFragment
 import com.hellfish.evemento.R
 import com.hellfish.evemento.SessionManager
 import com.hellfish.evemento.api.User
-import com.hellfish.evemento.event.guest.UserColor
+import com.hellfish.evemento.event.guest.CircleColor
 import com.hellfish.evemento.extensions.withDrawable
 import kotlinx.android.synthetic.main.fragment_transport_detail.*
 import kotlinx.android.synthetic.main.fragment_transport_detail.view.*
 
-class TransportDetailFragment() : NavigatorFragment(), UserColor {
+class TransportDetailFragment() : NavigatorFragment(), CircleColor {
 
     private lateinit var eventViewModel: EventViewModel
     private lateinit var transportViewModel: TransportViewModel
@@ -52,7 +52,7 @@ class TransportDetailFragment() : NavigatorFragment(), UserColor {
 
 
     private fun drawDriverCircle(item: User) {
-        DrawableCompat.setTint(driverCircle.drawable, userColor(item.userId, item.displayName))
+        DrawableCompat.setTint(driverCircle.drawable, circleColor(item.userId, item.displayName))
         driverInitial.text = item.displayName.first().toUpperCase().toString()
     }
 
@@ -67,7 +67,7 @@ class TransportDetailFragment() : NavigatorFragment(), UserColor {
 
         linearLayout.findViewById<TextView>(R.id.txtPassangerName).setText(passanger.displayName)
         DrawableCompat.setTint(linearLayout.findViewById<ImageView>(R.id.driverCircle).drawable,
-                userColor(passanger.userId, passanger.displayName))
+                circleColor(passanger.userId, passanger.displayName))
         linearLayout.findViewById<TextView>(R.id.driverInitial).text = passanger.displayName.first().toUpperCase().toString()
 
         return linearLayout

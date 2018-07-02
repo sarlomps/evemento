@@ -1,7 +1,6 @@
 package com.hellfish.evemento.event.transport;
 
 import android.content.Context
-import android.os.Bundle
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.CardView
 import android.widget.TextView
@@ -9,10 +8,10 @@ import com.hellfish.evemento.Navigator
 import com.hellfish.evemento.R
 import com.hellfish.evemento.RecyclerAdapter
 import com.hellfish.evemento.api.User
-import com.hellfish.evemento.event.guest.UserColor
+import com.hellfish.evemento.event.guest.CircleColor
 import kotlinx.android.synthetic.main.transport_item.view.*
 
-class TransportAdapter(val transportList: List<TransportItem>, private val navigatorListener: Navigator, val transportViewModel: TransportViewModel): RecyclerAdapter<CardView, TransportItem>(transportList), UserColor{
+class TransportAdapter(val transportList: List<TransportItem>, private val navigatorListener: Navigator, val transportViewModel: TransportViewModel): RecyclerAdapter<CardView, TransportItem>(transportList), CircleColor{
     override fun doOnEmptyOnBindViewHolder(): (view: TextView, context: Context?) -> Unit {
         return { view, _ ->
             view.text = "No rides yet"
@@ -38,7 +37,7 @@ class TransportAdapter(val transportList: List<TransportItem>, private val navig
     }
 
     private fun drawDriverCircle(view: CardView, item: User) {
-        DrawableCompat.setTint(view.driverCircle.drawable, userColor(item.userId, item.displayName))
+        DrawableCompat.setTint(view.driverCircle.drawable, circleColor(item.userId, item.displayName))
         view.driverInitial.text = item.displayName.first().toUpperCase().toString()
     }
 
