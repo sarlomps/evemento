@@ -13,6 +13,7 @@ import com.hellfish.evemento.NetworkManager
 import com.hellfish.evemento.R
 import com.hellfish.evemento.R.string.*
 import com.hellfish.evemento.extensions.getChildren
+import com.hellfish.evemento.extensions.hideKeyboard
 
 import kotlinx.android.synthetic.main.fragment_new_poll.*
 
@@ -41,7 +42,10 @@ class NewPollFragment : NavigatorFragment() {
             NetworkManager.pushPoll(newPoll, { pollId,_ ->
                 pollId?.let { eventViewModel.add(newPoll.setId(it)) }
                 showToast(createPollSuccessfully)
-                activity!!.onBackPressed()
+                activity?.run {
+                    onBackPressed()
+                    hideKeyboard()
+                }
             })
         }
         addAnswer(withDeleteButton=false)
@@ -64,7 +68,6 @@ class NewPollFragment : NavigatorFragment() {
             layoutParams = TableRow.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.1f)
             background = ContextCompat.getDrawable(context!!, R.drawable.ic_close_grey_24dp)
             setOnClickListener { newPollAnswersLinearLayout.removeView(newEditAnswer) }
-
         }
         newEditAnswer.apply {
             addView(newEditTextView)
