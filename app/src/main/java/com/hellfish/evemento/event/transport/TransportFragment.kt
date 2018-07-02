@@ -62,6 +62,7 @@ class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
     }
 
     private fun loadTransportsOnMap(transports: MutableList<TransportItem>) {
+        mMap.clear()
         transports.forEach {
             val marker = MarkerOptions()
                     .position(it.latLong())
