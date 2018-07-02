@@ -28,23 +28,8 @@ class TransportDetailFragment() : NavigatorFragment(), CircleColor {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
-        eventViewModel.rides.observe(this, Observer { rides ->
-            transportViewModel.selectedDriver.value?.let { driver ->
-                transportViewModel.setTransport(rides?.find { driver.sameUser(it.driver) }!!)
-                llTransportDetail.removeAllViews()
-                transportViewModel.transport.value?.passangers?.forEach { addPassanger(view!!, it) }
-                toogleFabIfNecessary(transportViewModel.transport.value!!)
-            }
-        })
 
         transportViewModel = ViewModelProviders.of(activity!!).get(TransportViewModel::class.java)
-        transportViewModel.selectedDriver.observe(this, Observer { driver ->
-            driver?.let {
-                txtDriverName.text = it.displayName
-                drawDriverCircle(it)
-                transportViewModel.transport.value?.let { toogleFabIfNecessary(it) }
-            }
-        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -78,7 +63,7 @@ class TransportDetailFragment() : NavigatorFragment(), CircleColor {
         if (transport.driver.sameUser(loggedUser))
             transport_detail_fab.withDrawable(R.drawable.ic_edit_white_24dp).setOnClickListener {
                 transportViewModel.setTransport(transport)
-                navigatorListener.replaceFragment(TransportBuilderFragment(), false)
+                navigatorListener.replaceFragment(TransportBuilderFragment())
             }
         else if (!transport.isAlreadyInTransport(loggedUser) && (transport.isFull() || isInAnotherTransport(transport)))
             transport_detail_fab.hide()
@@ -103,4 +88,24 @@ class TransportDetailFragment() : NavigatorFragment(), CircleColor {
     private fun isInAnotherTransport(transport: TransportItem) =
             (eventViewModel.rides.value ?: ArrayList()).any { it.isAlreadyInTransport(SessionManager.getCurrentUser()!!) }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        eventViewModel.rides.observe(this, Observer { rides ->
+            transportViewModel.selectedDriver.value?.let { driver ->
+                transportViewModel.setTransport(rides?.find { driver.sameUser(it.driver) }!!)
+                llTransportDetail.removeAllViews()
+                transportViewModel.transport.value?.passangers?.forEach { addPassanger(view!!, it) }
+                toogleFabIfNecessary(transportViewModel.transport.value!!)
+            }
+        })
+
+        transportViewModel.selectedDriver.observe(this, Observer { driver ->
+            driver?.let {
+                txtDriverName.text = it.displayName
+                drawDriverCircle(it)
+                transportViewModel.transport.value?.let { toogleFabIfNecessary(it) }
+            }
+        })
+    }
 }
