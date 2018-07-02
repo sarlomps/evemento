@@ -1,3 +1,5 @@
 package com.hellfish.evemento.event.task
 
-data class TaskItem(var description: String, var responsible: String)
+data class TaskItem(val taskId: String,
+                    val description: String,
+                    val responsible: String)

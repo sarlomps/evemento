@@ -5,13 +5,10 @@ import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.hellfish.evemento.api.Comment
 import com.hellfish.evemento.api.Guest
-import com.hellfish.evemento.api.User
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.transport.TransportItem
 import com.hellfish.evemento.event.poll.Poll
 import com.hellfish.evemento.event.task.TaskItem
-import com.hellfish.evemento.event.transport.Coordinates
-import com.hellfish.evemento.event.transport.Location
 
 
 class EventViewModel : ViewModel() {
@@ -152,6 +149,18 @@ class EventViewModel : ViewModel() {
 
     fun edit(newComment: Comment) {
         comments.value = editList(comments.value, newComment) { c1, c2 -> c1.commentId == c2.commentId}
+    }
+
+    fun add(task: TaskItem) {
+        tasks.value = tasks.value?.plus(task)?.toMutableList()
+    }
+
+    fun remove(task: TaskItem) {
+        tasks.value = tasks.value?.minus(task)?.toMutableList()
+    }
+
+    fun edit(newTask: TaskItem) {
+        tasks.value = editList(tasks.value, newTask) { t1, t2 -> t1.taskId == t2.taskId}
     }
 
     fun add(guest: Guest) {

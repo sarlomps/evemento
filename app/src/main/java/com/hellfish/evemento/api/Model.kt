@@ -79,6 +79,10 @@ data class TransportResponse(val eventId: String,
                              val longitude: String,
                              val totalSlots: String)
 
+data class TaskResponse(val eventId: String,
+                        val driver: String,
+                        val passengers: ArrayList<String>)
+
 data class ImageResponse(val error: Boolean,
                          val image: String?)
 

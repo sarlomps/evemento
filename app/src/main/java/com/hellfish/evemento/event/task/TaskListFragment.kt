@@ -25,7 +25,6 @@ import kotlinx.android.synthetic.main.fragment_task_list_item_add.view.*
 class TaskListFragment : NavigatorFragment() {
 
     override val titleId = title_fragment_task_list
-    private val taskItems : MutableList<TaskItem> = mutableListOf()
     lateinit var eventViewModel: EventViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,11 +32,9 @@ class TaskListFragment : NavigatorFragment() {
 
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
         //TODO: Load Tasks
-        eventViewModel.tasks.observe(
-                this,
-                Observer { items -> items?.let{task_recycler_view.adapter = TaskListAdapter(taskItems, editTaskItem()) }
-                }
-        )
+        eventViewModel.tasks.observe(this, Observer { tasks ->
+            tasks?.let { task_recycler_view.adapter = TaskListAdapter(tasks, editTaskItem()) }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -58,7 +55,7 @@ class TaskListFragment : NavigatorFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        taskItems.add(TaskItem("Much wow, much fun!", "Ringo"))
+        eventViewModel.add(TaskItem("","Much wow, much fun!", "Ringo"))
 
         task_recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
@@ -96,11 +93,11 @@ class TaskListFragment : NavigatorFragment() {
             dialog.dismiss()
         } else {
             val item = TaskItem(
+                    "",
                     description,
                     responsible
             )
-            taskItems.add(item)
-            refreshView()
+            eventViewModel.add(item)
         }
     }
 
@@ -148,8 +145,7 @@ class TaskListFragment : NavigatorFragment() {
         }
 
         editDeleteDialog.setNegativeButton("Delete") { _, _ ->
-            taskItems.remove(item)
-            refreshView()
+            eventViewModel.remove(item)
         }
 
         editDeleteDialog.show()
@@ -164,8 +160,7 @@ class TaskListFragment : NavigatorFragment() {
         editItemDialog.setView(editTextView)
 
         editItemDialog.setPositiveButton("Ok"){ _, _ ->
-            item.description = editTextView.text.toString()
-            refreshView()
+            eventViewModel.edit(item.copy(description = editTextView.text.toString()))
         }
 
         editItemDialog.setNegativeButton("Cancel"){ dialog, _ ->
@@ -183,8 +178,7 @@ class TaskListFragment : NavigatorFragment() {
                 dialog.dismiss()
             }
             takeOwnershipQuestionDialog.setPositiveButton("Yes"){ _, _ ->
-                item.responsible = SessionManager.getCurrentUser()!!.displayName
-                refreshView()
+                eventViewModel.edit(item.copy(responsible = SessionManager.getCurrentUser()!!.displayName))
             }
         }else{
             takeOwnershipQuestionDialog.setTitle("Someone is already in charge")
@@ -193,10 +187,6 @@ class TaskListFragment : NavigatorFragment() {
             }
         }
         takeOwnershipQuestionDialog.show()
-    }
-
-    private fun refreshView(){
-        task_recycler_view.adapter.notifyDataSetChanged()
     }
 
 }
