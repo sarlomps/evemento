@@ -119,6 +119,7 @@ class RestAPI {
         deleteAllPolls(eventId) { _, errorMessage -> error = errorMessage }
         deleteAllGuests(eventId) { _, errorMessage -> error = errorMessage }
         deleteAllTransports(eventId) { _, errorMessage -> error = errorMessage }
+        deleteAllTasks(eventId) { _, errorMessage -> error = errorMessage }
 
         if (error == null) {
             firebaseApi.deleteEvent(eventId).enqueue(deleteCallback(callback))
@@ -150,6 +151,13 @@ class RestAPI {
     private fun deleteAllTransports(eventId: String, callback: (Boolean, Int?) -> (Unit)) {
         getTransportsForEvent(eventId) { transports, error ->
             if (transports != null) transports.forEach { deleteGuest(it.transportId, callback) }
+            else callback(false, error)
+        }
+    }
+
+    private fun deleteAllTasks(eventId: String, callback: (Boolean, Int?) -> (Unit)) {
+        getTasksForEvent(eventId) { tasks, error ->
+            if (tasks != null) tasks.forEach { deleteGuest(it.taskId, callback) }
             else callback(false, error)
         }
     }
