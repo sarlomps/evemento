@@ -16,7 +16,7 @@ class TransportViewModel : ViewModel() {
         selectedDriver.value = driver
     }
 
-    fun setTransport(selected: TransportItem) {
+    fun setTransport(selected: TransportItem?) {
         transport.value = selected
     }
 
