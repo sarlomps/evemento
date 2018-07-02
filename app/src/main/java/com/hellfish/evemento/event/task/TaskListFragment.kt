@@ -5,7 +5,6 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.DialogInterface
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
@@ -31,25 +30,24 @@ class TaskListFragment : NavigatorFragment() {
         super.onCreate(savedInstanceState)
 
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
-        //TODO: Load Tasks
+        //eventViewModel.loadComments { _ -> showToast(R.string.errorLoadingTasks) }
         eventViewModel.tasks.observe(this, Observer { tasks ->
-            tasks?.let { task_recycler_view.adapter = TaskListAdapter(tasks, editTaskItem()) }
+            tasks?.let { taskRecyclerView.adapter = TaskListAdapter(tasks, editTaskItem()) }
         })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(
-                R.layout.fragment_task_list,
-                container,
-                false
-        )
+        return inflater.inflate(R.layout.fragment_task_list, container, false)
+    }
 
-        val taskListAdd = view.findViewById<FloatingActionButton>(R.id.task_list_add)
-        taskListAdd.setOnClickListener {
-            itemDialogBehaviour()
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        return view
+        taskListAdd.setOnClickListener { itemDialogBehaviour() }
+
+        if(eventViewModel.selected()!!.user == SessionManager.getCurrentUser()!!.userId) taskListAdd.visibility = View.VISIBLE
+        else taskListAdd.visibility = View.GONE
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -57,46 +55,27 @@ class TaskListFragment : NavigatorFragment() {
 
         eventViewModel.add(TaskItem("","Much wow, much fun!", "Ringo"))
 
-        task_recycler_view.apply {
-            layoutManager = LinearLayoutManager(context)
-        }
+        taskRecyclerView.apply { layoutManager = LinearLayoutManager(context) }
     }
 
     private fun itemDialogBehaviour() {
-        val itemDialog = AlertDialog.Builder(context)
-        itemDialog.setTitle("Add Item")
+        val input = activity!!.layoutInflater.inflate(R.layout.fragment_task_list_item_add, null)
 
-        val viewItemToModify = activity!!.layoutInflater.inflate(
-                R.layout.fragment_task_list_item_add,
-                null
-        )
-        addPossibleResponsiblesTo(viewItemToModify)
-        itemDialog.setView(viewItemToModify)
-
-        itemDialog.setPositiveButton("Ok") { dialog, _ ->
-            addItemIfCorrect(
-                    viewItemToModify.add_item_description.text.toString(),
-                    viewItemToModify.add_item_responsible.selectedItem.toString(),
-                    dialog
-            )
-        }
-
-        itemDialog.setNegativeButton("Cancel") { dialog, _ ->
-            dialog.cancel()
-        }
-
-        itemDialog.show()
+        addPossibleResponsiblesTo(input)
+        createAlertDialog(R.string.addTask,
+                input,
+                Pair(R.string.accept, { dialog, _ ->
+                    addItemIfCorrect(
+                            input.addTaskDescription.text.toString(),
+                            input.addTaskResponsible.selectedItem.toString(),
+                            dialog) }),
+                Pair(R.string.cancel, { dialog, _ -> dialog.cancel()})).show()
     }
 
     private fun addItemIfCorrect(description: String, responsible: String, dialog: DialogInterface) {
-        if (description == "") {
-            dialog.dismiss()
-        } else {
-            val item = TaskItem(
-                    "",
-                    description,
-                    responsible
-            )
+        if (description == "") dialog.dismiss()
+        else {
+            val item = TaskItem("", description, responsible)
             eventViewModel.add(item)
         }
     }
@@ -123,7 +102,7 @@ class TaskListFragment : NavigatorFragment() {
                 android.R.layout.simple_spinner_dropdown_item,
                 users
         )
-        val spinner = addTaskItemView.findViewById<Spinner>(R.id.add_item_responsible)
+        val spinner = addTaskItemView.findViewById<Spinner>(R.id.addTaskResponsible)
         spinner.adapter = adapter
 
     }

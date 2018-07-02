@@ -74,5 +74,9 @@
     <string name="pleaseWait">Please wait...</string>
     <string name="availableSlots">Available slots: </string>
     <string name="pollAnswerWithVotes">%1s - %2d de %3d</string>
+    <string name="addTask">Add task</string>
+    <string name="taskDescription">Task Description</string>
+    <string name="responsible">Responsible</string>
+
 
 </resources>
