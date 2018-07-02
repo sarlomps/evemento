@@ -163,8 +163,15 @@ class EventViewModel : ViewModel() {
         polls.value = editList(polls.value, newPoll) { p1, p2 -> p1.question == p2.question }
     }
 
-    fun edit(newTransport: TransportItem) {
-        rides.value = editList(rides.value, newTransport) { t1, t2 -> t1.sameTransport(t2) }
+    fun edit(newTransport: TransportItem, callback: (TransportItem?, Int?) -> Unit) {
+        NetworkManager.updateTransport(selected()!!.eventId, newTransport) { transport, errorMessage ->
+            transport?.let {
+                rides.value = editList(rides.value, transport) { t1, t2 -> t1.sameTransport(t2) }
+                callback(transport, null)
+                return@updateTransport
+            }
+            callback(null, errorMessage)
+        }
     }
 
     fun add(transportItem: TransportItem) {

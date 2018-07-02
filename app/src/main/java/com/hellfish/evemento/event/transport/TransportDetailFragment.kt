@@ -92,12 +92,12 @@ class TransportDetailFragment() : NavigatorFragment() {
             if (!transport.isAlreadyInTransport(loggedInUser))
                 transport_detail_fab.withDrawable(R.drawable.ic_person_add_white_24dp).setOnClickListener {
                     transport.passangers.add(loggedInUser)
-                    eventViewModel.edit(transport)
+                    eventViewModel.edit(transport) { _, errorMessage -> showToast(errorMessage ?: R.string.api_error_fetching_data)}
                 }
             else
                 transport_detail_fab.withDrawable(R.drawable.ic_remove_white_24dp).setOnClickListener {
                     transport.passangers.remove(loggedInUser)
-                    eventViewModel.edit(transport)
+                    eventViewModel.edit(transport) { _, errorMessage -> showToast(errorMessage ?: R.string.api_error_fetching_data)}
                 }
         }
     }

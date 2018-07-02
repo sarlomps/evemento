@@ -47,13 +47,9 @@ class TransportBuilderFragment : NavigatorFragment() {
             this.coordinates = argTransport.latLong()
             transport_builder_fab.setOnClickListener {
                 if (validateTransport()) {
-                    NetworkManager.updateTransport(eventViewModel.selected()!!.eventId, transport()) { transport, errorMessage ->
-                        transport?.let {
-                            eventViewModel.edit(transport)
-                            navigatorListener.replaceFragment(TransportListFragment())
-                            return@updateTransport
-                        }
-                        showToast(errorMessage ?: R.string.api_error_fetching_data)
+                    eventViewModel.edit(transport()) { _, errorMessage ->
+                        if (errorMessage == null) navigatorListener.replaceFragment(TransportListFragment())
+                        else showToast(errorMessage)
                     }
                 }
             }
