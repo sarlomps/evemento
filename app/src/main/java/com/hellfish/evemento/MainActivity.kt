@@ -20,8 +20,11 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.drawable.DrawableCompat
+import com.hellfish.evemento.event.guest.CircleColor
+import kotlinx.android.synthetic.main.comment_content.view.*
 
-class MainActivity : AppCompatActivity(), Navigator {
+class MainActivity : AppCompatActivity(), Navigator, CircleColor {
 
     lateinit var eventViewModel: EventViewModel
     override var onBackPressedListener: OnBackPressedListener? = null
@@ -65,8 +68,12 @@ class MainActivity : AppCompatActivity(), Navigator {
 
     private fun updateNavBarHeader() {
         val headerView = navView.getHeaderView(0)
-        headerView.navBarUserName.text = SessionManager.getCurrentUser()?.displayName
-        headerView.navBarUserEmail.text = SessionManager.getCurrentUser()?.email
+        SessionManager.getCurrentUser()?.let {
+            DrawableCompat.setTint(headerView.navBarImageCircle.drawable, circleColor(it.userId, it.displayName))
+            headerView.navBarInitial.text = it.displayName.first().toUpperCase().toString()
+            headerView.navBarUserName.text = it.displayName
+            headerView.navBarUserEmail.text = it.email
+        }
     }
 
     private fun handleNavItemSelected(menuItem: MenuItem) {
