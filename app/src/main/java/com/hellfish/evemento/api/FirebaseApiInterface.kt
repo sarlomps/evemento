@@ -164,4 +164,34 @@ interface  FirebaseApiInterface {
     fun deleteTransport(@Path("transportId") transportId: String)
             : Call<DeleteResponse>
 
+    //
+    // TASKS
+    //
+
+    @GET("/tasks.json")
+    fun getTasks(@Query("orderBy") orderBy: String,
+                    @Query("equalTo") equalTo: String)
+            : Call<Map<String, TaskResponse>>
+
+    @DELETE("/tasks.json")
+    fun deleteTasks(@Query("orderBy") orderBy: String,
+                       @Query("equalTo") equalTo: String)
+            : Call<DeleteResponse>
+
+
+    @Headers("Content-Type: application/json")
+    @POST("/tasks.json")
+    fun pushTask(@Body task: TaskResponse)
+            : Call<PushResponse>
+
+    @Headers("Content-Type: application/json")
+    @PUT("/tasks/{taskId}.json")
+    fun updateTask(@Path("taskId") taskId: String,
+                      @Body task: TaskResponse)
+            : Call<TaskResponse>
+
+    @DELETE("/tasks/{taskId}.json")
+    fun deleteTask(@Path("taskId") taskId: String)
+            : Call<DeleteResponse>
+
 }

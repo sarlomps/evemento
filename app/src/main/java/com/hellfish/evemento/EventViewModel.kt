@@ -5,13 +5,10 @@ import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.hellfish.evemento.api.Comment
 import com.hellfish.evemento.api.Guest
-import com.hellfish.evemento.api.User
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.transport.TransportItem
 import com.hellfish.evemento.event.poll.Poll
 import com.hellfish.evemento.event.task.TaskItem
-import com.hellfish.evemento.event.transport.Coordinates
-import com.hellfish.evemento.event.transport.Location
 
 
 class EventViewModel : ViewModel() {
@@ -23,7 +20,9 @@ class EventViewModel : ViewModel() {
     var rides: MutableLiveData<MutableList<TransportItem>> = MutableLiveData()
         private set
     var tasks: MutableLiveData<MutableList<TaskItem>> = MutableLiveData()
+        private set
     var polls: MutableLiveData<MutableList<Poll>> = MutableLiveData()
+        private set
     var comments: MutableLiveData<MutableList<Comment>> = MutableLiveData()
         private set
 
@@ -37,7 +36,7 @@ class EventViewModel : ViewModel() {
         guests.value = mutableListOf()
         rides.value = mutableListOf()
         polls.value = mutableListOf()
-        loadDataFrom(event)     /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
+        tasks.value = mutableListOf()
     }
 
     fun loadPolls(onError: (Int) -> (Unit)) {
@@ -128,16 +127,17 @@ class EventViewModel : ViewModel() {
         onError(R.string.api_error_fetching_data)
     }
 
-    fun loadTasks(callback: (List<TaskItem>?, Int?) -> (Unit)) {
-//TODO: IMPLEMENT
+    fun loadTasks(onError: (Int?) -> Unit) {
+        selectedEvent.value?.let {
+            NetworkManager.getTasks(it) { newTasks, errorMessage ->
+                newTasks?.let { tasks.value = it.toMutableList(); return@getTasks }
+                onError(errorMessage)
+            }
+            return
+        }
+        onError(R.string.api_error_fetching_data)
     }
-    /**
-     *The idea is this methos is to called the mocked methods and then replace those methods to pull from server
-     */
-    /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
-    private fun loadDataFrom(event: Event?) {
-        tasks.value = mutableListOf() //TODO load it from Firebase
-    }
+
 
     fun <T> editList(list: MutableList<T>?, newT: T, comparator: (T, T) -> Boolean) =
             list?.map { oldT -> if (comparator(oldT, newT)) { newT } else { oldT } }?.toMutableList()
@@ -152,6 +152,18 @@ class EventViewModel : ViewModel() {
 
     fun edit(newComment: Comment) {
         comments.value = editList(comments.value, newComment) { c1, c2 -> c1.commentId == c2.commentId}
+    }
+
+    fun add(task: TaskItem) {
+        tasks.value = tasks.value?.plus(task)?.toMutableList()
+    }
+
+    fun remove(task: TaskItem) {
+        tasks.value = tasks.value?.minus(task)?.toMutableList()
+    }
+
+    fun edit(newTask: TaskItem) {
+        tasks.value = editList(tasks.value, newTask) { t1, t2 -> t1.taskId == t2.taskId}
     }
 
     fun add(guest: Guest) {

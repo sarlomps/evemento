@@ -38,11 +38,14 @@
     <string name="errorLoadingComments">There was an error loading the comments, please try again later</string>
     <string name="errorLoadingGuests">There was an error loading the guests, please try again later</string>
     <string name="errorLoadingRides">There was an error loading the rides, please try again later</string>
+    <string name="errorLoadingTasks">There was an error loading the tasks, please try again later</string>
     <string name="errorAddComments">There was an error adding the comment, please try again later</string>
     <string name="errorDeleteComments">There was an error deleting the comment, please try again later</string>
     <string name="errorDeleteEvent">There was an error deleting the event, please try again later</string>
     <string name="accept">Accept</string>
     <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ok">Ok</string>
     <string name="invite">Invite</string>
     <string name="uninvite">Uninvite</string>
     <string name="cancel">Cancel</string>
@@ -54,6 +57,7 @@
     <string name="guestDialogTitle">Mail Guest:</string>
     <string name="titleValidation">Events should have title!</string>
     <string name="locationValidation">Events should have a place!</string>
+    <string name="taskValidation">Tasks should have a description!</string>
     <string name="hint_transport_build_available_slots">Add available slots</string>
     <string name="hint_transport_build_available_location">Where is the start point?</string>
     <string name="transport_build_total_slots_validation">Transport should have available slots!</string>
@@ -61,6 +65,7 @@
     <string name="youAlreadyInvited">You are already invited!</string>
     <string name="cannotInviteGuest">Cannot invite someone who is already a guest!</string>
     <string name="usertMustHaveAccount">The guest must have an account!</string>
+    <string name="deleteTaskConfirmation">Are you sure you want to delete this task?</string>
     <string name="deleteCommentConfirmation">Are you sure you want to delete this comment?</string>
     <string name="deleteGuestConfirmation">Are you sure you want to uninvite this guest?</string>
     <string name="deleteEventConfirmation">Are you sure you want to delete this event?</string>
@@ -74,5 +79,13 @@
     <string name="pleaseWait">Please wait...</string>
     <string name="availableSlots">Available slots: </string>
     <string name="pollAnswerWithVotes">%1s - %2d de %3d</string>
+    <string name="addTask">Add task</string>
+    <string name="taskDescription">Task Description</string>
+    <string name="responsible">Responsible: </string>
+    <string name="noOneInCharge">No one in charge</string>
+    <string name="beInCharge">"Do you want to be in charge?"</string>
+    <string name="abandonTask">"Do you want to abandon this task?"</string>
+    <string name="alreadyInCharge">"Someone is already in charge"</string>
+
 
 </resources>

@@ -6,6 +6,7 @@ import com.hellfish.evemento.SessionManager
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.poll.Answer
 import com.hellfish.evemento.event.poll.Poll
+import com.hellfish.evemento.event.task.TaskItem
 import com.hellfish.evemento.event.transport.Coordinates
 import kotlinx.android.parcel.Parcelize
 import com.hellfish.evemento.event.transport.Location
@@ -78,6 +79,10 @@ data class TransportResponse(val eventId: String,
                              val latitude: String,
                              val longitude: String,
                              val totalSlots: String)
+
+data class TaskResponse(val eventId: String,
+                        val description: String,
+                        val responsible: String)
 
 data class ImageResponse(val error: Boolean,
                          val image: String?)
@@ -209,5 +214,20 @@ class TransportMapper : Mapper<TransportResponse, TransportItem> {
             transport.startpoint.latLng().longitude.toString(),
             transport.totalSlots.toString()
     )
+
+}
+
+
+class TaskMapper : Mapper<TaskResponse, TaskItem> {
+
+    override fun mapToDomain(taskId: String, entity: TaskResponse): TaskItem = TaskItem(
+            taskId,
+            entity.description,
+            entity.responsible)
+
+    override fun mapToEntity(eventId: String, task: TaskItem): TaskResponse = TaskResponse(
+            eventId,
+            task.description,
+            task.responsible)
 
 }

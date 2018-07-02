@@ -3,6 +3,7 @@ package com.hellfish.evemento.api
 import com.hellfish.evemento.R
 import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.event.poll.Poll
+import com.hellfish.evemento.event.task.TaskItem
 import com.hellfish.evemento.event.transport.TransportItem
 import retrofit2.Call
 import retrofit2.Callback
@@ -118,6 +119,7 @@ class RestAPI {
         deleteAllPolls(eventId) { _, errorMessage -> error = errorMessage }
         deleteAllGuests(eventId) { _, errorMessage -> error = errorMessage }
         deleteAllTransports(eventId) { _, errorMessage -> error = errorMessage }
+        deleteAllTasks(eventId) { _, errorMessage -> error = errorMessage }
 
         if (error == null) {
             firebaseApi.deleteEvent(eventId).enqueue(deleteCallback(callback))
@@ -149,6 +151,13 @@ class RestAPI {
     private fun deleteAllTransports(eventId: String, callback: (Boolean, Int?) -> (Unit)) {
         getTransportsForEvent(eventId) { transports, error ->
             if (transports != null) transports.forEach { deleteGuest(it.transportId, callback) }
+            else callback(false, error)
+        }
+    }
+
+    private fun deleteAllTasks(eventId: String, callback: (Boolean, Int?) -> (Unit)) {
+        getTasksForEvent(eventId) { tasks, error ->
+            if (tasks != null) tasks.forEach { deleteGuest(it.taskId, callback) }
             else callback(false, error)
         }
     }
@@ -261,6 +270,23 @@ class RestAPI {
 
     fun deleteTransport(transportId: String, callback: (Boolean, Int?) -> Unit) {
         firebaseApi.deleteTransport(transportId).enqueue(deleteCallback(callback))
+    }
+
+    //Tasks
+    fun getTasksForEvent(eventId: String, callback: (List<TaskItem>?, Int?) -> (Unit)) {
+        firebaseApi.getTasks("\"eventId\"", "\"$eventId\"").enqueue(getXForYCallback(callback, TaskMapper()))
+    }
+
+    fun pushTask(comment: TaskResponse, callback: (String?, Int?) -> Unit) {
+        firebaseApi.pushTask(comment).enqueue(pushCallback(callback))
+    }
+
+    fun updateTask(commentId: String, comment: TaskResponse, callback: (TaskItem?, Int?) -> Unit) {
+        firebaseApi.updateTask(commentId, comment).enqueue(updateCallback(callback, TaskMapper(), commentId))
+    }
+
+    fun deleteTask(commentId: String, callback: (Boolean, Int?) -> Unit) {
+        firebaseApi.deleteTask(commentId).enqueue(deleteCallback(callback))
     }
 
 }
