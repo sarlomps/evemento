@@ -33,7 +33,7 @@ class ClosedAnswersAdapter(answers: List<Answer.Closed>, private val totalAmount
     override fun doOnItemOnBindViewHolder(view: RelativeLayout, item: Answer.Closed, context: Context) {
         val textView = view.closedAnswerTextView
 
-        textView.text = "${item.text} - ${item.votesAmount.toFloat() / totalAmount.toFloat() * 100}%"
+        textView.text = textView.resources.getString(R.string.pollAnswerWithVotes, item.text, item.votesAmount, totalAmount)
         view.answerBackground.apply {
             val finalWidth = (textView.layoutParams.width.toFloat() * item.percentageFrom(totalAmount)).roundToInt()
             animateWidth(finalWidth)
