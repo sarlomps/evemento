@@ -52,20 +52,39 @@ class EventViewModel : ViewModel() {
         if(selectedEvent.value == null) { onError(R.string.api_error_fetching_data) }
     }
 
-    fun loadRides(callback: (List<TransportItem>?, Int?) -> (Unit)) {
-//TODO: IMPLEMENT
-    }
-
     fun loadRides(onError: (Int?) -> (Unit)) {
         selectedEvent.value?.let {
-            NetworkManager.getTransports(it) { newRides, errorMessage ->
-                newRides?.let { rides.value = it.toMutableList(); return@getTransports }
+            NetworkManager.getAllUsers { users, errorMessage ->
+                users?.let {
+                    NetworkManager.getTransports(selected()!!) { newRides, errorMessage ->
+                        newRides?.let {
+                            try {
+                                val fullTransports = it.map { transport ->
+                                    val fullPassengers = transport.passangers.map { passenger ->
+                                        val user = users.find { it.userId == passenger.userId }
+                                        if (user != null) passenger.fillWith(user)
+                                        else null
+                                    }
+                                    val fullDriver = users.find { it.userId == transport.driver.userId }
+                                    if (fullDriver != null) transport.copy(driver = fullDriver,
+                                            passangers = fullPassengers.requireNoNulls().toCollection(ArrayList()))
+                                    else throw IllegalArgumentException("Null driver")
+                                }
+                                rides.value = fullTransports.toMutableList()
+                            } catch (e: IllegalArgumentException) { onError(R.string.api_error_fetching_data) }
+                            return@getTransports
+                        }
+                        onError(errorMessage)
+                    }
+                    return@getAllUsers
+                }
                 onError(errorMessage)
             }
             return
         }
         onError(R.string.api_error_fetching_data)
     }
+
 
     fun loadComments(onError: (Int?) -> (Unit)) {
         selectedEvent.value?.let {
@@ -117,30 +136,7 @@ class EventViewModel : ViewModel() {
      */
     /// TODO: BORRAR AL TERMINAR REFACTOR DE SERVICIOS
     private fun loadDataFrom(event: Event?) {
-        rides.value = mockedRides()
         tasks.value = mutableListOf() //TODO load it from Firebase
-    }
-
-    private fun mockedRides(): MutableList<TransportItem> {
-        val transports = ArrayList<TransportItem>()
-        val driver1 = User("gusId","Gus", "Sarlanga", "")
-        val gusPlace: Location = Location("casa de gus", Coordinates(-34.588938999999996,-58.5906728))
-        val driver2 = User("gasId","Gas", "Sarlanga", "")
-        val gasPlace: Location = Location("casa de gas", Coordinates(-34.6017308,-58.586593900000004))
-        val pass_1_1 = User("juanRId","juanR", "Sarlanga", "")
-        val pass_1_2 = User("juanDsId","juanDs", "Sarlanga", "")
-        val pass_2_1 = User("juanBId","NicoB", "Sarlanga", "")
-        val pass_2_2 = User("NicoS","NicoS", "Sarlanga", "")
-        val passangers1 = ArrayList<User>()
-        val passangers2 = ArrayList<User>()
-        passangers1.add(pass_1_1)
-        passangers1.add(pass_1_2)
-        passangers2.add(pass_2_1)
-        passangers2.add(pass_2_2)
-
-        transports.add(TransportItem("TransportID1", driver1, passangers1, gusPlace ,4))
-        transports.add(TransportItem("TransportID2",driver2, passangers2, gasPlace,3))
-        return transports
     }
 
     fun <T> editList(list: MutableList<T>?, newT: T, comparator: (T, T) -> Boolean) =
@@ -177,8 +173,22 @@ class EventViewModel : ViewModel() {
     fun edit(newTransport: TransportItem, callback: (TransportItem?, Int?) -> Unit) {
         NetworkManager.updateTransport(selected()!!.eventId, newTransport) { transport, errorMessage ->
             transport?.let {
-                rides.value = editList(rides.value, transport) { t1, t2 -> t1.sameTransport(t2) }
-                callback(transport, null)
+                NetworkManager.getAllUsers { users, usersErrorMessage->
+                    try {
+                        users?.let {
+                            val fullPassengers = it.map { passenger ->
+                                val user = users.find { it.userId == passenger.userId }
+                                if (user != null) passenger.fillWith(user)
+                                else null
+                            }
+                            val fullTransport = transport.copy(passangers = fullPassengers.requireNoNulls().toCollection(ArrayList()))
+                            rides.value = editList(rides.value, fullTransport) { t1, t2 -> t1.sameTransport(t2) }
+                            callback(transport, null)
+                        }
+                        return@getAllUsers
+                    } catch (e: IllegalArgumentException) { callback(null, R.string.api_error_fetching_data) }
+                    callback(null, usersErrorMessage)
+                }
                 return@updateTransport
             }
             callback(null, errorMessage)

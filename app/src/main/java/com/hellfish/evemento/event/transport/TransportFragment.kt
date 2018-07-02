@@ -40,6 +40,7 @@ class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
+        eventViewModel.loadRides { _ -> showToast(R.string.errorLoadingRides) }
         eventViewModel.rides.observe(this, Observer { rides ->
             transports = rides ?: ArrayList()
             if (::mMap.isInitialized) loadTransportsOnMap()

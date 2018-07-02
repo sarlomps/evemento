@@ -37,6 +37,10 @@ data class User(val userId: String,
                 val imageUrl: String?,
                 val email: String) : Parcelable {
     fun sameUser(user: User): Boolean = userId.equals(user.userId)
+    fun fillWith(user: User) = this.copy(
+            displayName = user.displayName,
+            imageUrl = user.imageUrl,
+            email = user.email)
 }
 
 
@@ -202,7 +206,7 @@ class TransportMapper : Mapper<TransportResponse, TransportItem> {
             transport.passangers.map { it.userId }.toCollection(ArrayList()),
             transport.startpoint.name,
             transport.startpoint.latLng().latitude.toString(),
-            transport.startpoint.latLng().latitude.toString(),
+            transport.startpoint.latLng().longitude.toString(),
             transport.totalSlots.toString()
     )
 
