@@ -81,7 +81,7 @@
     <string name="pollAnswerWithVotes">%1s - %2d de %3d</string>
     <string name="addTask">Add task</string>
     <string name="taskDescription">Task Description</string>
-    <string name="responsible">Responsible</string>
+    <string name="responsible">Responsible: </string>
     <string name="noOneInCharge">No one in charge</string>
     <string name="beInCharge">"Do you want to be in charge?"</string>
     <string name="abandonTask">"Do you want to abandon this task?"</string>
