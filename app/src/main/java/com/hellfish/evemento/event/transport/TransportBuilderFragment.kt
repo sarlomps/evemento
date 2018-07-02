@@ -47,7 +47,7 @@ class TransportBuilderFragment : NavigatorFragment() {
             this.coordinates = argTransport.latLong()
             transport_builder_fab.setOnClickListener {
                 if (validateTransport()) {
-                    eventViewModel.edit(transport()) { _, errorMessage ->
+                    eventViewModel.edit(transport(argTransport.transportId)) { _, errorMessage ->
                         if (errorMessage == null) navigatorListener.replaceFragment(TransportListFragment())
                         else showToast(errorMessage)
                     }
@@ -76,16 +76,16 @@ class TransportBuilderFragment : NavigatorFragment() {
     private fun setSavedListener() {
         transport_builder_fab.setOnClickListener {
             if (validateTransport()) {
-                eventViewModel.add(transport())
+                eventViewModel.add(transport(""))
                 navigatorListener.replaceFragment(TransportListFragment())
             }
         }
     }
 
-    private fun transport(): TransportItem {
+    private fun transport(transportId: String): TransportItem {
         var locationName = transport_builder_location.text.toString()
         var totalSlots = transport_builder_slots.text.toString().toInt()
-        return TransportItem("",loggedInUser, ArrayList(), Location(locationName, Coordinates(this.coordinates)), totalSlots)
+        return TransportItem(transportId,loggedInUser, ArrayList(), Location(locationName, Coordinates(this.coordinates)), totalSlots)
     }
 
     private fun validateTransport(): Boolean {

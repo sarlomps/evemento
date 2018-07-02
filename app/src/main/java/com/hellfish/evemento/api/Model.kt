@@ -37,6 +37,10 @@ data class User(val userId: String,
                 val imageUrl: String?,
                 val email: String) : Parcelable {
     fun sameUser(user: User): Boolean = userId.equals(user.userId)
+    fun fillWith(user: User) = this.copy(
+            displayName = user.displayName,
+            imageUrl = user.imageUrl,
+            email = user.email)
 }
 
 
