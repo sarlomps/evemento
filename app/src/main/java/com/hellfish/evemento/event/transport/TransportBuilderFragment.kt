@@ -16,6 +16,7 @@ import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.hellfish.evemento.*
 import com.hellfish.evemento.api.User
+import com.hellfish.evemento.extensions.hideKeyboard
 
 
 class TransportBuilderFragment : NavigatorFragment() {
@@ -48,7 +49,11 @@ class TransportBuilderFragment : NavigatorFragment() {
             transport_builder_fab.setOnClickListener {
                 if (validateTransport()) {
                     eventViewModel.edit(transport(argTransport.transportId)) { _, errorMessage ->
-                        if (errorMessage == null) navigatorListener.replaceFragment(TransportListFragment())
+                        if (errorMessage == null)
+                            activity?.run {
+                                onBackPressed()
+                                hideKeyboard()
+                            }
                         else showToast(errorMessage)
                     }
                 }

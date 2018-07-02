@@ -86,23 +86,6 @@ class TransportDetailFragment() : NavigatorFragment(), UserColor {
         return linearLayout
     }
 
-    private fun createPassangerCircle(context: Context, passanger: User): View {
-        return View(context)
-    }
-
-    private fun createPassangerTV(context: Context, passanger: User) : TextView {
-        return TextView(context).apply {
-            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                setTextAppearance(R.style.Base_TextAppearance_AppCompat_Medium)
-            } else {
-                setTextAppearance(context, R.style.Base_TextAppearance_AppCompat_Medium)
-            }
-            text = passanger.displayName
-        }
-    }
-
     private fun toogleFabIfNecessary(transport: TransportItem) {
         if (transport.driver.sameUser(this.loggedInUser))
             transport_detail_fab.withDrawable(R.drawable.ic_edit_white_24dp).setOnClickListener {
