@@ -136,7 +136,7 @@ class TaskListFragment : NavigatorFragment() {
                 setOnClickListener {
                     validatingTask {
                         editTask(task.copy(description = createDialogInput.addTaskDescription.text.toString(),
-                                           responsible = SessionManager.getCurrentUser()!!.displayName))
+                                           responsible = createDialogInput.addTaskResponsible.selectedItem.toString()))
                         createDialog.cancel()
                     }
                 }
