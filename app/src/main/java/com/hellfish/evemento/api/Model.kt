@@ -72,7 +72,6 @@ data class CommentResponse(val eventId:String,
 data class DeleteResponse(val nothing: String?)
 
 data class TransportResponse(val eventId: String,
-                             val transportId: String,
                              val driver: String,
                              val passengers: ArrayList<String>,
                              val locationName: String,
