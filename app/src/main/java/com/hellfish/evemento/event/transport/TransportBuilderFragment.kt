@@ -1,6 +1,7 @@
 package com.hellfish.evemento.event.transport
 
 import android.app.Activity
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
@@ -12,16 +13,14 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.location.places.ui.PlaceAutocomplete
 import kotlinx.android.synthetic.main.fragment_transport_builder.*
 import android.support.v7.app.AlertDialog
-import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.hellfish.evemento.*
-import com.hellfish.evemento.api.User
-import com.hellfish.evemento.extensions.hideKeyboard
 
 
 class TransportBuilderFragment : NavigatorFragment() {
-    private lateinit var loggedInUser: User
+
     private lateinit var eventViewModel: EventViewModel
+    private lateinit var transportViewModel: TransportViewModel
     private lateinit var coordinates: LatLng
 
     private val autocompleteRequestCode = 42
@@ -29,6 +28,27 @@ class TransportBuilderFragment : NavigatorFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
+        transportViewModel = ViewModelProviders.of(activity!!).get(TransportViewModel::class.java)
+
+        transportViewModel.transport.observe(this, Observer { transport ->
+            transport?.let{
+                transport_builder_slots.setText(transport.totalSlots.toString())
+                transport_builder_location.setText(transport.startpoint.name)
+                this.coordinates = transport.latLong()
+                transport_builder_fab.setOnClickListener {
+                    if (validateTransport()) {
+                        eventViewModel.edit(transport(transport.transportId)) { _, errorMessage ->
+                            if (errorMessage == null) {
+                                transportViewModel.selectDriver(transport.driver)
+                                navigatorListener.replaceFragment(TransportDetailFragment(), false)
+                            } else showToast(errorMessage)
+                        }
+                    }
+                }
+                delete_transport.visibility = ViewGroup.VISIBLE
+                delete_transport.setOnClickListener { showDialogConfirmation(transport) }
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -36,34 +56,8 @@ class TransportBuilderFragment : NavigatorFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loggedInUser = SessionManager.getCurrentUser()!!
         setLocationListener()
         setSavedListener()
-
-        val argTransport = arguments?.getParcelable<TransportItem>("transport")
-
-        if (argTransport != null) {
-            transport_builder_slots.setText(argTransport.totalSlots.toString())
-            transport_builder_location.setText(argTransport.startpoint.name)
-            this.coordinates = argTransport.latLong()
-            transport_builder_fab.setOnClickListener {
-                if (validateTransport()) {
-                    eventViewModel.edit(transport(argTransport.transportId)) { _, errorMessage ->
-                        if (errorMessage == null) {
-                            val transportDetailFragment = TransportDetailFragment()
-                            val args = Bundle()
-                            args.putParcelable("driver", argTransport.driver)
-                            transportDetailFragment.arguments = args
-                            navigatorListener.replaceFragment(transportDetailFragment, false)
-                        } else showToast(errorMessage)
-                    }
-                }
-            }
-            delete_transport.visibility = ViewGroup.VISIBLE
-            delete_transport.setOnClickListener {
-                showDialogConfirmation(argTransport)
-            }
-        }
     }
 
     private fun showDialogConfirmation(transport: TransportItem) {
@@ -71,10 +65,10 @@ class TransportBuilderFragment : NavigatorFragment() {
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("Deleting transport")
                 .setMessage("Are you sure you want to delete this transport?")
-                .setPositiveButton("Delete", { _, _ ->
+                .setPositiveButton("Delete") { _, _ ->
                     navigatorListener.replaceFragment(TransportListFragment(), false)
                     eventViewModel.remove(transport)
-                })
+                }
                 .setNegativeButton("Cancel", null)
                 .show()
     }
@@ -89,14 +83,14 @@ class TransportBuilderFragment : NavigatorFragment() {
     }
 
     private fun transport(transportId: String): TransportItem {
-        var locationName = transport_builder_location.text.toString()
-        var totalSlots = transport_builder_slots.text.toString().toInt()
-        return TransportItem(transportId,loggedInUser, ArrayList(), Location(locationName, Coordinates(this.coordinates)), totalSlots)
+        val locationName = transport_builder_location.text.toString()
+        val totalSlots = transport_builder_slots.text.toString().toInt()
+        return TransportItem(transportId, SessionManager.getCurrentUser()!!, ArrayList(), Location(locationName, Coordinates(this.coordinates)), totalSlots)
     }
 
     private fun validateTransport(): Boolean {
-        var locationEmpty = transport_builder_location.text.toString().isEmpty()
-        var totalSlotsEmpty = transport_builder_slots.text.toString().isEmpty()
+        val locationEmpty = transport_builder_location.text.toString().isEmpty()
+        val totalSlotsEmpty = transport_builder_slots.text.toString().isEmpty()
         if (totalSlotsEmpty) showToast(R.string.transport_build_total_slots_validation)
         if (locationEmpty) showToast(R.string.transport_build_location_validation)
         return !locationEmpty && !totalSlotsEmpty
@@ -117,11 +111,11 @@ class TransportBuilderFragment : NavigatorFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when {
             requestCode == autocompleteRequestCode && resultCode == Activity.RESULT_OK -> {
-                        val gmapPlace = PlaceAutocomplete.getPlace(activity, data)
-                        transport_builder_location.setText(gmapPlace.name)
-                        this.coordinates = gmapPlace.latLng
+                val gmapPlace = PlaceAutocomplete.getPlace(activity, data)
+                transport_builder_location.setText(gmapPlace.name)
+                this.coordinates = gmapPlace.latLng
 
-                }
+            }
             requestCode == autocompleteRequestCode && resultCode == PlaceAutocomplete.RESULT_ERROR -> showToast(R.string.autocompleteError)
             else -> Unit
         }

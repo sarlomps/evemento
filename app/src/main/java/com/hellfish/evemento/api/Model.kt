@@ -32,11 +32,10 @@ data class UserPartialResponse(val displayName: String?,
                                val imageUrl: String?,
                                val email: String?)
 
-@Parcelize
 data class User(val userId: String,
                 val displayName: String,
                 val imageUrl: String?,
-                val email: String) : Parcelable {
+                val email: String) {
     fun sameUser(user: User): Boolean = userId.equals(user.userId)
     fun fillWith(user: User) = this.copy(
             displayName = user.displayName,

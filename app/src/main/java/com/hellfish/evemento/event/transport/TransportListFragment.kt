@@ -21,19 +21,21 @@ import kotlinx.android.synthetic.main.fragment_transport_list.*
 class TransportListFragment : NavigatorFragment() {
 
     lateinit var eventViewModel: EventViewModel
+    lateinit var transportViewModel: TransportViewModel
     private lateinit var loggedInUser: User
 
     var transports: List<TransportItem> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        transportViewModel = ViewModelProviders.of(activity!!).get(TransportViewModel::class.java)
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
         eventViewModel.rides.observe(this, Observer { rides ->
             val transports = rides ?: ArrayList()
-            this.transports = transports;
+            this.transports = transports
             toogleFabIfNecessary()
             carsRecyclerView.apply {
-                adapter = TransportAdapter(transports, navigatorListener)
+                adapter = TransportAdapter(transports, navigatorListener, transportViewModel)
             }
         })
     }
@@ -54,7 +56,7 @@ class TransportListFragment : NavigatorFragment() {
 
 
         if(transports.isNotEmpty()) {
-            carsRecyclerView.adapter = TransportAdapter(transports, navigatorListener)
+            carsRecyclerView.adapter = TransportAdapter(transports, navigatorListener, transportViewModel)
         } else {
             //TODO no rides
         }

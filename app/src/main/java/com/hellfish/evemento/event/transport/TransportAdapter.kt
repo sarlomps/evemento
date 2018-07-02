@@ -12,7 +12,7 @@ import com.hellfish.evemento.api.User
 import com.hellfish.evemento.event.guest.UserColor
 import kotlinx.android.synthetic.main.transport_item.view.*
 
-class TransportAdapter(val transportList: List<TransportItem>, private val navigatorListener: Navigator): RecyclerAdapter<CardView, TransportItem>(transportList), UserColor{
+class TransportAdapter(val transportList: List<TransportItem>, private val navigatorListener: Navigator, val transportViewModel: TransportViewModel): RecyclerAdapter<CardView, TransportItem>(transportList), UserColor{
     override fun doOnEmptyOnBindViewHolder(): (view: TextView, context: Context?) -> Unit {
         return { view, _ ->
             view.text = "No rides yet"
@@ -25,11 +25,8 @@ class TransportAdapter(val transportList: List<TransportItem>, private val navig
             view.txtDriverName.text = item.driverName()
             view.txtAvailableSlots.text = item.availableSlots().toString()
             drawDriverCircle(view, item.driver)
-            val transportDetailFragment = TransportDetailFragment()
-            val args = Bundle()
-            args.putParcelable("driver", item.driver)
-            transportDetailFragment.arguments = args
-            view.setOnClickListener { navigatorListener.replaceFragment(transportDetailFragment)}
+            transportViewModel.selectDriver(item.driver)
+            view.setOnClickListener { navigatorListener.replaceFragment(TransportDetailFragment()) }
         }
     }
 

@@ -22,47 +22,38 @@ import kotlinx.android.synthetic.main.fragment_transport_detail.view.*
 
 class TransportDetailFragment() : NavigatorFragment(), UserColor {
 
-    lateinit var driver: User
-    private lateinit var loggedInUser: User
-    private lateinit var transport: TransportItem
     private lateinit var eventViewModel: EventViewModel
-
-    private lateinit var transports: MutableList<TransportItem>
+    private lateinit var transportViewModel: TransportViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
         eventViewModel.rides.observe(this, Observer { rides ->
-            transports = rides ?: ArrayList()
-            transport = rides?.find { driver.sameUser(it.driver) }!!
-            llTransportDetail.removeAllViews()
-            transport.passangers.forEach { addPassanger(view!!, it) }
-            toogleFabIfNecessary(transport)
+            transportViewModel.selectedDriver.value?.let { driver ->
+                transportViewModel.setTransport(rides?.find { driver.sameUser(it.driver) }!!)
+                llTransportDetail.removeAllViews()
+                transportViewModel.transport.value?.passangers?.forEach { addPassanger(view!!, it) }
+                toogleFabIfNecessary(transportViewModel.transport.value!!)
+            }
+        })
 
+        transportViewModel = ViewModelProviders.of(activity!!).get(TransportViewModel::class.java)
+        transportViewModel.selectedDriver.observe(this, Observer { driver ->
+            driver?.let {
+                txtDriverName.text = it.displayName
+                drawDriverCircle(it)
+                transportViewModel.transport.value?.let { toogleFabIfNecessary(it) }
+            }
         })
     }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_transport_detail, container, false)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
-        val argDriver = arguments?.getParcelable<User>("driver")
-        this.loggedInUser = SessionManager.getCurrentUser()!!
-
-        if (argDriver != null) {
-            driver = argDriver
-            view.txtDriverName.text = driver.displayName
-            drawDriverCircle(view, driver, context!!)
-            if (::transport.isInitialized) toogleFabIfNecessary(transport)
-        }
-    }
-
-    private fun drawDriverCircle(view: View, item: User, context: Context) {
-        DrawableCompat.setTint(view.driverCircle.drawable, userColor(item.userId, item.displayName))
-        view.driverInitial.text = item.displayName.first().toUpperCase().toString()
+    private fun drawDriverCircle(item: User) {
+        DrawableCompat.setTint(driverCircle.drawable, userColor(item.userId, item.displayName))
+        driverInitial.text = item.displayName.first().toUpperCase().toString()
     }
 
 
@@ -83,35 +74,33 @@ class TransportDetailFragment() : NavigatorFragment(), UserColor {
     }
 
     private fun toogleFabIfNecessary(transport: TransportItem) {
-        if (transport.driver.sameUser(this.loggedInUser))
+        val loggedUser = SessionManager.getCurrentUser()!!
+        if (transport.driver.sameUser(loggedUser))
             transport_detail_fab.withDrawable(R.drawable.ic_edit_white_24dp).setOnClickListener {
-                val transportBuilderFragment = TransportBuilderFragment()
-                val args = Bundle()
-                args.putParcelable("transport", transport)
-                transportBuilderFragment.arguments = args
-                navigatorListener.replaceFragment(transportBuilderFragment, false)
+                transportViewModel.setTransport(transport)
+                navigatorListener.replaceFragment(TransportBuilderFragment(), false)
             }
-        else if (!transport.isAlreadyInTransport(loggedInUser) &&
-                (transport.isFull() || isInAnotherTransport(transport)))
+        else if (!transport.isAlreadyInTransport(loggedUser) && (transport.isFull() || isInAnotherTransport(transport)))
             transport_detail_fab.hide()
         else {
             transport_detail_fab.show()
             transport_detail_fab.isEnabled = true
-            if (!transport.isAlreadyInTransport(loggedInUser))
+            if (!transport.isAlreadyInTransport(loggedUser))
                 transport_detail_fab.withDrawable(R.drawable.ic_person_add_white_24dp).setOnClickListener {
                     it.isEnabled = false
-                    transport.passangers.add(loggedInUser)
+                    transport.passangers.add(loggedUser)
                     eventViewModel.edit(transport) { _, errorMessage -> if (errorMessage!=null) showToast(errorMessage)}
                 }
             else
                 transport_detail_fab.withDrawable(R.drawable.ic_remove_white_24dp).setOnClickListener {
                     it.isEnabled = false
-                    transport.passangers.remove(loggedInUser)
+                    transport.passangers.remove(loggedUser)
                     eventViewModel.edit(transport) { _, errorMessage -> if (errorMessage!=null) showToast(errorMessage)}
                 }
         }
     }
 
-    private fun isInAnotherTransport(transport: TransportItem) = transports.any { it.isAlreadyInTransport(loggedInUser) }
+    private fun isInAnotherTransport(transport: TransportItem) =
+            (eventViewModel.rides.value ?: ArrayList()).any { it.isAlreadyInTransport(SessionManager.getCurrentUser()!!) }
 
 }

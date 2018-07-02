@@ -34,30 +34,24 @@ class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
     override val titleId = R.string.title_activity_maps
 
     private lateinit var eventViewModel: EventViewModel
-
-    var transports: List<TransportItem> = listOf()
+    private lateinit var transportViewModel: TransportViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         eventViewModel = ViewModelProviders.of(activity!!).get(EventViewModel::class.java)
         eventViewModel.loadRides { _ -> showToast(R.string.errorLoadingRides) }
-        eventViewModel.rides.observe(this, Observer { rides ->
-            transports = rides ?: ArrayList()
-            if (::mMap.isInitialized) loadTransportsOnMap()
-        })
+        eventViewModel.rides.observe(this, Observer { if (::mMap.isInitialized) it?.let { loadTransportsOnMap(it) } })
+
+        transportViewModel = ViewModelProviders.of(activity!!).get(TransportViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_transport, container, false)
 
-    private lateinit var loggedInUser: User
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         cardView.setOnClickListener { navigatorListener.replaceFragment(TransportListFragment()) }
-        this.loggedInUser = SessionManager.getCurrentUser()!!
-
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -67,7 +61,7 @@ class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
-    private fun loadTransportsOnMap() {
+    private fun loadTransportsOnMap(transports: MutableList<TransportItem>) {
         transports.forEach {
             val marker = MarkerOptions()
                     .position(it.latLong())
@@ -85,11 +79,8 @@ class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
             //TODO si hay varios markers en la misma localizacion va a ir al que encuentre el find que puede no ser el correcto
             val transportClicked = transports.find { it.latLong().equals(marker.position) }
             if (transportClicked != null) {
-                val transportDetailFragment = TransportDetailFragment()
-                val args = Bundle()
-                args.putParcelable("driver", transportClicked.driver)
-                transportDetailFragment.arguments = args
-                navigatorListener.replaceFragment(transportDetailFragment)
+                transportViewModel.selectDriver(transportClicked.driver)
+                navigatorListener.replaceFragment(TransportDetailFragment())
             }
             return@setOnMarkerClickListener false
         }
@@ -108,7 +99,7 @@ class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        loadTransportsOnMap()
+        eventViewModel.rides.observe(this, Observer { it?.let { loadTransportsOnMap(it) } })
     }
 
     private fun bitmapDescriptorFromVector(context: Context, @DrawableRes vectorDrawableResourceId: Int): BitmapDescriptor {

@@ -5,8 +5,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.hellfish.evemento.api.User
 import kotlinx.android.parcel.Parcelize
 
-@Parcelize
-data class TransportItem(val transportId: String, val driver: User, val passangers: ArrayList<User>, val startpoint: Location,val totalSlots: Int) : Parcelable {
+data class TransportItem(val transportId: String, val driver: User, val passangers: ArrayList<User>, val startpoint: Location,val totalSlots: Int) {
     fun sameTransport(transportItem: TransportItem): Boolean = driver.sameUser(transportItem.driver)
     fun driverName(): String = driver.displayName
     fun availableSlots(): Int = maxOf(totalSlots - passangers.size, 0)
