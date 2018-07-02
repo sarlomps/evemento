@@ -39,8 +39,11 @@ class TransportBuilderFragment : NavigatorFragment() {
                     if (validateTransport()) {
                         eventViewModel.edit(transport(transport.transportId)) { _, errorMessage ->
                             if (errorMessage == null) {
-                                transportViewModel.selectDriver(transport.driver)
-                                navigatorListener.replaceFragment(TransportDetailFragment(), false)
+                                transport_builder_fab?.run {
+                                    setOnClickListener(null)
+                                    transportViewModel.selectDriver(transport.driver)
+                                    activity?.onBackPressed()
+                                }
                             } else showToast(errorMessage)
                         }
                     }
@@ -66,7 +69,8 @@ class TransportBuilderFragment : NavigatorFragment() {
                 .setTitle("Deleting transport")
                 .setMessage("Are you sure you want to delete this transport?")
                 .setPositiveButton("Delete") { _, _ ->
-                    navigatorListener.replaceFragment(TransportListFragment(), false)
+                    activity!!.supportFragmentManager.popBackStack()
+                    activity!!.onBackPressed()
                     eventViewModel.remove(transport)
                 }
                 .setNegativeButton("Cancel", null)
