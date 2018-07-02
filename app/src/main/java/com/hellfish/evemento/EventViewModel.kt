@@ -176,7 +176,7 @@ class EventViewModel : ViewModel() {
                 NetworkManager.getAllUsers { users, usersErrorMessage->
                     try {
                         users?.let {
-                            val fullPassengers = it.map { passenger ->
+                            val fullPassengers = transport.passangers.map { passenger ->
                                 val user = users.find { it.userId == passenger.userId }
                                 if (user != null) passenger.fillWith(user)
                                 else null

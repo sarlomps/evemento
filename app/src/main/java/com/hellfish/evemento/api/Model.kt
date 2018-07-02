@@ -192,16 +192,15 @@ class GuestMapper : Mapper<GuestResponse, Guest> {
 class TransportMapper : Mapper<TransportResponse, TransportItem> {
 
     override fun mapToDomain(transportId: String, entity: TransportResponse): TransportItem = TransportItem(
-            entity.transportId,
+            transportId,
             User(entity.driver, "", "", ""),
-            ArrayList(),
+            entity.passengers?.map { User(it, "", "", "") }?.toCollection(ArrayList()) ?: ArrayList(),
             Location(entity.locationName, Coordinates(entity.latitude.toDouble(), entity.longitude.toDouble())),
             entity.totalSlots.toInt()
     )
 
     override fun mapToEntity(eventId: String, transport: TransportItem): TransportResponse = TransportResponse(
             eventId,
-            transport.transportId,
             transport.driver.userId,
             transport.passangers.map { it.userId }.toCollection(ArrayList()),
             transport.startpoint.name,

@@ -246,8 +246,7 @@ class RestAPI {
         firebaseApi.deleteGuest(guestId).enqueue(deleteCallback(callback))
     }
 
-    //Comments
-    //https://deep-hook-204120.firebaseio.com/polls.json?orderBy=%22eventId%22&equalTo=%22-LFkNSwG9kj9Ytw_5mXa%22
+    //Transports
     fun getTransportsForEvent(eventId: String, callback: (List<TransportItem>?, Int?) -> (Unit)) {
         firebaseApi.getTransports("\"eventId\"", "\"$eventId\"").enqueue(getXForYCallback(callback, TransportMapper()))
     }
