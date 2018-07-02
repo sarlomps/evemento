@@ -56,6 +56,17 @@ class EventViewModel : ViewModel() {
 //TODO: IMPLEMENT
     }
 
+    fun loadRides(onError: (Int?) -> (Unit)) {
+        selectedEvent.value?.let {
+            NetworkManager.getTransports(it) { newRides, errorMessage ->
+                newRides?.let { rides.value = it.toMutableList(); return@getTransports }
+                onError(errorMessage)
+            }
+            return
+        }
+        onError(R.string.api_error_fetching_data)
+    }
+
     fun loadComments(onError: (Int?) -> (Unit)) {
         selectedEvent.value?.let {
             NetworkManager.getComments(it) { newComments, errorMessage ->
