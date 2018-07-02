@@ -52,11 +52,15 @@ class EventListFragment : NavigatorFragment() {
         eventListRecyclerView.layoutManager = LinearLayoutManager(context)
 
         eventListFab.setOnClickListener {
-            eventViewModel.select(null)
-            navigatorListener.replaceFragment(EventFragment())
+            createNewEvent()
         }
     }
 
+    fun createNewEvent() {
+        eventViewModel.select(null)
+        navigatorListener.replaceFragment(EventFragment())
+
+    }
 
     fun onSelectedEvent(event: Event) {
         eventViewModel.select(event)

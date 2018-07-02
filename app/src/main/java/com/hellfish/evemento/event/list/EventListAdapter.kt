@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v7.widget.CardView
 import com.hellfish.evemento.R
 import android.view.View
+import android.widget.TextView
 import com.hellfish.evemento.RecyclerAdapter
 import com.hellfish.evemento.event.Event
 import com.squareup.picasso.Picasso
@@ -12,87 +13,43 @@ import kotlinx.android.synthetic.main.fragment_event_list_item.view.*
 
 class EventListAdapter(val events: MutableList<Event>, private val fragment: EventListFragment) :  RecyclerAdapter<CardView, Event>(events) {
 
-    override fun layout(item : Int): Int {
-        return R.layout.fragment_event_list_item
+    override fun layout(item: Int): Int {
+        return when (item) {
+            EMPTY_VIEW -> R.layout.fragment_event_list_empty
+            else -> R.layout.fragment_event_list_item
+        }
     }
 
-    override fun doOnItemOnBindViewHolder(view: CardView, item: Event, context: Context) {
-        if (item.imageUrl != "") {
-            view.eventCardScrim.visibility = View.VISIBLE
-            view.eventCardImage.layoutParams.height = view.resources.getDimension(R.dimen.eventCardImageLarge).toInt()
-            Picasso.get().load(item.imageUrl).placeholder(R.color.colorPrimaryDark).into(view.eventCardImage)
-        } else {
-            view.eventCardScrim.visibility = View.GONE
-            view.eventCardImage.layoutParams.height = view.resources.getDimension(R.dimen.eventCardImageShort).toInt()
-            view.eventCardImage.setImageResource(0)
+    override fun doOnEmptyOnBindViewHolder(): (view: TextView, context: Context?) -> Unit {
+        return { view, _ ->
+            view.text = "No events yet!"
+            view.setOnClickListener { fragment.createNewEvent() }
         }
-
-        view.eventCardTitle.text = item.title
-
-        view.eventCardDescription.text = item.description
-        view.eventCardDescription. visibility = if (item.description != "") View.VISIBLE else View.GONE
-
-
-        view.eventCardStartsDate.text = String.format("Starts: %s", fragment.dateTimeFormatter.print(item.startDate))
-        view.eventCardEndsDate.text = String.format("Ends: %s", fragment.dateTimeFormatter.print(item.endDate))
-
-        view.setOnClickListener { fragment.onSelectedEvent(item) }
     }
 
-}
-/*
+    override fun doOnItemOnBindViewHolder(): (view: CardView, item: Event, context: Context?) -> Unit {
+        return { view, item, _ ->
+            if (item.imageUrl != "") {
+                view.eventCardScrim.visibility = View.VISIBLE
+                view.eventCardImage.layoutParams.height = view.resources.getDimension(R.dimen.eventCardImageLarge).toInt()
+                Picasso.get().load(item.imageUrl).placeholder(R.color.colorPrimaryDark).into(view.eventCardImage)
+            } else {
+                view.eventCardScrim.visibility = View.GONE
+                view.eventCardImage.layoutParams.height = view.resources.getDimension(R.dimen.eventCardImageShort).toInt()
+                view.eventCardImage.setImageResource(0)
+            }
 
-fun refresh(newEvents: ArrayList<Event>)
-{
-    this.events = newEvents;
-    notifyDataSetChanged();
-}
+            view.eventCardTitle.text = item.title
 
-override fun getItemCount(): Int {
-    return events.size
-}
+            view.eventCardDescription.text = item.description
+            view.eventCardDescription.visibility = if (item.description != "") View.VISIBLE else View.GONE
 
-override fun onBindViewHolder(holder: EventListAdapter.EventHolder, position: Int) {
-    val event = events[position]
-    holder.bindEvent(event, fragment)
-}
 
-override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventListAdapter.EventHolder{
-    val inflatedView = parent.inflate(R.layout.fragment_event_list_item)
-    return EventHolder(inflatedView)
-}
+            view.eventCardStartsDate.text = String.format("Starts: %s", fragment.dateTimeFormatter.print(item.startDate))
+            view.eventCardEndsDate.text = String.format("Ends: %s", fragment.dateTimeFormatter.print(item.endDate))
 
-class EventHolder(v:View) : RecyclerView.ViewHolder(v) {
+            view.setOnClickListener { fragment.onSelectedEvent(item) }
 
-    private var view : View = v
-    private var event : Event? = null
-
-    fun bindEvent(event: Event, fragment: EventListFragment) {
-        this.event = event
-        if (event.imageUrl != "") {
-            Picasso.get().load(event.imageUrl).placeholder(R.color.colorPrimaryDark).into(view.eventCardImage)
-            view.eventCardScrim.visibility = View.VISIBLE
-
-        } else {
-            view.eventCardScrim.visibility = View.GONE
-            view. eventCardImage.layoutParams.height = view.resources.getDimension(R.dimen.eventCardImageShort).toInt()
         }
-
-        view.eventCardTitle.text = event.title
-
-        view.eventCardDescription.text = event.description
-        view.eventCardDescription. visibility = if (event.description != "") View.VISIBLE else View.GONE
-
-
-        view.eventCardStartsDate.text = String.format("Starts: %s", fragment.dateTimeFormatter.print(event.startDate))
-        view.eventCardEndsDate.text = String.format("Ends: %s", fragment.dateTimeFormatter.print(event.endDate))
-
-        // TODO: Bindear todos los valores del evento que faltan cuando este completo el layout.
-        view.setOnClickListener {
-            fragment.onSelectedEvent(event)
-        }
-
     }
 }
-
-*/
