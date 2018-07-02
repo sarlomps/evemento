@@ -1,5 +1,6 @@
 package com.hellfish.evemento.event
 
+import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.app.ProgressDialog
 import android.arch.lifecycle.Observer
@@ -22,11 +23,11 @@ import kotlinx.android.synthetic.main.fragment_event.view.*
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.support.design.widget.TextInputEditText
-import android.support.design.widget.TextInputLayout
+import android.support.v4.content.ContextCompat
 import com.google.android.gms.location.places.ui.PlaceAutocomplete.RESULT_ERROR
 import com.hellfish.evemento.extensions.withDrawable
 import com.squareup.picasso.Picasso
@@ -231,6 +232,7 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     }
 
     private fun setImageListener() = eventImage.setOnClickListener {
+
         imageDialog.show()
     }
 
@@ -250,9 +252,11 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
     private fun createImageDialog(): AlertDialog {
         return twoOptionsAndCancelDialog(R.string.imageDialogTitle,
                 Pair(R.string.selectImage, { _, _ ->
-                    val photoPickerIntent = Intent(Intent.ACTION_PICK)
-                    photoPickerIntent.type = "image/*"
-                    startActivityForResult(photoPickerIntent, imagePickerRequestCode)
+                    if (setupPermissions()) {
+                        val photoPickerIntent = Intent(Intent.ACTION_PICK)
+                        photoPickerIntent.type = "image/*"
+                        startActivityForResult(photoPickerIntent, imagePickerRequestCode)
+                    }
                 }),
                 Pair(R.string.removeImage, { _, _ -> loadImage("") }))
     }
@@ -335,6 +339,22 @@ class EventFragment : NavigatorFragment(), DateTimePickerDialogFactory {
         pollElement.setOnClickListener { navigatorListener.replaceFragment(PollFragment()) }
         rideElement.setOnClickListener { navigatorListener.replaceFragment(TransportFragment()) }
         commentElement.setOnClickListener { navigatorListener.replaceFragment(CommentListFragment()) }
+    }
+
+    private fun setupPermissions():Boolean {
+        context?.let {
+            val permission = ContextCompat.checkSelfPermission(it,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)
+
+            return if (permission != PackageManager.PERMISSION_GRANTED) {
+                showToast(R.string.checkPermissions)
+                false
+            } else {
+                true
+            }
+
+        }
+        return false
     }
 
 }

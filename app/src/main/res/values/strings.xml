@@ -86,6 +86,7 @@
     <string name="beInCharge">"Do you want to be in charge?"</string>
     <string name="abandonTask">"Do you want to abandon this task?"</string>
     <string name="alreadyInCharge">"Someone is already in charge"</string>
+    <string name="checkPermissions">Please check the app permissions.</string>
 
 
 </resources>

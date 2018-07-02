@@ -1,5 +1,6 @@
 package com.hellfish.evemento
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,7 +10,6 @@ import android.support.v7.widget.Toolbar
 import com.hellfish.evemento.event.list.EventListFragment
 import android.util.Log
 import android.view.MenuItem
-import com.hellfish.evemento.event.Event
 import com.hellfish.evemento.extensions.showSnackbar
 import com.hellfish.evemento.extensions.toVisibility
 import kotlinx.android.synthetic.main.activity_main.*
@@ -17,11 +17,15 @@ import kotlinx.android.synthetic.main.drawer.*
 import kotlinx.android.synthetic.main.nav_header.view.*
 import net.danlew.android.joda.JodaTimeAndroid
 import android.arch.lifecycle.ViewModelProviders
+import android.content.pm.PackageManager
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 
 class MainActivity : AppCompatActivity(), Navigator {
 
     lateinit var eventViewModel: EventViewModel
     override var onBackPressedListener: OnBackPressedListener? = null
+    private val permissionsRequestCode = 101
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +46,7 @@ class MainActivity : AppCompatActivity(), Navigator {
             Log.d("Selected MenuItem", menuItem.toString())
             true
         }
-
+        setupPermissions()
         if (savedInstanceState == null) {
             val fragment = EventListFragment()
             // Cargo el EventListFragment sin pasarle argumento porque la llamada para pedir eventos la hace despues.
@@ -112,5 +116,41 @@ class MainActivity : AppCompatActivity(), Navigator {
 
         transaction.commit()
     }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+
+        if (requestCode != permissionsRequestCode) return
+        if (isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            // Success case: Get the permission
+            // Do something and return
+            return
+        }
+
+
+    }
+
+    private fun setupPermissions() {
+        val permission = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+
+            makeRequest()
+        }
+
+    }
+
+    private fun makeRequest() {
+        ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                permissionsRequestCode)
+
+    }
+
+    fun isPermissionGranted(permission:String):Boolean =
+            ContextCompat.checkSelfPermission(
+                    this,
+                    permission
+            ) == PackageManager.PERMISSION_GRANTED
 
 }
