@@ -49,12 +49,13 @@ class TransportBuilderFragment : NavigatorFragment() {
             transport_builder_fab.setOnClickListener {
                 if (validateTransport()) {
                     eventViewModel.edit(transport(argTransport.transportId)) { _, errorMessage ->
-                        if (errorMessage == null)
-                            activity?.run {
-                                onBackPressed()
-                                hideKeyboard()
-                            }
-                        else showToast(errorMessage)
+                        if (errorMessage == null) {
+                            val transportDetailFragment = TransportDetailFragment()
+                            val args = Bundle()
+                            args.putParcelable("driver", argTransport.driver)
+                            transportDetailFragment.arguments = args
+                            navigatorListener.replaceFragment(transportDetailFragment, false)
+                        } else showToast(errorMessage)
                     }
                 }
             }
@@ -71,8 +72,8 @@ class TransportBuilderFragment : NavigatorFragment() {
                 .setTitle("Deleting transport")
                 .setMessage("Are you sure you want to delete this transport?")
                 .setPositiveButton("Delete", { _, _ ->
+                    navigatorListener.replaceFragment(TransportListFragment(), false)
                     eventViewModel.remove(transport)
-                    navigatorListener.replaceFragment(TransportListFragment())
                 })
                 .setNegativeButton("Cancel", null)
                 .show()
@@ -82,7 +83,7 @@ class TransportBuilderFragment : NavigatorFragment() {
         transport_builder_fab.setOnClickListener {
             if (validateTransport()) {
                 eventViewModel.add(transport(""))
-                navigatorListener.replaceFragment(TransportListFragment())
+                navigatorListener.replaceFragment(TransportListFragment(), false)
             }
         }
     }

@@ -89,7 +89,7 @@ class TransportDetailFragment() : NavigatorFragment(), UserColor {
                 val args = Bundle()
                 args.putParcelable("transport", transport)
                 transportBuilderFragment.arguments = args
-                navigatorListener.replaceFragment(transportBuilderFragment)
+                navigatorListener.replaceFragment(transportBuilderFragment, false)
             }
         else if (!transport.isAlreadyInTransport(loggedInUser) &&
                 (transport.isFull() || isInAnotherTransport(transport)))
