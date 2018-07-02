@@ -43,6 +43,8 @@
     <string name="errorDeleteEvent">There was an error deleting the event, please try again later</string>
     <string name="accept">Accept</string>
     <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ok">Ok</string>
     <string name="invite">Invite</string>
     <string name="uninvite">Uninvite</string>
     <string name="cancel">Cancel</string>
@@ -79,6 +81,10 @@
     <string name="addTask">Add task</string>
     <string name="taskDescription">Task Description</string>
     <string name="responsible">Responsible</string>
+    <string name="noOneInCharge">No one in charge</string>
+    <string name="beInCharge">"Do you want to be in charge?"</string>
+    <string name="abandonTask">"Do you want to abandon this task?"</string>
+    <string name="alreadyInCharge">"Someone is already in charge"</string>
 
 
 </resources>

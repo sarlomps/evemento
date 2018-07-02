@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.DialogTitle
 import android.support.v7.widget.LinearLayoutManager
 import android.text.SpannableStringBuilder
 import android.util.Log
@@ -31,6 +32,7 @@ class TaskListFragment : NavigatorFragment() {
     lateinit var eventViewModel: EventViewModel
     lateinit var createDialog: AlertDialog
     lateinit var createDialogInput: View
+    lateinit var takeOwnershipQuestionDialog: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +80,12 @@ class TaskListFragment : NavigatorFragment() {
                 Pair(R.string.cancel, { _, _ -> Unit }),
                 Pair(R.string.delete, { _, _ -> Unit }))
 
-        eventViewModel.add(TaskItem("","Much wow, much fun!", "Ringo"))
+        takeOwnershipQuestionDialog = AlertDialog.Builder(activity!!)
+                .setPositiveButton(getString(R.string.yes)) { _, _ -> Unit }
+                .setNegativeButton(getString(R.string.no)) { _, _ -> Unit }
+                .create()
+
+        eventViewModel.add(TaskItem("","Much wow, much fun!", getString(R.string.noOneInCharge)))
 
         taskRecyclerView.apply { layoutManager = LinearLayoutManager(context) }
     }
@@ -97,7 +104,7 @@ class TaskListFragment : NavigatorFragment() {
 
     private fun addPossibleResponsiblesTo(first: String? = null) {
         val users: MutableList<String?> = if (first != null) mutableListOf(first) else mutableListOf()
-        users.add("No one in charge")
+        users.add(getString(R.string.noOneInCharge))
         users.add(SessionManager.getCurrentUser()!!.displayName)
 
         users.addAll(eventViewModel.guests.value!!
@@ -116,7 +123,7 @@ class TaskListFragment : NavigatorFragment() {
 
     private fun editItem(task: TaskItem) {
         createDialogInput.addTaskDescription.setText(task.description)
-        val first = createDialogInput.addTaskResponsible.selectedItem.toString()
+        val first = task.responsible
         addPossibleResponsiblesTo(first)
         createDialog.run {
             show()
@@ -140,23 +147,33 @@ class TaskListFragment : NavigatorFragment() {
         }
     }
 
-    private fun itemResponsibility(item: TaskItem){
-        val takeOwnershipQuestionDialog = AlertDialog.Builder(context!!)
-        if(item.responsible == "No one in charge"){
-            takeOwnershipQuestionDialog.setTitle("Do you want to be in charge?")
-            takeOwnershipQuestionDialog.setNegativeButton("No"){ dialog, _ ->
-                dialog.dismiss()
-            }
-            takeOwnershipQuestionDialog.setPositiveButton("Yes"){ _, _ ->
-                eventViewModel.edit(item.copy(responsible = SessionManager.getCurrentUser()!!.displayName))
-            }
-        }else{
-            takeOwnershipQuestionDialog.setTitle("Someone is already in charge")
-            takeOwnershipQuestionDialog.setPositiveButton("Ok"){ dialog, _ ->
-                dialog.dismiss()
+    private fun showOwnershipDialog(title: Int, acceptAction: () -> Unit, noVisibility: Int = View.VISIBLE, buttonText: Int = R.string.yes) {
+        takeOwnershipQuestionDialog.run {
+            setTitle(getString(title))
+            show()
+            getButton(Dialog.BUTTON_NEGATIVE).visibility = noVisibility
+            getButton(Dialog.BUTTON_POSITIVE).let {
+                it.text = getString(buttonText)
+                it.setOnClickListener {
+                    acceptAction()
+                    this.cancel()
+                }
             }
         }
-        takeOwnershipQuestionDialog.show()
+    }
+
+    private fun itemResponsibility(item: TaskItem){
+        when(item.responsible) {
+            getString(R.string.noOneInCharge) -> showOwnershipDialog(R.string.beInCharge, {
+                eventViewModel.edit(item.copy(responsible = SessionManager.getCurrentUser()!!.displayName))
+            })
+
+            SessionManager.getCurrentUser()!!.displayName -> showOwnershipDialog(R.string.abandonTask, {
+                eventViewModel.edit(item.copy(responsible = getString(R.string.noOneInCharge)))
+            })
+
+            else -> showOwnershipDialog(R.string.alreadyInCharge, { takeOwnershipQuestionDialog.cancel() }, View.GONE, R.string.ok)
+        }
     }
 
 }
