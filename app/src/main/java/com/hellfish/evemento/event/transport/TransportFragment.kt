@@ -82,6 +82,7 @@ class TransportFragment : NavigatorFragment(), OnMapReadyCallback {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15f))
 
         mMap.setOnMarkerClickListener { marker ->
+            //TODO si hay varios markers en la misma localizacion va a ir al que encuentre el find que puede no ser el correcto
             val transportClicked = transports.find { it.latLong().equals(marker.position) }
             if (transportClicked != null) {
                 val transportDetailFragment = TransportDetailFragment()
