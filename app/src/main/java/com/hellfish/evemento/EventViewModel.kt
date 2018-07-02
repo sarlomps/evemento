@@ -2,6 +2,7 @@ package com.hellfish.evemento
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.util.Log
 import com.hellfish.evemento.api.Comment
 import com.hellfish.evemento.api.Guest
 import com.hellfish.evemento.api.User
@@ -167,13 +168,19 @@ class EventViewModel : ViewModel() {
     }
 
     fun add(transportItem: TransportItem) {
-        rides.value = rides.value?.plus(transportItem)?.toMutableList()
+        NetworkManager.pushTransport(selected()!!.eventId, transportItem) { id, errorMessage ->
+            id?.let { rides.value = rides.value?.plus(transportItem.copy(transportId = id))?.toMutableList(); return@pushTransport }
+            Log.e("TOAST", "Esto debería ser un errorMessage") //TODO Sacarlo a un Toast
+        }
     }
 
     fun remove(transportItem: TransportItem) {
-        rides.value = rides.value?.minus(transportItem)?.toMutableList()
-
+        NetworkManager.deleteTransport(transportItem) { success, errorMessage ->
+            if (success) { rides.value = rides.value?.minus(transportItem)?.toMutableList(); return@deleteTransport }
+            Log.e("TOAST", "Esto debería ser un errorMessage") //TODO Sacarlo a un Toast
+        }
     }
+
 }
 
 class InvalidEventElementException(override var message: String): Exception(message)
