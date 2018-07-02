@@ -3,16 +3,12 @@ package com.hellfish.evemento.event.transport
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import com.hellfish.evemento.EventViewModel
 import com.hellfish.evemento.NavigatorFragment
@@ -93,22 +89,29 @@ class TransportDetailFragment() : NavigatorFragment(), UserColor {
                 val args = Bundle()
                 args.putParcelable("transport", transport)
                 transportBuilderFragment.arguments = args
-                navigatorListener.replaceFragment(transportBuilderFragment)
+                navigatorListener.replaceFragment(transportBuilderFragment, false)
             }
-        else if (transport.isFull() || (transports.any { it.isAlreadyInTransport(loggedInUser) } && !transport.isAlreadyInTransport(loggedInUser)))
+        else if (!transport.isAlreadyInTransport(loggedInUser) &&
+                (transport.isFull() || isInAnotherTransport(transport)))
             transport_detail_fab.hide()
         else {
             transport_detail_fab.show()
+            transport_detail_fab.isEnabled = true
             if (!transport.isAlreadyInTransport(loggedInUser))
                 transport_detail_fab.withDrawable(R.drawable.ic_person_add_white_24dp).setOnClickListener {
+                    it.isEnabled = false
                     transport.passangers.add(loggedInUser)
                     eventViewModel.edit(transport) { _, errorMessage -> if (errorMessage!=null) showToast(errorMessage)}
                 }
             else
                 transport_detail_fab.withDrawable(R.drawable.ic_remove_white_24dp).setOnClickListener {
+                    it.isEnabled = false
                     transport.passangers.remove(loggedInUser)
                     eventViewModel.edit(transport) { _, errorMessage -> if (errorMessage!=null) showToast(errorMessage)}
                 }
         }
     }
+
+    private fun isInAnotherTransport(transport: TransportItem) = transports.any { it.isAlreadyInTransport(loggedInUser) }
+
 }

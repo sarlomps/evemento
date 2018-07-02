@@ -102,13 +102,15 @@ class MainActivity : AppCompatActivity(), Navigator {
         supportActionBar?.title = title
     }
 
-    override fun replaceFragment(fragment: Fragment) {
+    override fun replaceFragment(fragment: Fragment, addToBackStack: Boolean) {
         onBackPressedListener = null
-        supportFragmentManager.
-                beginTransaction().
-                replace(R.id.main_container, fragment).
-                addToBackStack(null).
-                commit()
+        val transaction = supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.main_container, fragment)
+
+        if (addToBackStack) transaction.addToBackStack(null)
+
+        transaction.commit()
     }
 
 }
