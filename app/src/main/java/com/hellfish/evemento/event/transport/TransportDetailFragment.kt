@@ -3,16 +3,12 @@ package com.hellfish.evemento.event.transport
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import com.hellfish.evemento.EventViewModel
 import com.hellfish.evemento.NavigatorFragment
@@ -95,7 +91,8 @@ class TransportDetailFragment() : NavigatorFragment(), UserColor {
                 transportBuilderFragment.arguments = args
                 navigatorListener.replaceFragment(transportBuilderFragment)
             }
-        else if (transport.isFull() || (transports.any { it.isAlreadyInTransport(loggedInUser) } && !transport.isAlreadyInTransport(loggedInUser)))
+        else if (!transport.isAlreadyInTransport(loggedInUser) &&
+                (transport.isFull() || isInAnotherTransport(transport)))
             transport_detail_fab.hide()
         else {
             transport_detail_fab.show()
@@ -114,4 +111,7 @@ class TransportDetailFragment() : NavigatorFragment(), UserColor {
                 }
         }
     }
+
+    private fun isInAnotherTransport(transport: TransportItem) = transports.any { it.isAlreadyInTransport(loggedInUser) }
+
 }
