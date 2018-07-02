@@ -79,6 +79,8 @@ data class TransportResponse(val eventId: String,
                              val longitude: String,
                              val totalSlots: String)
 
+data class ImageResponse(val error: Boolean,
+                         val image: String?)
 
 interface Mapper<E, D> {
     fun mapToDomain(id: String, entity: E): D

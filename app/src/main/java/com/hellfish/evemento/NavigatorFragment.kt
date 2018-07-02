@@ -1,5 +1,6 @@
 package com.hellfish.evemento
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -65,6 +66,24 @@ open class NavigatorFragment : Fragment() {
                 .setNegativeButton(getString(R.string.cancel)) { _, _ -> Unit }
                 .create()
                 .show()
+    }
+
+    protected fun twoOptionsAndCancelDialog(title: Int, positiveButtonDefinition: Pair<Int, ((DialogInterface, Int) -> Unit)>, negativeButtonDefinition: Pair<Int, ((DialogInterface, Int) -> Unit)>): AlertDialog {
+        return AlertDialog.Builder(activity!!)
+                .setTitle(getString(title))
+                .setPositiveButton(getString(positiveButtonDefinition.first), positiveButtonDefinition.second)
+                .setNegativeButton(getString(negativeButtonDefinition.first), negativeButtonDefinition.second)
+                .setNeutralButton(getString(R.string.cancel)) { _,_ -> Unit }
+                .create()
+    }
+
+    protected fun progressDialog(title:String, message:String): ProgressDialog {
+        val dialog = ProgressDialog(context)
+        dialog.setMessage(message)
+        dialog.setTitle(title)
+        dialog.setCancelable(false)
+        dialog.isIndeterminate=true
+        return dialog
     }
 
 }
