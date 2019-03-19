@@ -11,7 +11,7 @@ class FirebaseApiClient {
 
     companion object {
 
-        val baseURL: String = "https://deep-hook-204120.firebaseio.com"
+        val baseURL: String = "https://evemento-9f819.firebaseio.com"
         var retofit: Retrofit? = null
 
         val client: Retrofit
